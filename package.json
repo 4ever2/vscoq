@@ -42,7 +42,11 @@
         "extensions": [
           ".v"
         ],
-        "configuration": "./client/coq.configuration.json"
+        "configuration": "./client/coq.configuration.json",
+        "icon": {
+          "dark": "images/coq.png",
+          "light": "images/coq.png"
+        }
       }
     ],
     "grammars": [
@@ -829,8 +833,8 @@
     "ts-prune": "^0.10.3",
     "typescript": "^3.7.5",
     "vsce": "^2.5.3",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   },
   "dependencies": {
     "bufferutil": "^4.0.1",
