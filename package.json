@@ -99,6 +99,11 @@
           "default": ".",
           "description": "The path of the coq project relative to the workspace root. Also determins where to look for the `_CoqProject` file. Requires reloading."
         },
+        "coq.locateCoqProject": {
+          "type": "boolean",
+          "default": false,
+          "description": "Search for _CoqProject in the workspace"
+        },
         "coq.moveCursorToFocus": {
           "type": "boolean",
           "default": true,
@@ -848,6 +853,7 @@
     "vscode-jsonrpc": "^4.0.0",
     "vscode-languageclient": "^5.2.1",
     "vscode-languageserver": "^5.2.1",
+    "vscode-uri": "^3.0.6",
     "ws": "^7.4.6"
   }
 }

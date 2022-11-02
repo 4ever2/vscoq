@@ -1,6 +1,7 @@
 import {CoqDocument, DocumentCallbacks, TextDocumentItem} from './document';
 import {Settings, DocumentSelector} from './protocol';
 import * as vscode from 'vscode-languageserver';
+import {URI} from 'vscode-uri';
 import * as path from 'path';
 import * as fs from 'fs';
 import {PrettifySymbolsMode} from './util/PrettifySymbols';
@@ -17,6 +18,7 @@ export class CoqProject {
   private coqInstances = new Map<string,CoqDocument>();
   private currentSettings : Settings;
   private coqProjectRoot: string;
+  private workspaceRoot: string;
   private coqProjectWatcher: fs.FSWatcher = null;
   private loadingCoqProjectInProcess = false;
   private ready = {event: Promise.resolve<{}>({}), signal: ()=>{} };
@@ -33,6 +35,7 @@ export class CoqProject {
     else
       connection.console.log("Loading project with no root directory")
     this.coqProjectRoot = workspaceRoot; //default is the workspace root
+    this.workspaceRoot = workspaceRoot;
   }
 
   public get console() : vscode.RemoteConsole {
@@ -50,8 +53,9 @@ export class CoqProject {
     return doc;
   }
   
-  public createCoqTopInstance(scriptFile: string) : CoqTop {
-    return new CoqTop8(this.settings.coqtop, scriptFile, this.getCoqProjectRoot(), this.console);
+  public async createCoqTopInstance(scriptFile: string) : Promise<CoqTop> {
+    var coqProjectRoot = await this.locateCoqProject(scriptFile);
+    return new CoqTop8(this.settings.coqtop, scriptFile, coqProjectRoot, this.console);
   }
 
   /** reset the ready promise */
@@ -67,7 +71,7 @@ export class CoqProject {
   public getPrettifySymbols() : PrettifySymbolsMode {
     return this.psm;
   }
-  
+
   private matchesCoq(selector: DocumentSelector) {
     if(typeof selector === 'string')
       return selector === 'coq';
@@ -76,6 +80,7 @@ export class CoqProject {
     else
       return selector.language === 'coq';
   }
+
   public async updateSettings(newSettings: Settings) {
 
     this.notReady();
@@ -88,7 +93,7 @@ export class CoqProject {
     }
     if(newSettings.coq.loadCoqProject ) {
       this.watchCoqProject();
-      await this.loadCoqProject();
+      await this.loadCoqProject(this.coqProjectFile());
     }
 
     if(newSettings.prettifySymbolsMode && newSettings.prettifySymbolsMode.substitutions) {
@@ -140,7 +145,7 @@ export class CoqProject {
         case 'change':
           if((filename && filename==coqProjectFileName)) {
             this.console.log(coqProjectFileName + ' changed');
-            await this.loadCoqProject();
+            await this.loadCoqProject(this.coqProjectFile());
           }
       }
     });
@@ -163,7 +168,35 @@ export class CoqProject {
     return args;
   }
 
-  private async loadCoqProject() : Promise<void> {
+  private hasCoqProject(directory: string) : boolean {
+    var file : string = path.join(directory, coqProjectFileName)
+    this.console.log('Checking: ' + file);
+    try{
+      fs.accessSync(file, fs.constants.F_OK);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  public async locateCoqProject(scriptFile: string) {
+    if (!this.currentSettings.coq.locateCoqProject)
+      return this.getCoqProjectRoot();
+
+    this.console.log('Locating _CoqProject file');
+    var directory = path.normalize(URI.parse(scriptFile).fsPath);
+
+    do {
+      directory = path.dirname(directory);
+      if (this.hasCoqProject(directory)) {
+        this.console.log('Found _CoqProject in: ' + directory);
+        this.loadCoqProject(path.join(directory, coqProjectFileName));
+        return directory;
+      }
+    } while (directory != this.workspaceRoot);
+  }
+
+  private async loadCoqProject(coqProjectFile: string) : Promise<void> {
     if(!this.getCoqProjectRoot)
       return;
 
@@ -171,8 +204,10 @@ export class CoqProject {
       return;
     this.loadingCoqProjectInProcess = true;
 
+    this.console.log("Loading: " + coqProjectFile);
+
     try {
-      const projectFile = await nodeAsync.fs.readFile(this.coqProjectFile(), 'utf8');
+      const projectFile = await nodeAsync.fs.readFile(coqProjectFile, 'utf8');
       this.coqProjectArgs = CoqProject.parseCoqProject(projectFile);
       this.currentSettings.coqtop.args = [...this.coqProjectArgs, ...this.settingsCoqTopArgs];
     } catch(err) {

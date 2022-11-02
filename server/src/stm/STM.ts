@@ -138,14 +138,14 @@ export class CoqStateMachine {
 
 
   constructor(private project: CoqProject
-    , private spawnCoqtop : ()=>coqtop.CoqTop
+    , private spawnCoqtop : ()=>Promise<coqtop.CoqTop>
     , private callbacks: StateMachineCallbacks
   ) {
     this.startFreshCoqtop();
   }
 
-  private startFreshCoqtop() {
-    this.coqtop = this.spawnCoqtop();
+  private async startFreshCoqtop() {
+    this.coqtop = await this.spawnCoqtop();
     this.coqtop.onFeedback((x1) => this.onFeedback(x1));
     this.coqtop.onMessage((x1, routeId, stateId) => this.onCoqMessage(x1, routeId, stateId));
     this.coqtop.onClosed((isError: boolean, message?: string) => this.onCoqClosed(isError, message));

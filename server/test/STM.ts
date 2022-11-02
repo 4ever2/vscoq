@@ -51,6 +51,7 @@ describe("CoqStateMachine", function() {
       externalViewUrlCommand: "",
       loadCoqProject: false,
       coqProjectRoot: ".",
+      locateCoqProject: false,
       interpretToEndOfSentence: false,
       moveCursorToFocus: false,
       format: {
@@ -114,7 +115,7 @@ describe("CoqStateMachine", function() {
     it('STM.applyChangesToDocumentText', async function() {
       const commands = [{text: "Goal True.", range: range(0,0,0,10)},{text: "\npose True.", range: range(0,10,1,10)}];
       // const project = new CoqProject("", )
-      let stm = new CoqStateMachine(project, () => new MockCoqTop(), stmCallbacks);
+      let stm = new CoqStateMachine(project, async () => new MockCoqTop(), stmCallbacks);
       assert.equal(stm.getStatesText(), "");
       await stm.interpretToPoint(pos(2,0), function*() { yield *commands; }, false, false, cancellation.token);
       assert.equal(stm.getStatesText(), "Goal True.\npose True.");

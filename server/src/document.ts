@@ -256,9 +256,10 @@ export class CoqDocument implements TextDocument {
   public async resetCoq() {
     if(this.isStmRunning())
       this.stm.shutdown(); // Don't bother awaiting
+
     this.stm = new CoqStateMachine(
       this.project,
-      () => {
+      async () => {
         this.callbacks.sendCoqtopStart();
         return this.project.createCoqTopInstance(this.uri);
       }, {

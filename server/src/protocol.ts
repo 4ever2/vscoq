@@ -55,6 +55,8 @@ export interface CoqSettings {
   loadCoqProject: boolean,
   /** The path of the coq project relative to the workspace root. Also determins where to look for the `_CoqProject` file. */
   coqProjectRoot: string,
+  /** Search for _CoqProject in the workspace. @default `false` */
+  locateCoqProject: boolean,
   /** Move the editor's cursor position as Coq interactively steps forward/backward a command. @default `true` */
   moveCursorToFocus : boolean,
   /** Interpret to end of sentence */
