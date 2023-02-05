@@ -26,9 +26,9 @@ export class CoqProject implements vscode.Disposable {
   private subscriptions : vscode.Disposable[] = [];
 
   // lazily created output windows
-  private infoOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Info');
-  private queryOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Queries');
-  private noticeOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Notices');
+  private infoOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Info', 'coq');
+  private queryOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Queries', 'coq');
+  private noticeOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Notices', 'coq');
   private debugOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Debug');
 
   private constructor(context: vscode.ExtensionContext) {
