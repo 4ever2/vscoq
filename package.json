@@ -568,6 +568,13 @@
           "command": "extension.coq.query.locate",
           "group": "queries"
         }
+      ],
+      "editor/title": [
+        {
+          "command": "extension.coq.proofView.open",
+          "when": "editorLangId == coq",
+          "group": "navigation"
+        }
       ]
     },
     "snippets": [
