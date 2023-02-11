@@ -1,5 +1,5 @@
 import {CompletionItem, CompletionItemKind, InsertTextFormat, CompletionList} from 'vscode-languageserver';
-import {SemVer} from 'semver';
+import {SemVer, satisfies} from 'semver';
 
 
 interface TriggerSnippet {
@@ -8,9 +8,12 @@ interface TriggerSnippet {
   completion?: CompletionItem[],
   detail?: string,
   documentation?: string,
+  addedIn?: string,
+  removedIn?: string,
+  deprecatredIn?: string
 }
 
-function snippetSentence(item: TriggerSnippet) : CompletionItem {
+function snippetSentence(version : SemVer, item: TriggerSnippet) : CompletionItem {
   const result = CompletionItem.create(item.label);
   result.kind = CompletionItemKind.Snippet;
   result.detail = item.detail;
@@ -30,11 +33,25 @@ function snippetSentence(item: TriggerSnippet) : CompletionItem {
     };
   }
 
+  //if (item.deprecatredIn && satisfies(version, ">= " + item.deprecatredIn))
+  result.deprecated = true;
+
+
   return result;
 }
 
+function checkVersion(version : SemVer, item : TriggerSnippet) : boolean {
+  if (item.addedIn && satisfies(version, "< " + item.addedIn))
+    return false;
 
-const optionsSnippetsRaw = [
+  if (item.removedIn && satisfies(version, ">= " + item.removedIn))
+    return false;
+
+  return true;
+}
+
+
+const optionsSnippetsRaw : TriggerSnippet[] = [
   {label: "Asymmetric Patterns"},
   {label: "Atomic Load"},
   {label: "Automatic Coercions Import"},
@@ -126,7 +143,7 @@ const optionsSnippetsRaw = [
   {label: "Verbose Compat Notations"},
 ];
 
-const optionsSnippets = [
+const optionsSnippets : TriggerSnippet[] = [
   ...optionsSnippetsRaw,
   {label: "Bullet Behavior"},
   {label: "Default Goal Selector"},
@@ -143,9 +160,9 @@ const optionsSnippets = [
   {label: "Printing Depth"},
   {label: "Printing Width"},
   {label: "Typeclasses Depth"},
-].map(snippetSentence);
+];
 
-const setOptionsSnippets = [
+const setOptionsSnippets : TriggerSnippet[] = [
   ...optionsSnippetsRaw,
   {label: "Bullet Behavior", insertText: "Bullet Behavior \"${1|None,Strict Subproofs|}\"."},
   {label: "Default Goal Selector", insertText: "Default Goal Selector \"${1:selector}\"."},
@@ -162,9 +179,9 @@ const setOptionsSnippets = [
   {label: "Printing Depth", insertText: "Printing Depth ${1:num}."},
   {label: "Printing Width", insertText: "Printing Width ${1:num}."},
   {label: "Typeclasses Depth", insertText: "Typeclasses Depth ${1:num}."},
-].map(snippetSentence);
+];
 
-const printSnippets = [
+const printSnippets : TriggerSnippet[] = [
   {label: "All"},
   {label: "All Dependencies", insertText: "All Dependencies ${1:qualid}."},
   {label: "Assumptions", insertText: "Assumptions ${1:qualid}."},
@@ -204,9 +221,9 @@ const printSnippets = [
   {label: "Universes"},
   {label: "Universes (filename)", insertText: "Universes \"${1:filename}\"."},
   {label: "Visibility"},
-].map(snippetSentence);
+];
 
-const showSnippets = [
+const showSnippets : TriggerSnippet[] = [
   {label: "(num)", insertText: "${1:num}.", documentation: "Displays only the num-th subgoal"},
   {label: "Conjecturest"},
   {label: "Existentials"},
@@ -215,9 +232,9 @@ const showSnippets = [
   {label: "Proof"},
   {label: "Script"},
   {label: "Universes"},
-].map(snippetSentence);
+];
 
-const hintSnippets = [
+const hintSnippets : TriggerSnippet[] = [
   {label: "(definition)", insertText: "${1:definition} : ${2:idents …}."},
   {label: "Constructors", insertText: "Constructors ${1:idents …} : ${2:idents …}."},
   {label: 'Cut', insertText: 'Cut "${1:regexp}" : ${2:idents …}.'},
@@ -231,22 +248,38 @@ const hintSnippets = [
   {label: 'Rewrite <-', insertText: 'Rewrite <- ${1:terms …} : ${2:idents …}.'},
   {label: 'Transparent', insertText: 'Transparent ${1:qualid} : ${2:idents …}.'},
   {label: 'Unfold', insertText: 'Unfold ${1:qualid} : ${2:idents …}.'},
-].map(snippetSentence);
+];
 
 
 function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] {
+  const _setOptionsSnippets = setOptionsSnippets
+    .filter((item) => checkVersion(version, item))
+    .map((item) => snippetSentence(version, item));
+  const _optionsSnippets = optionsSnippets
+    .filter((item) => checkVersion(version, item))
+    .map((item) => snippetSentence(version, item));
+  const _printSnippets = printSnippets
+    .filter((item) => checkVersion(version, item))
+    .map((item) => snippetSentence(version, item));
+  const _showSnippets = showSnippets
+    .filter((item) => checkVersion(version, item))
+    .map((item) => snippetSentence(version, item));
+  const _hintSnippets = hintSnippets
+    .filter((item) => checkVersion(version, item))
+    .map((item) => snippetSentence(version, item));
+  
   return [
-  {label: "Set...", insertText: "Set ", completion: setOptionsSnippets, detail: "Set coqtop options"},
-  {label: "Unset...", insertText: "Unset ", completion: optionsSnippets, detail: "Unset coqtop options"},
-  {label: "Local Set...", insertText: "Local Set ", completion: setOptionsSnippets},
-  {label: "Global Unset...", insertText: "Global Unset ", completion: optionsSnippets},
-  {label: "Test...", insertText: "Test ", completion: optionsSnippets},
-  {label: "Print...", insertText: "Print ", completion: printSnippets},
-  {label: "Show...", insertText: "Show ", completion: showSnippets},
-  {label: "Hint...", insertText: "Hint ", completion: hintSnippets},
-  {label: "Local Hint...", insertText: "Local Hint ", completion: hintSnippets},
-  {label: "Global Hint...", insertText: "Global Hint ", completion: hintSnippets},
-  {label: "Export Hint...", insertText: "#[export] Hint ", completion: hintSnippets},
+  {label: "Set...", insertText: "Set ", completion: _setOptionsSnippets, detail: "Set coqtop options"},
+  {label: "Unset...", insertText: "Unset ", completion: _optionsSnippets, detail: "Unset coqtop options"},
+  {label: "Local Set...", insertText: "Local Set ", completion: _setOptionsSnippets},
+  {label: "Global Unset...", insertText: "Global Unset ", completion: _optionsSnippets},
+  {label: "Test...", insertText: "Test ", completion: _optionsSnippets},
+  {label: "Print...", insertText: "Print ", completion: _printSnippets},
+  {label: "Show...", insertText: "Show ", completion: _showSnippets},
+  {label: "Hint...", insertText: "Hint ", completion: _hintSnippets},
+  {label: "Local Hint...", insertText: "Local Hint ", completion: _hintSnippets},
+  {label: "Global Hint...", insertText: "Global Hint ", completion: _hintSnippets},
+  {label: "Export Hint...", insertText: "#[export] Hint ", completion: _hintSnippets},
   {label: "Arguments", insertText: "Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
   {label: "Local Arguments", insertText: "Local Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
   {label: "Global Arguments", insertText: "Global Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
@@ -276,7 +309,7 @@ function getTriggerCompletions(prefix: string, version : SemVer) {
     .filter((trigger) => {
       return trigger.insertText.startsWith(prefix);
     })
-    .map(snippetSentence), true);
+    .map((item) => snippetSentence(version, item)), true);
   return triggerCompletions;
 }
 
