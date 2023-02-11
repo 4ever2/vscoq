@@ -9,7 +9,6 @@ interface TriggerSnippet {
   documentation?: string,
 }
 
-
 function snippetSentence(item: TriggerSnippet) : CompletionItem {
   const result = CompletionItem.create(item.label);
   result.kind = CompletionItemKind.Snippet;
@@ -124,7 +123,7 @@ const optionsSnippetsRaw = [
   {label: "Universe Minimization ToSet"},
   {label: "Universe Polymorphism"},
   {label: "Verbose Compat Notations"},
-  ];
+];
 
 const optionsSnippets = [
   ...optionsSnippetsRaw,
@@ -143,7 +142,8 @@ const optionsSnippets = [
   {label: "Printing Depth"},
   {label: "Printing Width"},
   {label: "Typeclasses Depth"},
-  ].map(snippetSentence);;
+].map(snippetSentence);
+
 const setOptionsSnippets = [
   ...optionsSnippetsRaw,
   {label: "Bullet Behavior", insertText: "Bullet Behavior \"${1|None,Strict Subproofs|}\"."},
@@ -161,7 +161,7 @@ const setOptionsSnippets = [
   {label: "Printing Depth", insertText: "Printing Depth ${1:num}."},
   {label: "Printing Width", insertText: "Printing Width ${1:num}."},
   {label: "Typeclasses Depth", insertText: "Typeclasses Depth ${1:num}."},
-  ].map(snippetSentence);
+].map(snippetSentence);
 
 const printSnippets = [
   {label: "All"},
@@ -248,7 +248,7 @@ const triggerSnippets : TriggerSnippet[] = [
   {label: "Arguments", insertText: "Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
   {label: "Local Arguments", insertText: "Local Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
   {label: "Global Arguments", insertText: "Global Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
-  ];
+];
 
 const triggerRegexp : RegExp = RegExp(`\\s*(?:${triggerSnippets.map((v) => "(" + escapeRegExp(v.insertText) + ")").join('|')})\\s*$`);
 
