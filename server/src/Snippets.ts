@@ -1,142 +1,148 @@
 import {CompletionItem, CompletionItemKind, InsertTextFormat, CompletionList} from 'vscode-languageserver';
-
+import {SemVer} from 'semver';
 
 interface TriggerSnippet {
   label:string,
-  insertText: string,
+  insertText?: string,
   completion?: CompletionItem[],
   detail?: string,
+  documentation?: string,
 }
 
-type Snippet = string | {label: string, insertText: string, documentation?: string};
 
+function snippetSentence(item: TriggerSnippet) : CompletionItem {
+  const result = CompletionItem.create(item.label);
+  result.kind = CompletionItemKind.Snippet;
+  result.detail = item.detail;
+  result.documentation = item.documentation;
 
-function snippetSentence(item: Snippet) : CompletionItem {
-  if(typeof item === 'string') { 
-    const result = CompletionItem.create(item);
-    result.kind = CompletionItemKind.Snippet
-    result.insertText = item + ".";
-    return result;
-  } else {
-    const result = CompletionItem.create(item.label);
-    result.kind = CompletionItemKind.Snippet
+  if (item.insertText) {
     result.insertText = item.insertText;
     result.insertTextFormat = InsertTextFormat.Snippet;
-    result.documentation = item.documentation;
-    return result;
+  } else {
+    result.insertText = item.label + ".";
   }
+
+  if(item.completion) {
+    result.command = {
+      command: "editor.action.triggerSuggest",
+      title: "Trigger Suggest"
+    };
+  }
+
+  return result;
 }
 
 
 const optionsSnippetsRaw = [
-  "Asymmetric Patterns",
-  "Atomic Load",
-  "Automatic Coercions Import",
-  "Automatic Introduction",
-  "Boolean Equality Schemes",
-  "Bracketing Last Introduction Pattern",
-  "Case Analysis Schemes",
-  "Compat Notations",
-  "Congruence Depth",
-  "Congruence Verbose",
-  "Contextual Implicit",
-  "Debug Auto",
-  "Debug Eauto",
-  "Debug RAKAM",
-  "Debug Tactic Unification",
-  "Debug Trivial",
-  "Debug Unification",
-  "Decidable Equality Schemes",
-  "Default Clearing Used Hypotheses",
-  "Dependent Propositions Elimination",
-  "Discriminate Introduction",
-  "Dump Bytecode",
-  "Elimination Schemes",
-  "Equality Scheme",
-  "Extraction AutoInline",
-  "Extraction Conservative Types",
-  "Extraction KeepSingleton",
-  "Extraction Optimize",
-  "Extraction SafeImplicits",
-  "Extraction TypeExpand",
-  "Hide Obligations",
-  "Implicit Arguments",
-  "Info Auto",
-  "Info Eauto",
-  "Info Trivial",
-  "Injection L2R Pattern Order",
-  "Injection On Proofs",
-  "Intuition Iff Unfolding",
-  "Intuition Negation Unfolding",
-  "Kernel Term Sharing",
-  "Keyed Unification",
-  "Maximal Implicit Insertion",
-  "Nonrecursive Elimination Schemes",
-  "Parsing Explicit",
-  "Primitive Projections",
-  "Printing All",
-  "Printing Coercions",
-  "Printing Existential Instances",
-  "Printing Implicit",
-  "Printing Implicit Defensive",
-  "Printing Matching",
-  "Printing Notations",
-  "Printing Primitive Projection Compatibility",
-  "Printing Primitive Projection Parameters",
-  "Printing Projections",
-  "Printing Records",
-  "Printing Synth",
-  "Printing Universes",
-  "Printing Wildcard",
-  "Program Mode",
-  "Proof Using Clear Unused",
-  "Record Elimination Schemes",
-  "Regular Subst Tactic",
-  "Reversible Pattern Implicit",
-  "Rewriting Schemes",
-  "Short Module Printing",
-  "Shrink Obligations",
-  "SimplIsCbn",
-  "Standard Proposition Elimination Names",
-  "Strict Implicit",
-  "Strict Proofs",
-  "Strict Universe Declaration",
-  "Strongly Strict Implicit",
-  "Suggest Proof Using",
-  "Tactic Compat Context",
-  "Tactic Evars Pattern Unification",
-  "Transparent Obligations",
-  "Typeclass Resolution After Apply",
-  "Typeclass Resolution For Conversion",
-  "Typeclasses Debug",
-  "Typeclasses Dependency Order",
-  "Typeclasses Modulo Eta",
-  "Typeclasses Strict Resolution",
-  "Typeclasses Unique Instances",
-  "Typeclasses Unique Solutions",
-  "Universal Lemma Under Conjunction",
-  "Universe Minimization ToSet",
-  "Universe Polymorphism",
-  "Verbose Compat Notations"
+  {label: "Asymmetric Patterns"},
+  {label: "Atomic Load"},
+  {label: "Automatic Coercions Import"},
+  {label: "Automatic Introduction"},
+  {label: "Boolean Equality Schemes"},
+  {label: "Bracketing Last Introduction Pattern"},
+  {label: "Case Analysis Schemes"},
+  {label: "Compat Notations"},
+  {label: "Congruence Depth"},
+  {label: "Congruence Verbose"},
+  {label: "Contextual Implicit"},
+  {label: "Debug Auto"},
+  {label: "Debug Eauto"},
+  {label: "Debug RAKAM"},
+  {label: "Debug Tactic Unification"},
+  {label: "Debug Trivial"},
+  {label: "Debug Unification"},
+  {label: "Decidable Equality Schemes"},
+  {label: "Default Clearing Used Hypotheses"},
+  {label: "Dependent Propositions Elimination"},
+  {label: "Discriminate Introduction"},
+  {label: "Dump Bytecode"},
+  {label: "Elimination Schemes"},
+  {label: "Equality Scheme"},
+  {label: "Extraction AutoInline"},
+  {label: "Extraction Conservative Types"},
+  {label: "Extraction KeepSingleton"},
+  {label: "Extraction Optimize"},
+  {label: "Extraction SafeImplicits"},
+  {label: "Extraction TypeExpand"},
+  {label: "Hide Obligations"},
+  {label: "Implicit Arguments"},
+  {label: "Info Auto"},
+  {label: "Info Eauto"},
+  {label: "Info Trivial"},
+  {label: "Injection L2R Pattern Order"},
+  {label: "Injection On Proofs"},
+  {label: "Intuition Iff Unfolding"},
+  {label: "Intuition Negation Unfolding"},
+  {label: "Kernel Term Sharing"},
+  {label: "Keyed Unification"},
+  {label: "Maximal Implicit Insertion"},
+  {label: "Nonrecursive Elimination Schemes"},
+  {label: "Parsing Explicit"},
+  {label: "Primitive Projections"},
+  {label: "Printing All"},
+  {label: "Printing Coercions"},
+  {label: "Printing Existential Instances"},
+  {label: "Printing Implicit"},
+  {label: "Printing Implicit Defensive"},
+  {label: "Printing Matching"},
+  {label: "Printing Notations"},
+  {label: "Printing Primitive Projection Compatibility"},
+  {label: "Printing Primitive Projection Parameters"},
+  {label: "Printing Projections"},
+  {label: "Printing Records"},
+  {label: "Printing Synth"},
+  {label: "Printing Universes"},
+  {label: "Printing Wildcard"},
+  {label: "Program Mode"},
+  {label: "Proof Using Clear Unused"},
+  {label: "Record Elimination Schemes"},
+  {label: "Regular Subst Tactic"},
+  {label: "Reversible Pattern Implicit"},
+  {label: "Rewriting Schemes"},
+  {label: "Short Module Printing"},
+  {label: "Shrink Obligations"},
+  {label: "SimplIsCbn"},
+  {label: "Standard Proposition Elimination Names"},
+  {label: "Strict Implicit"},
+  {label: "Strict Proofs"},
+  {label: "Strict Universe Declaration"},
+  {label: "Strongly Strict Implicit"},
+  {label: "Suggest Proof Using"},
+  {label: "Tactic Compat Context"},
+  {label: "Tactic Evars Pattern Unification"},
+  {label: "Transparent Obligations"},
+  {label: "Typeclass Resolution After Apply"},
+  {label: "Typeclass Resolution For Conversion"},
+  {label: "Typeclasses Debug"},
+  {label: "Typeclasses Dependency Order"},
+  {label: "Typeclasses Modulo Eta"},
+  {label: "Typeclasses Strict Resolution"},
+  {label: "Typeclasses Unique Instances"},
+  {label: "Typeclasses Unique Solutions"},
+  {label: "Universal Lemma Under Conjunction"},
+  {label: "Universe Minimization ToSet"},
+  {label: "Universe Polymorphism"},
+  {label: "Verbose Compat Notations"},
   ];
 
 const optionsSnippets = [
   ...optionsSnippetsRaw,
-  "Bullet Behavior",
-  "Default Goal Selector",
-  "Default Proof Mode",
-  "Default Proof Using",
-  "Default Timeout",
-  "Extraction File Comment",
-  "Extraction Flag",
-  "Firstorder Depth",
-  "Hyps Limit",
-  "Info Level",
-  "Inline Level",
-  "Loose Hint Behavior",
-  "Printing Depth",
-  "Printing Width",
-  "Typeclasses Depth",
+  {label: "Bullet Behavior"},
+  {label: "Default Goal Selector"},
+  {label: "Default Proof Mode"},
+  {label: "Default Proof Using"},
+  {label: "Default Timeout"},
+  {label: "Extraction File Comment"},
+  {label: "Extraction Flag"},
+  {label: "Firstorder Depth"},
+  {label: "Hyps Limit"},
+  {label: "Info Level"},
+  {label: "Inline Level"},
+  {label: "Loose Hint Behavior"},
+  {label: "Printing Depth"},
+  {label: "Printing Width"},
+  {label: "Typeclasses Depth"},
   ].map(snippetSentence);;
 const setOptionsSnippets = [
   ...optionsSnippetsRaw,
@@ -158,56 +164,56 @@ const setOptionsSnippets = [
   ].map(snippetSentence);
 
 const printSnippets = [
-  "All",
+  {label: "All"},
   {label: "All Dependencies", insertText: "All Dependencies ${1:qualid}."},
   {label: "Assumptions", insertText: "Assumptions ${1:qualid}."},
-  "Canonical Projections",
-  "Classes",
+  {label: "Canonical Projections"},
+  {label: "Classes"},
   {label: "Coercion Paths", insertText: "Coercion Paths ${1:class1} ${2:class2}."},
-  "Coercions",
-  "Extraction Inline",
-  "Fields",
+  {label: "Coercions"},
+  {label: "Extraction Inline"},
+  {label: "Fields"},
   {label: "Grammar", insertText: "Grammar ${1|constr,pattern|}."},
-  "Graph",
+  {label: "Graph"},
   {label: "Hint", insertText: "Hint ${1:ident}."},
-  "Hint *",
+  {label: "Hint *"},
   {label: "HintDb", insertText: "HintDb ${1:ident}."},
   {label: "Implicit", insertText: "Implicit ${1:qualid}."},
-  "Libraries",
-  "LoadPath",
+  {label: "Libraries"},
+  {label: "LoadPath"},
   {label: "Ltac", insertText: "Ltac ${1:qualid}."},
-  "ML Modules",
-  "ML Path",
+  {label: "ML Modules"},
+  {label: "ML Path"},
   {label: "Module", insertText: "Module ${1:ident}."},
   {label: "Module Type", insertText: "Module Type ${1:ident}."},
   {label: "Opaque Dependencies", insertText: "Opaque Dependencies ${1:qualid}."},
-  "Options",
-  "Rings",
+  {label: "Options"},
+  {label: "Rings"},
   {label: "Scope", insertText: "Scope ${1:scope}."},
-  "Scopes",
+  {label: "Scopes"},
   {label: "Section", insertText: "Section ${1:ident}."},
-  "Sorted Universes",
+  {label: "Sorted Universes"},
   {label: "Sorted Universes (filename)", insertText: "Sorted Universes \"${1:filename}\"."},
-  "Strategies",
+  {label: "Strategies"},
   {label: "Strategy", insertText: "Strategy ${1:qualid}."},
   {label: "Table", insertText: "Table ${1|Printing If,Printing Let|}."},
-  "Tables",
+  {label: "Tables"},
   {label: "Term", insertText: "Term ${1:qualid}."},
   {label: "Transparent Dependencies", insertText: "Transparent Dependencies ${1:qualid}."},
-  "Universes",
+  {label: "Universes"},
   {label: "Universes (filename)", insertText: "Universes \"${1:filename}\"."},
-  "Visibility",
+  {label: "Visibility"},
 ].map(snippetSentence);
 
 const showSnippets = [
   {label: "(num)", insertText: "${1:num}.", documentation: "Displays only the num-th subgoal"},
-  "Conjecturest",
-  "Existentials",
-  "Intro",
-  "Intros",
-  "Proof",
-  "Script",
-  "Universes",
+  {label: "Conjecturest"},
+  {label: "Existentials"},
+  {label: "Intro"},
+  {label: "Intros"},
+  {label: "Proof"},
+  {label: "Script"},
+  {label: "Universes"},
 ].map(snippetSentence);
 
 const hintSnippets = [
@@ -262,18 +268,7 @@ export function getTriggerCompletions(prefix: string) {
     .filter((trigger) => {
       return trigger.insertText.startsWith(prefix);
     })
-    .map((trigger) => {
-      const item = CompletionItem.create(trigger.label);
-      item.insertText = trigger.insertText;
-      item.insertTextFormat = InsertTextFormat.Snippet;
-      item.detail = trigger.detail;
-      if(trigger.completion)
-        item.command = {
-          command: "editor.action.triggerSuggest",
-          title: "Trigger Suggest"
-        }
-      return item;
-    }), true);
+    .map(snippetSentence), true);
   return triggerCompletions;
 }
 
