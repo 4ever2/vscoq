@@ -116,7 +116,8 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams) => {
       version = project.lookup(textDocumentPosition.textDocument.uri).getCoqVersion();
     } catch (error) {
     } finally {
-      if (!version) version = new SemVer("0.0.0");
+      if (!version)
+        version = new SemVer("0.0.0");
     }
     
     return snippets.getSnippetCompletions(prefix, version);

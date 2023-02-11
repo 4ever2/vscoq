@@ -1,6 +1,7 @@
 import {CompletionItem, CompletionItemKind, InsertTextFormat, CompletionList} from 'vscode-languageserver';
 import {SemVer} from 'semver';
 
+
 interface TriggerSnippet {
   label:string,
   insertText?: string,
@@ -233,7 +234,7 @@ const hintSnippets = [
 ].map(snippetSentence);
 
 
-function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] { 
+function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] {
   return [
   {label: "Set...", insertText: "Set ", completion: setOptionsSnippets, detail: "Set coqtop options"},
   {label: "Unset...", insertText: "Unset ", completion: optionsSnippets, detail: "Unset coqtop options"},
