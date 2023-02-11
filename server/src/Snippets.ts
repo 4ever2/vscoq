@@ -262,7 +262,7 @@ function getTriggerSnippet(str: string) : TriggerSnippet|null {
     return null;
 }
 
-function getTriggerCompletions(prefix: string, version : SemVer) {
+function getTriggerCompletions(prefix: string) {
   const triggerCompletions = CompletionList.create(
     triggerSnippets
     .filter((trigger) => {
@@ -284,5 +284,5 @@ export function getSnippetCompletions(prefix: string, version: SemVer): Completi
   if(trigger)
     return trigger.completion;
   else
-    return getTriggerCompletions(prefix.trim(), version);
+    return getTriggerCompletions(prefix.trim());
 }
