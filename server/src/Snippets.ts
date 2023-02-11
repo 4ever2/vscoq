@@ -233,7 +233,8 @@ const hintSnippets = [
 ].map(snippetSentence);
 
 
-const triggerSnippets : TriggerSnippet[] = [
+function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] { 
+  return [
   {label: "Set...", insertText: "Set ", completion: setOptionsSnippets, detail: "Set coqtop options"},
   {label: "Unset...", insertText: "Unset ", completion: optionsSnippets, detail: "Unset coqtop options"},
   {label: "Local Set...", insertText: "Local Set ", completion: setOptionsSnippets},
@@ -248,23 +249,29 @@ const triggerSnippets : TriggerSnippet[] = [
   {label: "Arguments", insertText: "Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
   {label: "Local Arguments", insertText: "Local Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
   {label: "Global Arguments", insertText: "Global Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
-];
+]};
 
-const triggerRegexp : RegExp = RegExp(`\\s*(?:${triggerSnippets.map((v) => "(" + escapeRegExp(v.insertText) + ")").join('|')})\\s*$`);
+function buildTriggerRegexp(version : SemVer) : RegExp {
+  const snippets = triggerSnippets.get(version.version);
+  return RegExp(`\\s*(?:${snippets.map((v) => "(" + escapeRegExp(v.insertText) + ")").join('|')})\\s*$`);
+}
 
-function getTriggerSnippet(str: string) : TriggerSnippet|null {
-  const match = triggerRegexp.exec(str);
+let triggerRegexp = new Map<string, RegExp>();
+let triggerSnippets = new Map<string, TriggerSnippet[]>();
+
+function getTriggerSnippet(str: string, version : SemVer) : TriggerSnippet|null {
+  const match = triggerRegexp.get(version.version).exec(str);
   if(match && match.length > 1) {
     match.shift();
     const triggerIdx = match.findIndex((v) => v!==undefined)
-    return triggerSnippets[triggerIdx];
+    return triggerSnippets.get(version.version)[triggerIdx];
   } else
     return null;
 }
 
-function getTriggerCompletions(prefix: string) {
+function getTriggerCompletions(prefix: string, version : SemVer) {
   const triggerCompletions = CompletionList.create(
-    triggerSnippets
+    triggerSnippets.get(version.version)
     .filter((trigger) => {
       return trigger.insertText.startsWith(prefix);
     })
@@ -280,9 +287,15 @@ function escapeRegExp(str : string) {
 export function getSnippetCompletions(prefix: string, version: SemVer): CompletionList | CompletionItem[] {
   if(prefix === "")
     return [];
-  const trigger = getTriggerSnippet(prefix);
+
+  if (!triggerSnippets.has(version.version)) {
+    triggerSnippets.set(version.version, buildTriggerSnippets(version));
+    triggerRegexp.set(version.version, buildTriggerRegexp(version));
+  }
+  
+  const trigger = getTriggerSnippet(prefix, version);
   if(trigger)
     return trigger.completion;
   else
-    return getTriggerCompletions(prefix.trim());
+    return getTriggerCompletions(prefix.trim(), version);
 }
