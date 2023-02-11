@@ -1,4 +1,4 @@
-import {CompletionItem, CompletionItemKind, InsertTextFormat, CompletionList} from 'vscode-languageserver';
+import {CompletionItem, CompletionItemKind, InsertTextFormat, CompletionList, CompletionItemTag} from 'vscode-languageserver';
 import {SemVer, satisfies} from 'semver';
 
 
@@ -34,8 +34,7 @@ function snippetSentence(version : SemVer, item: TriggerSnippet) : CompletionIte
   }
 
   if (version && item.deprecatredIn && satisfies(version, ">= " + item.deprecatredIn))
-    result.deprecated = true;
-
+    result.tags = [CompletionItemTag.Deprecated];
 
   return result;
 }
