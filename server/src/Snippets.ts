@@ -54,13 +54,14 @@ function checkVersion(version : SemVer, item : TriggerSnippet) : boolean {
 }
 
 
-const optionsSnippetsRaw : TriggerSnippet[] = [
+const optionsSnippets : TriggerSnippet[] = [
   {label: "Asymmetric Patterns"},
   {label: "Atomic Load"},
   {label: "Automatic Coercions Import"},
   {label: "Automatic Introduction"},
   {label: "Boolean Equality Schemes"},
   {label: "Bracketing Last Introduction Pattern"},
+  {label: "Bullet Behavior", insertText: "Bullet Behavior \"${1|None,Strict Subproofs|}\"."},
   {label: "Case Analysis Schemes"},
   {label: "Compat Notations"},
   {label: "Congruence Depth"},
@@ -74,6 +75,10 @@ const optionsSnippetsRaw : TriggerSnippet[] = [
   {label: "Debug Unification"},
   {label: "Decidable Equality Schemes"},
   {label: "Default Clearing Used Hypotheses"},
+  {label: "Default Goal Selector", insertText: "Default Goal Selector \"${1:selector}\"."},
+  {label: "Default Proof Mode", insertText: "Default Proof Mode \"${1|Classic,Noedit,Ltac2|}\"."},
+  {label: "Default Proof Using", insertText: "Default Proof Using \"${1:section_var_expr}\"."},
+  {label: "Default Timeout", insertText: "Default Timeout ${1:num}."},
   {label: "Dependent Propositions Elimination"},
   {label: "Discriminate Introduction"},
   {label: "Dump Bytecode"},
@@ -81,30 +86,38 @@ const optionsSnippetsRaw : TriggerSnippet[] = [
   {label: "Equality Scheme"},
   {label: "Extraction AutoInline"},
   {label: "Extraction Conservative Types"},
+  {label: "Extraction File Comment", insertText: "Extraction File Comment \"${1:string}\"."},
+  {label: "Extraction Flag", insertText: "Extraction Flag ${1:num}."},
   {label: "Extraction KeepSingleton"},
   {label: "Extraction Optimize"},
   {label: "Extraction SafeImplicits"},
   {label: "Extraction TypeExpand"},
+  {label: "Firstorder Depth", insertText: "Firstorder Depth ${1:num}."},
   {label: "Hide Obligations"},
+  {label: "Hyps Limit", insertText: "Hyps Limit ${1:num}."},
   {label: "Implicit Arguments"},
   {label: "Info Auto"},
   {label: "Info Eauto"},
+  {label: "Info Level", insertText: "Info Level ${1:num}."},
   {label: "Info Trivial"},
   {label: "Injection L2R Pattern Order"},
   {label: "Injection On Proofs"},
+  {label: "Inline Level", insertText: "Inline Level ${1:num}."},
   {label: "Intuition Iff Unfolding"},
   {label: "Intuition Negation Unfolding"},
   {label: "Kernel Term Sharing"},
   {label: "Keyed Unification"},
+  {label: "Loose Hint Behavior", insertText: "Loose Hint Behavior \"${1|Lax,Warn,Strict|}\"."},
   {label: "Maximal Implicit Insertion"},
   {label: "Nonrecursive Elimination Schemes"},
   {label: "Parsing Explicit"},
   {label: "Primitive Projections"},
   {label: "Printing All"},
   {label: "Printing Coercions"},
+  {label: "Printing Depth", insertText: "Printing Depth ${1:num}."},
   {label: "Printing Existential Instances"},
-  {label: "Printing Implicit"},
   {label: "Printing Implicit Defensive"},
+  {label: "Printing Implicit"},
   {label: "Printing Matching"},
   {label: "Printing Notations"},
   {label: "Printing Primitive Projection Compatibility"},
@@ -113,6 +126,7 @@ const optionsSnippetsRaw : TriggerSnippet[] = [
   {label: "Printing Records"},
   {label: "Printing Synth"},
   {label: "Printing Universes"},
+  {label: "Printing Width", insertText: "Printing Width ${1:num}."},
   {label: "Printing Wildcard"},
   {label: "Program Mode"},
   {label: "Proof Using Clear Unused"},
@@ -136,6 +150,7 @@ const optionsSnippetsRaw : TriggerSnippet[] = [
   {label: "Typeclass Resolution For Conversion"},
   {label: "Typeclasses Debug"},
   {label: "Typeclasses Dependency Order"},
+  {label: "Typeclasses Depth", insertText: "Typeclasses Depth ${1:num}."},
   {label: "Typeclasses Modulo Eta"},
   {label: "Typeclasses Strict Resolution"},
   {label: "Typeclasses Unique Instances"},
@@ -144,44 +159,6 @@ const optionsSnippetsRaw : TriggerSnippet[] = [
   {label: "Universe Minimization ToSet"},
   {label: "Universe Polymorphism"},
   {label: "Verbose Compat Notations"},
-];
-
-const optionsSnippets : TriggerSnippet[] = [
-  ...optionsSnippetsRaw,
-  {label: "Bullet Behavior"},
-  {label: "Default Goal Selector"},
-  {label: "Default Proof Mode"},
-  {label: "Default Proof Using"},
-  {label: "Default Timeout"},
-  {label: "Extraction File Comment"},
-  {label: "Extraction Flag"},
-  {label: "Firstorder Depth"},
-  {label: "Hyps Limit"},
-  {label: "Info Level"},
-  {label: "Inline Level"},
-  {label: "Loose Hint Behavior"},
-  {label: "Printing Depth"},
-  {label: "Printing Width"},
-  {label: "Typeclasses Depth"},
-];
-
-const setOptionsSnippets : TriggerSnippet[] = [
-  ...optionsSnippetsRaw,
-  {label: "Bullet Behavior", insertText: "Bullet Behavior \"${1|None,Strict Subproofs|}\"."},
-  {label: "Default Goal Selector", insertText: "Default Goal Selector \"${1:selector}\"."},
-  {label: "Default Proof Mode", insertText: "Default Proof Mode \"${1|Classic,Noedit,Ltac2|}\"."},
-  {label: "Default Proof Using", insertText: "Default Proof Using \"${1:section_var_expr}\"."},
-  {label: "Default Timeout", insertText: "Default Timeout ${1:num}."},
-  {label: "Extraction File Comment", insertText: "Extraction File Comment \"${1:string}\"."},
-  {label: "Extraction Flag", insertText: "Extraction Flag ${1:num}."},
-  {label: "Firstorder Depth", insertText: "Firstorder Depth ${1:num}."},
-  {label: "Hyps Limit", insertText: "Hyps Limit ${1:num}."},
-  {label: "Info Level", insertText: "Info Level ${1:num}."},
-  {label: "Inline Level", insertText: "Inline Level ${1:num}."},
-  {label: "Loose Hint Behavior", insertText: "Loose Hint Behavior \"${1|Lax,Warn,Strict|}\"."},
-  {label: "Printing Depth", insertText: "Printing Depth ${1:num}."},
-  {label: "Printing Width", insertText: "Printing Width ${1:num}."},
-  {label: "Typeclasses Depth", insertText: "Typeclasses Depth ${1:num}."},
 ];
 
 const printSnippets : TriggerSnippet[] = [
@@ -255,8 +232,9 @@ const hintSnippets : TriggerSnippet[] = [
 
 
 function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] {
-  const _setOptionsSnippets = setOptionsSnippets
+  const _rawOptionsSnippets = optionsSnippets
     .filter((item) => checkVersion(version, item))
+    .map((item) => {return {...item, insertText: undefined}})
     .map((item) => snippetSentence(version, item));
   const _optionsSnippets = optionsSnippets
     .filter((item) => checkVersion(version, item))
@@ -272,11 +250,11 @@ function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] {
     .map((item) => snippetSentence(version, item));
   
   return [
-  {label: "Set...", insertText: "Set ", completion: _setOptionsSnippets, detail: "Set coqtop options"},
-  {label: "Unset...", insertText: "Unset ", completion: _optionsSnippets, detail: "Unset coqtop options"},
-  {label: "Local Set...", insertText: "Local Set ", completion: _setOptionsSnippets},
-  {label: "Global Unset...", insertText: "Global Unset ", completion: _optionsSnippets},
-  {label: "Test...", insertText: "Test ", completion: _optionsSnippets},
+  {label: "Set...", insertText: "Set ", completion: _optionsSnippets, detail: "Set coqtop options"},
+  {label: "Unset...", insertText: "Unset ", completion: _rawOptionsSnippets, detail: "Unset coqtop options"},
+  {label: "Local Set...", insertText: "Local Set ", completion: _optionsSnippets},
+  {label: "Global Unset...", insertText: "Global Unset ", completion: _rawOptionsSnippets},
+  {label: "Test...", insertText: "Test ", completion: _rawOptionsSnippets},
   {label: "Print...", insertText: "Print ", completion: _printSnippets},
   {label: "Show...", insertText: "Show ", completion: _showSnippets},
   {label: "Hint...", insertText: "Hint ", completion: _hintSnippets},
