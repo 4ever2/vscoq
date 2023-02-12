@@ -161,6 +161,16 @@ const optionsSnippets : TriggerSnippet[] = [
   {label: "Verbose Compat Notations"},
 ];
 
+const rawTableSnippets : TriggerSnippet[] = [
+  {label: "Keep Equalities"},
+  {label: "Printing Coercion"},
+  {label: "Printing Constructor"},
+  {label: "Printing If"},
+  {label: "Printing Let"},
+  {label: "Printing Record"},
+  {label: "Search Blacklist"},
+];
+
 const printSnippets : TriggerSnippet[] = [
   {label: "All"},
   {label: "All Dependencies", insertText: "All Dependencies ${1:qualid}."},
@@ -239,6 +249,13 @@ function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] {
   const _optionsSnippets = optionsSnippets
     .filter((item) => checkVersion(version, item))
     .map((item) => snippetSentence(version, item));
+  const _rawTableSnippets = rawTableSnippets
+    .filter((item) => checkVersion(version, item))
+    .map((item) => snippetSentence(version, item));
+  const _tableSnippets = rawTableSnippets
+    .filter((item) => checkVersion(version, item))
+    .map((item) => {return {...item, insertText: item.label + " ${1:qualid}."}})
+    .map((item) => snippetSentence(version, item));
   const _printSnippets = printSnippets
     .filter((item) => checkVersion(version, item))
     .map((item) => snippetSentence(version, item));
@@ -254,7 +271,9 @@ function buildTriggerSnippets(version : SemVer) : TriggerSnippet[] {
   {label: "Unset...", insertText: "Unset ", completion: _rawOptionsSnippets, detail: "Unset coqtop options"},
   {label: "Local Set...", insertText: "Local Set ", completion: _optionsSnippets},
   {label: "Global Unset...", insertText: "Global Unset ", completion: _rawOptionsSnippets},
-  {label: "Test...", insertText: "Test ", completion: _rawOptionsSnippets},
+  {label: "Test...", insertText: "Test ", completion: [..._rawOptionsSnippets, ..._rawTableSnippets]},
+  {label: "Add...", insertText: "Add ", completion: _tableSnippets},
+  {label: "Remove...", insertText: "Remove ", completion: _tableSnippets},
   {label: "Print...", insertText: "Print ", completion: _printSnippets},
   {label: "Show...", insertText: "Show ", completion: _showSnippets},
   {label: "Hint...", insertText: "Hint ", completion: _hintSnippets},
