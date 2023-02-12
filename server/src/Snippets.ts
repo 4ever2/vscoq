@@ -41,6 +41,9 @@ function snippetSentence(version : SemVer, item: TriggerSnippet) : CompletionIte
 }
 
 function checkVersion(version : SemVer, item : TriggerSnippet) : boolean {
+  if (version.version == "0.0.0")
+    return true;
+
   if (item.addedIn && satisfies(version, "< " + item.addedIn))
     return false;
 
