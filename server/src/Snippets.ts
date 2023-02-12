@@ -33,8 +33,8 @@ function snippetSentence(version : SemVer, item: TriggerSnippet) : CompletionIte
     };
   }
 
-  //if (item.deprecatredIn && satisfies(version, ">= " + item.deprecatredIn))
-  result.deprecated = true;
+  if (item.deprecatredIn && satisfies(version, ">= " + item.deprecatredIn))
+    result.deprecated = true;
 
 
   return result;
