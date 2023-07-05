@@ -5,7 +5,7 @@ const STM_FOCUS_IMAGE = "client/images/stm-focus.svg";
 const STM_FOCUS_IMAGE_BEFORE = "client/images/stm-focus-before.svg";
 const STM_FOCUS_IMAGE_PROOF_VIEW = "client/images/stm-focus-proof-view.svg";
 
-interface DecorationsInternal extends Decorations {
+interface DecorationsInternal {
   parsing: vscode.TextEditorDecorationType;
   processing: vscode.TextEditorDecorationType;
   stateError: vscode.TextEditorDecorationType;
