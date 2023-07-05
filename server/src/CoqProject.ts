@@ -50,8 +50,8 @@ export class CoqProject {
     return doc;
   }
   
-  public createCoqTopInstance(scriptFile: string) : CoqTop {
-    return new CoqTop8(this.settings.coqtop, scriptFile, this.getCoqProjectRoot(), this.console);
+  public createCoqTopInstance(scriptUri: string) : CoqTop {
+    return new CoqTop8(this.settings.coqtop, scriptUri, this.getCoqProjectRoot(), this.console);
   }
 
   /** reset the ready promise */
