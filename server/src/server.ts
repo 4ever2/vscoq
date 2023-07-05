@@ -109,14 +109,8 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams) => {
   try {
     const prefix = project.lookup(textDocumentPosition.textDocument.uri)
       .getSentencePrefixTextAt(textDocumentPosition.position);
-
-    if(prefix === "")
-      return [];
-    const trigger = snippets.getTriggerSnippet(prefix);
-    if(trigger)
-      return trigger.completion;
-    else
-      return snippets.getTriggerCompletions(prefix.trim());
+    const version = project.lookup(textDocumentPosition.textDocument.uri).getCoqVersion();
+    return snippets.getSnippetCompletions(prefix, version);
   } catch(err) {
     return [];
   }

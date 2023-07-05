@@ -324,6 +324,10 @@ export class CoqStateMachine {
     return this.version;
   }
 
+  public getCoqVersion() {
+    return this.coqtop.getVersion();
+  }
+
 
   /**
    * Adds the next command

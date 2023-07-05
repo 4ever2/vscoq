@@ -252,7 +252,7 @@ const triggerSnippets : TriggerSnippet[] = [
 
 const triggerRegexp : RegExp = RegExp(`\\s*(?:${triggerSnippets.map((v) => "(" + escapeRegExp(v.insertText) + ")").join('|')})\\s*$`);
 
-export function getTriggerSnippet(str: string) : TriggerSnippet|null {
+function getTriggerSnippet(str: string) : TriggerSnippet|null {
   const match = triggerRegexp.exec(str);
   if(match && match.length > 1) {
     match.shift();
@@ -262,7 +262,7 @@ export function getTriggerSnippet(str: string) : TriggerSnippet|null {
     return null;
 }
 
-export function getTriggerCompletions(prefix: string) {
+function getTriggerCompletions(prefix: string, version : SemVer) {
   const triggerCompletions = CompletionList.create(
     triggerSnippets
     .filter((trigger) => {
@@ -275,4 +275,14 @@ export function getTriggerCompletions(prefix: string) {
 /** see: http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex */
 function escapeRegExp(str : string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+export function getSnippetCompletions(prefix: string, version: SemVer): CompletionList | CompletionItem[] {
+  if(prefix === "")
+    return [];
+  const trigger = getTriggerSnippet(prefix);
+  if(trigger)
+    return trigger.completion;
+  else
+    return getTriggerCompletions(prefix.trim(), version);
 }
