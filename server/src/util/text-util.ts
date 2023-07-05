@@ -1,5 +1,5 @@
 'use strict';
-import {Position, Range} from 'vscode-languageserver';
+import {Position, Range, TextDocumentContentChangeEvent} from 'vscode-languageserver';
 
 // 'sticky' flag is not yet supported :()
 const lineEndingRE = /([^\r\n]*)(\r\n|\r|\n)?/;
@@ -349,4 +349,26 @@ export function positionTranslateRelative(absPos: Position, relPos: Position) {
  */
 export function rangeTranslateRelative(absPos: Position, relRange: Range) {
   return Range.create(positionTranslateRelative(absPos, relRange.start), positionTranslateRelative(absPos, relRange.end))
+}
+
+/** Returns the range of the document that changed if the event contains a range.
+ *  Throws an exception if the event does not contain a range.
+*/
+export function getChangeEventRange(event: TextDocumentContentChangeEvent) : Range {
+  if ("range" in event)
+    return event.range;
+
+  //TODO: return full range of the document if possible
+  throw "No range property in TextDocumentContentChangeEvent"
+}
+
+/** Returns the length of the range that got replaced if the event contains a range.
+ *  Throws an exception if the event does not contain a range.
+*/
+export function getCHangeEventRangeLength(event: TextDocumentContentChangeEvent) : number {
+  if ("rangeLength" in event)
+    return event.rangeLength;
+
+  //TODO: return full length of the document if possible
+  throw "No rangeLength property in TextDocumentContentChangeEvent"
 }

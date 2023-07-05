@@ -82,7 +82,9 @@ export class CoqDocument implements TextDocument {
     // sort the edits such that later edits are processed first
     let sortedChanges =
       changes.slice().sort((change1,change2) =>
-        textUtil.positionIsAfter(change1.range.start, change2.range.start) ? -1 : 1)
+        textUtil.positionIsAfter(
+          textUtil.getChangeEventRange(change1).start,
+          textUtil.getChangeEventRange(change2).start) ? -1 : 1)
 
     this.document.applyTextChanges(newVersion, changes);
 
@@ -106,14 +108,14 @@ export class CoqDocument implements TextDocument {
         console.error("Document text differs from parsed-sentences text");
         console.error("On applied changes: ");
         changes.forEach(change => {
-          console.error("  > " + textUtil.rangeToString(change.range) + " -> " + change.text);
+          console.error("  > " + textUtil.rangeToString(textUtil.getChangeEventRange(change)) + " -> " + change.text);
         })
       }
       if(!documentText.startsWith(stmText) && this.stm.getDocumentVersion() === newVersion) {
         console.error("Document text differs from STM text");
         console.error("On applied changes: ");
         changes.forEach(change => {
-          console.error("  > " + textUtil.rangeToString(change.range) + " -> " + change.text);
+          console.error("  > " + textUtil.rangeToString(textUtil.getChangeEventRange(change)) + " -> " + change.text);
         })
       }
     }

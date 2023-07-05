@@ -222,27 +222,28 @@ export class State {
     change: for(let idx = 0; idx < changes.length; ++ idx) {
       const change = changes[idx];
       const delta = deltas[idx];
-      switch(parser.sentenceRangeContainment(newRange,change.range)) {
+      const changeRange = textUtil.getChangeEventRange(change);
+      switch(parser.sentenceRangeContainment(newRange,changeRange)) {
         case parser.SentenceRangeContainment.Before:
           newRange = textUtil.rangeDeltaTranslate(newRange,delta);
           var translate = this.translateDiagnostic;
           this.diagnostics.forEach(function(d) { translate(d,delta); });
           continue change;
         case parser.SentenceRangeContainment.After:
-          if(textUtil.positionIsEqual(this.textRange.end, change.range.start))
+          if(textUtil.positionIsEqual(this.textRange.end, changeRange.start))
             touchesEnd = true;
           continue change; // ignore this change
         case parser.SentenceRangeContainment.Crosses:
           return false; // give up; this sentence is toast (invalidated; needs to be cancelled)
         case parser.SentenceRangeContainment.Contains:
           // the change falls within this sentence
-          const beginOffset = textUtil.relativeOffsetAtAbsolutePosition(newText, newRange.start, change.range.start);
+          const beginOffset = textUtil.relativeOffsetAtAbsolutePosition(newText, newRange.start, changeRange.start);
           if(beginOffset == -1)
             continue change;
           newText =
             newText.substring(0,beginOffset)
             + change.text
-            + newText.substring(beginOffset+change.rangeLength);
+            + newText.substring(beginOffset+textUtil.getCHangeEventRangeLength(change));
           // newRange = Range.create(newRange.start,textUtil.positionRangeDeltaTranslateEnd(newRange.end,delta));
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
           newRange.end = textUtil.positionRangeDeltaTranslateEnd(newRange.end,delta);

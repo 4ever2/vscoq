@@ -226,7 +226,8 @@ export class CoqStateMachine {
   private applyChangesToSentences(sortedChanges: TextDocumentContentChangeEvent[], updatedDocumentText: string) : State[] {
     const invalidatedSentences : State[] = [];
     try {
-      const deltas = sortedChanges.map((c) => textUtil.toRangeDelta(c.range,c.text))
+      const deltas = sortedChanges.map((c) => 
+        textUtil.toRangeDelta(textUtil.getChangeEventRange(c),c.text))
 
       if(this.currentError && this.currentError.range) {
         for(let idx = 0; idx < sortedChanges.length; ++idx) {
