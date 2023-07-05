@@ -54,6 +54,16 @@
         "language": "coq",
         "scopeName": "source.coq",
         "path": "./client/syntaxes/coq.tmLanguage"
+      },
+      {
+        "scopeName": "markdown.coq.codeblock",
+        "path": "./client/syntaxes/coq-markdown.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.coq": "coq"
+        }
       }
     ],
     "configuration": {
