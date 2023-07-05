@@ -36,13 +36,14 @@ export class SentenceCollection implements vscode.TextDocument {
 
   private applyChangesToDocumentText(sortedChanges: vscode.TextDocumentContentChangeEvent[]) : void {
     for(const change of sortedChanges) {
-      const beginOffset = textUtil.offsetAt(this.documentText, change.range.start);
+      const changeRange = textUtil.getChangeEventRange(change);
+      const beginOffset = textUtil.offsetAt(this.documentText, changeRange.start);
       this.documentText =
         this.documentText.substring(0,beginOffset)
         + change.text
-        + this.documentText.substring(beginOffset+change.rangeLength);
+        + this.documentText.substring(beginOffset+textUtil.getCHangeEventRangeLength(change));
 
-      const delta = textUtil.toRangeDelta(change.range, change.text);
+      const delta = textUtil.toRangeDelta(changeRange, change.text);
       this.lineCount += delta.linesDelta;
     }
   }
@@ -157,20 +158,22 @@ export class SentenceCollection implements vscode.TextDocument {
     // sort the edits such that later edits are processed first
     let sortedChanges =
       changes.slice().sort((change1,change2) =>
-        textUtil.positionIsAfter(change1.range.start, change2.range.start) ? -1 : 1)
+        textUtil.positionIsAfter(
+          textUtil.getChangeEventRange(change1).start,
+          textUtil.getChangeEventRange(change2).start) ? -1 : 1)
 
     this.applyChangesToDocumentText(changes);
 
     const invalidatedSentences : number[] = [];
 
     for(let change of changes) {
-      if(textUtil.positionIsAfterOrEqual(change.range.end, this.getLastPosition())) {
+      if(textUtil.positionIsAfterOrEqual(textUtil.getChangeEventRange(change).end, this.getLastPosition())) {
         invalidatedSentences.push(this.sentences.length);
         break;
       }
     }
 
-    const deltas = sortedChanges.map((c) => textUtil.toRangeDelta(c.range,c.text))
+    const deltas = sortedChanges.map((c) => textUtil.toRangeDelta(textUtil.getChangeEventRange(c),c.text))
     for(let sentIdx = this.sentences.length-1; sentIdx >= 0; --sentIdx) {
       const sent = this.sentences[sentIdx];
 

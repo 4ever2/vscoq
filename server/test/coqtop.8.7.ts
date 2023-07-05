@@ -52,9 +52,6 @@ describe("Coqtop 8.6", function() {
     info: () => {},
     warn: () => {},
     error: () => {},
-    attach: () => {},
-    initialize: () => {},
-    fillServerCapabilities: () => {},
     connection: undefined,
   };
   let coq: coqtop.CoqTop;

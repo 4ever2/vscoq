@@ -180,15 +180,16 @@ export class Sentence {
     change: for(let idx = 0; idx < changes.length; ++ idx) {
       const change = changes[idx];
       const delta = deltas[idx];
-      switch(parser.sentenceRangeContainment(newRange,change.range)) {
+      const changeRange = textUtil.getChangeEventRange(change);
+      switch(parser.sentenceRangeContainment(newRange,changeRange)) {
         case parser.SentenceRangeContainment.Before:
-          this.documentOffset+= change.text.length - change.rangeLength;
+          this.documentOffset+= change.text.length - textUtil.getCHangeEventRangeLength(change);
           newRange = textUtil.rangeDeltaTranslate(newRange,delta);
           if(newErrorRange)
             newErrorRange = textUtil.rangeDeltaTranslate(newErrorRange,delta);
           continue change;
         case parser.SentenceRangeContainment.After:
-          if(textUtil.positionIsEqual(newRange.end, change.range.start))
+          if(textUtil.positionIsEqual(newRange.end, changeRange.start))
             touchesEnd = true;
           continue change; // ignore this change
         case parser.SentenceRangeContainment.Crosses:
@@ -196,13 +197,13 @@ export class Sentence {
           return false; // give up; this sentence is toast (invalidated; needs to be cancelled)
         case parser.SentenceRangeContainment.Contains:
           // the change falls within this sentence
-          const beginOffset = textUtil.relativeOffsetAtAbsolutePosition(newText, newRange.start, change.range.start);
+          const beginOffset = textUtil.relativeOffsetAtAbsolutePosition(newText, newRange.start, changeRange.start);
           if(beginOffset == -1)
             continue change;
           newText =
             newText.substring(0,beginOffset)
             + change.text
-            + newText.substring(beginOffset+change.rangeLength);
+            + newText.substring(beginOffset+textUtil.getCHangeEventRangeLength(change));
           newRange.end = textUtil.positionRangeDeltaTranslateEnd(newRange.end,delta);
       } // switch
     } // change: for
