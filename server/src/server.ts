@@ -8,7 +8,7 @@ import {
 	CompletionItem, ServerCapabilities, CodeActionParams, Command, CodeLens
 } from 'vscode-languageserver';
 import * as vscodeLangServer from 'vscode-languageserver';
- 
+import * as snippets from './Snippets';
 import * as coqproto from './protocol';
 import {Settings} from './protocol';
 import {CoqProject} from './CoqProject';
@@ -105,11 +105,27 @@ process.on('SIGBREAK', function () {
 });
 
 // This handler provides the initial list of the completion items.
-connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+connection.onCompletion((textDocumentPosition: TextDocumentPositionParams) => {
+  try {
+    const prefix = project.lookup(textDocumentPosition.textDocument.uri)
+      .getSentencePrefixTextAt(textDocumentPosition.position);
+
+    if(prefix === "")
+      return [];
+    const trigger = snippets.getTriggerSnippet(prefix);
+    if(trigger)
+      return trigger.completion;
+    else
+      return snippets.getTriggerCompletions(prefix.trim());
+  } catch(err) {
+    return [];
+  }
+
+
 	// The pass parameter contains the position of the text document in 
 	// which code complete got requested. For the example we ignore this
 	// info and always provide the same completion items.
-	return [];
+	//return [];
 	// 	{
 	// 		label: 'idtac',
 	// 		kind: CompletionItemKind.Snippet,

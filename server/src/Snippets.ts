@@ -1,26 +1,28 @@
-import * as vscode from 'vscode';
-import {CoqLanguageServer} from './CoqLanguageServer';
+import {CompletionItem, CompletionItemKind, InsertTextFormat, CompletionList} from 'vscode-languageserver';
 
 
 interface TriggerSnippet {
   label:string,
   insertText: string,
-  completion?: vscode.CompletionItem[],
+  completion?: CompletionItem[],
   detail?: string,
 }
 
 type Snippet = string | {label: string, insertText: string, documentation?: string};
 
 
-function snippetSentence(item: Snippet) : vscode.CompletionItem {
+function snippetSentence(item: Snippet) : CompletionItem {
   if(typeof item === 'string') { 
-    const result = new vscode.CompletionItem(item,vscode.CompletionItemKind.Snippet);
+    const result = CompletionItem.create(item);
+    result.kind = CompletionItemKind.Snippet
     result.insertText = item + ".";
     return result;
   } else {
-    const result = new vscode.CompletionItem(item.label,vscode.CompletionItemKind.Snippet);
-    result.insertText = new vscode.SnippetString(item.insertText);
-    result.documentation = item.documentation as string; // vscode needs to provide stricter types in its API...
+    const result = CompletionItem.create(item.label);
+    result.kind = CompletionItemKind.Snippet
+    result.insertText = item.insertText;
+    result.insertTextFormat = InsertTextFormat.Snippet;
+    result.documentation = item.documentation;
     return result;
   }
 }
@@ -242,9 +244,9 @@ const triggerSnippets : TriggerSnippet[] = [
   {label: "Global Arguments", insertText: "Global Arguments ${1:qualid} ${2:possibly_bracketed_idents …}."},
   ];
 
-let triggerRegexp : RegExp;
+const triggerRegexp : RegExp = RegExp(`\\s*(?:${triggerSnippets.map((v) => "(" + escapeRegExp(v.insertText) + ")").join('|')})\\s*$`);
 
-function getTriggerSnippet(str: string) : TriggerSnippet|null {
+export function getTriggerSnippet(str: string) : TriggerSnippet|null {
   const match = triggerRegexp.exec(str);
   if(match && match.length > 1) {
     match.shift();
@@ -254,93 +256,28 @@ function getTriggerSnippet(str: string) : TriggerSnippet|null {
     return null;
 }
 
-function getTriggerCompletions(prefix: string) {
-  const triggerCompletions = new vscode.CompletionList(
+export function getTriggerCompletions(prefix: string) {
+  const triggerCompletions = CompletionList.create(
     triggerSnippets
     .filter((trigger) => {
       return trigger.insertText.startsWith(prefix);
     })
     .map((trigger) => {
-      const item = new vscode.CompletionItem(trigger.label);
-      item.insertText = new vscode.SnippetString(trigger.insertText);
-      item.detail = trigger.detail as string; // vscode needs to update its API
+      const item = CompletionItem.create(trigger.label);
+      item.insertText = trigger.insertText;
+      item.insertTextFormat = InsertTextFormat.Snippet;
+      item.detail = trigger.detail;
       if(trigger.completion)
         item.command = {
           command: "editor.action.triggerSuggest",
-          title: "Trigger Suggest",
-          arguments: [vscode.window.activeTextEditor]
+          title: "Trigger Suggest"
         }
       return item;
     }), true);
   return triggerCompletions;
 }
 
-export function setupSnippets(subscriptions: vscode.Disposable[]) {
-  triggerRegexp = RegExp(`\\s*(?:${triggerSnippets.map((v) => "(" + escapeRegExp(v.insertText) + ")").join('|')})\\s*$`);
-
-  const triggerTerminators = triggerSnippets.map((trigger) => trigger.insertText[trigger.insertText.length-1]);
-
-  // Set-Options snippets are registered manually because coq.json snippets
-  // don't currently provide a nice interaction.
-  subscriptions.push(vscode.languages.registerCompletionItemProvider('coq', {
-    provideCompletionItems: async (doc, pos, token) => {
-      try {
-        const prefix = await (await CoqLanguageServer.getInstance().getPrefixText(doc.uri.toString(),pos,token)).trimStart();        
-
-        if(prefix === "")
-          return [];
-        const trigger = getTriggerSnippet(prefix);
-        if(trigger)
-          return trigger.completion;
-        else
-          return getTriggerCompletions(prefix.trim());
-      } catch(err) {
-        return [];
-      }
-    }
-  }, ...triggerTerminators));
-
-  // const qedCompletion = new vscode.CompletionItem("Qed.", vscode.CompletionItemKind.Snippet);
-  // const definedCompletion = new vscode.CompletionItem("Defined.", vscode.CompletionItemKind.Snippet);
-  // const admittedCompletion = new vscode.CompletionItem("Admitted.", vscode.CompletionItemKind.Snippet);
-  // const outdentCompletions = [qedCompletion, definedCompletion, admittedCompletion];
-  // subscriptions.push(vscode.languages.registerCompletionItemProvider('coq', {
-  //   provideCompletionItems: async (doc, pos, token) => {
-  //     try {
-  //       const line = doc.lineAt(pos.line);
-
-  //       // outdent the text
-  //       const indentSize = getIndentSize(doc);
-  //       const insertLine = {command: "editor.action.insertLineAfter", arguments: [], title: "insert line"};
-  //       const outdentRange = new vscode.Range(line.lineNumber, Math.max(0,line.firstNonWhitespaceCharacterIndex-indentSize), line.lineNumber, line.firstNonWhitespaceCharacterIndex);
-  //       const outdent = new vscode.TextEdit(outdentRange, '');
-  //       outdentCompletions.forEach(o => {
-  //         o.additionalTextEdits = [outdent];
-  //         o.command = insertLine;
-  //       });
-  //       return outdentCompletions;
-  //     } catch(err) {
-  //       return [];
-  //     }
-  //   }
-  // }));
-
-
-}
-
-// function getIndentSize(doc: vscode.TextDocument) : number {
-//   let editor = vscode.window.activeTextEditor;
-//   if(editor && editor.document.uri === doc.uri)
-//     return editor.options.insertSpaces ? +editor.options.tabSize : 1;
-//   editor = vscode.window.visibleTextEditors.find((e) => e.document.uri === doc.uri);
-//   if(editor && editor.document.uri === doc.uri)
-//     return editor.options.insertSpaces ? +editor.options.tabSize : 1;
-//   else
-//     return 0;
-// }
-
 /** see: http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex */
 function escapeRegExp(str : string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
-

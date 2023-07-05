@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 import { TextEditor, TextEditorEdit, ExtensionContext } from 'vscode';
 import * as proto from './protocol';
 import { CoqProject, CoqDocument } from './CoqProject';
-import * as snippets from './Snippets';
 import { initializeDecorations } from './Decorations';
 import * as editorAssist from './EditorAssist';
 import * as psm from './prettify-symbols-mode';
@@ -111,7 +110,6 @@ export function activate(context: ExtensionContext) {
   regCmd('display.toggle', () => project.setDisplayOption());
 
   context.subscriptions.push(editorAssist.reload());
-  snippets.setupSnippets(context.subscriptions);
   context.subscriptions.push(psm.load());
 
   context.subscriptions.push(vscode.languages.registerHoverProvider("coq", {
