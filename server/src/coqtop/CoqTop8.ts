@@ -4,6 +4,7 @@ import * as net from 'net';
 import * as path from 'path';
 import * as vscode from 'vscode-languageserver';
 import * as semver from 'semver';
+import Uri from 'vscode-uri'
 
 import {ChildProcess, spawn} from 'child_process';
 import {CoqTopSettings} from '../protocol';
@@ -24,15 +25,15 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   private coqtopProc : ChildProcess = null;
   private readyToListen: Thenable<void>[];
   private settings : CoqTopSettings;
-  private scriptFile : string;
+  private scriptUri : string;
   private projectRoot: string;
   private coqtopVersion : semver.SemVer;
   private sockets : net.Socket[] = [];
 
-  constructor(settings : CoqTopSettings, scriptFile: string, projectRoot: string, console: vscode.RemoteConsole) {
+  constructor(settings : CoqTopSettings, scriptUri: string, projectRoot: string, console: vscode.RemoteConsole) {
     super(console);
     this.settings = settings;
-    this.scriptFile = scriptFile;
+    this.scriptUri = scriptUri;
     this.projectRoot = projectRoot;
     this.mainChannelServer = net.createServer();
     this.mainChannelServer2 = net.createServer();
@@ -210,10 +211,19 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     return path.join(this.settings.binPath.trim(), this.settings.coqidetopExe);
   }
 
+  private get scriptPath() {
+    let uri = Uri.parse(this.scriptUri);
+    if (uri.scheme == "file")
+      return uri.fsPath;
+    else
+      return undefined
+  }
+
   private spawnCoqTop(mainAddr : string, controlAddr: string) {
     var topfile : string[] = [];
-    if (semver.satisfies(this.coqtopVersion, ">= 8.10")) {
-      topfile = ['-topfile', this.scriptFile];
+    var scriptPath = this.scriptPath;
+    if (semver.satisfies(this.coqtopVersion, ">= 8.10") && scriptPath !== undefined) {
+      topfile = ['-topfile', scriptPath];
     }
     if (semver.satisfies(this.coqtopVersion, ">= 8.9")) {
       var coqtopModule = this.coqidetopBin;
@@ -222,8 +232,10 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
         // '/D /C', this.coqPath + '/coqtop.exe',
         '-main-channel', mainAddr,
         '-control-channel', controlAddr,
-        '-async-proofs', 'on'
-        ].concat(this.settings.args).concat(topfile);
+        '-async-proofs', 'on',
+        ...this.settings.args,
+        ...topfile
+      ];
     } else {
       var coqtopModule = this.coqtopBin;
       // var coqtopModule = 'cmd';
@@ -232,8 +244,9 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
         '-main-channel', mainAddr,
         '-control-channel', controlAddr,
         '-ideslave',
-        '-async-proofs', 'on'
-        ].concat(this.settings.args);
+        '-async-proofs', 'on',
+        ...this.settings.args
+      ];
     }
     this.console.log('exec: ' + coqtopModule + ' ' + args.join(' '));
     return spawn(coqtopModule, args, {detached: false, cwd: this.projectRoot});
