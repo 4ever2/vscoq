@@ -886,6 +886,7 @@
     "vscode-jsonrpc": "^5.0.0",
     "vscode-languageclient": "^6.1.1",
     "vscode-languageserver": "^6.1.1",
+    "vscode-uri": "3.0.7",
     "ws": "^7.4.6"
   }
 }

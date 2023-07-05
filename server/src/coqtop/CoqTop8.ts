@@ -4,7 +4,7 @@ import * as net from 'net';
 import * as path from 'path';
 import * as vscode from 'vscode-languageserver';
 import * as semver from 'semver';
-import Uri from 'vscode-uri'
+import {URI} from 'vscode-uri'
 
 import {ChildProcess, spawn} from 'child_process';
 import {CoqTopSettings} from '../protocol';
@@ -212,7 +212,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   }
 
   private get scriptPath() {
-    let uri = Uri.parse(this.scriptUri);
+    let uri = URI.parse(this.scriptUri);
     if (uri.scheme == "file")
       return uri.fsPath;
     else
