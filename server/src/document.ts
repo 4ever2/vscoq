@@ -119,6 +119,10 @@ export class CoqDocument implements TextDocument {
     }
   }
 
+  public getCoqVersion() {
+    return this.stm.getCoqVersion();
+  }
+
   public getSentences() : SentenceCollection {
     return this.document;
   }
