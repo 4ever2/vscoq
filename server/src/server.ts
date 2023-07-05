@@ -13,7 +13,6 @@ import * as coqproto from './protocol';
 import {Settings} from './protocol';
 import {CoqProject} from './CoqProject';
 import { RouteId } from './coqtop/coq-proto';
-import { SemVer } from 'semver';
 
 // Create a connection for the server. The connection uses 
 // stdin / stdout for message passing
@@ -111,14 +110,7 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams) => {
     const prefix = project.lookup(textDocumentPosition.textDocument.uri)
       .getSentencePrefixTextAt(textDocumentPosition.position);
 
-    let version : SemVer;
-    try {
-      version = project.lookup(textDocumentPosition.textDocument.uri).getCoqVersion();
-    } catch (error) {
-    } finally {
-      if (!version)
-        version = new SemVer("0.0.0");
-    }
+    const version = project.lookup(textDocumentPosition.textDocument.uri).getCoqVersion();
     
     return snippets.getSnippetCompletions(prefix, version);
   } catch(err) {
