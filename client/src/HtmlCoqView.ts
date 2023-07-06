@@ -187,6 +187,8 @@ export class HtmlCoqView implements view.CoqView {
         this.handleClientMessage(message)
       );
       await this.updateSettings();
+    } else {
+      this.panel.reveal(undefined, true);
     }
   }
 
