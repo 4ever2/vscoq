@@ -370,7 +370,8 @@
       {
         "command": "extension.coq.proofView.open",
         "title": "Open proof view",
-        "category": "Coq"
+        "category": "Coq",
+        "icon": "$(open-preview)"
       },
       {
         "command": "extension.coq.proofView.viewStateAt",
