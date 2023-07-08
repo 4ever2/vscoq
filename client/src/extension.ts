@@ -98,6 +98,7 @@ export function activate(context: ExtensionContext) {
   regTCmd('query.prompt.print', queryPrint);
   regTCmd('proofView.viewStateAt', viewProofStateAt);
   regTCmd('proofView.open', viewCurrentProofState);
+  regTCmd('refman.open', viewDoc);
   regProjectCmd('ltacProf.getResults', project.ltacProfGetResults);
   regCmd('display.toggle.implicitArguments', () => project.setDisplayOption(proto.DisplayOption.ImplicitArguments, proto.SetDisplayOption.Toggle));
   regCmd('display.toggle.coercions', () => project.setDisplayOption(proto.DisplayOption.Coercions, proto.SetDisplayOption.Toggle));
@@ -234,5 +235,11 @@ function viewProofStateAt(editor: TextEditor, edit: TextEditorEdit) {
 function viewCurrentProofState(editor: TextEditor, edit: TextEditorEdit) {
   return withDocAsync(editor, async (doc) =>
     doc.viewGoalState(editor)
+  )
+}
+
+function viewDoc(editor: TextEditor, edit: TextEditorEdit) {
+  return withDocAsync(editor, async (doc) =>
+    vscode.env.openExternal(vscode.Uri.parse("https://coq.inria.fr/refman/index.html"))
   )
 }
