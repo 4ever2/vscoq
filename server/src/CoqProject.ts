@@ -76,8 +76,8 @@ export class CoqProject {
     else
       return selector.language === 'coq';
   }
-  public async updateSettings(newSettings: Settings) {
 
+  public async updateSettings(newSettings: Settings) {
     this.notReady();
     this.settingsCoqTopArgs = newSettings.coqtop.args;
     this.currentSettings = newSettings;
@@ -175,7 +175,9 @@ export class CoqProject {
       const projectFile = await nodeAsync.fs.readFile(this.coqProjectFile(), 'utf8');
       this.coqProjectArgs = CoqProject.parseCoqProject(projectFile);
       this.currentSettings.coqtop.args = [...this.coqProjectArgs, ...this.settingsCoqTopArgs];
-    } catch(err) {
+      this.console.log("Successfully loaded _CoqProject");
+    } catch (err) {
+      this.console.log("Could not load _CoqProject");
     } finally {
       this.loadingCoqProjectInProcess = false;      
     }

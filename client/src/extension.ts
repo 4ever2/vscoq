@@ -11,7 +11,7 @@ import * as hover from "./HoverProvider";
 vscode.Range.prototype.toString = function rangeToString(this: vscode.Range) { return `[${this.start.toString()},${this.end.toString()})` }
 vscode.Position.prototype.toString = function positionToString(this: vscode.Position) { return `{${this.line}@${this.character}}` }
 
-console.log(`Coq Extension: process.version: ${process.version}, process.arch: ${process.arch}}`);
+console.log(`Coq Extension: process.version: ${process.version}, process.arch: ${process.arch}`);
 
 let project: CoqProject;
 
