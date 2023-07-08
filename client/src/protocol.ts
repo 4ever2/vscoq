@@ -1,4 +1,5 @@
 'use strict';
+import { SemVer } from 'semver';
 import { RequestType, NotificationType } from 'vscode-jsonrpc';
 import * as vscode from 'vscode-languageserver-types';
 
@@ -278,7 +279,7 @@ export namespace GetSentencePrefixTextRequest {
 }
 
 export namespace GetCoqVersion {
-  export const type = new RequestType<CoqTopParams, string, void, void>('coqtop/getCoqVersion')
+  export const type = new RequestType<CoqTopParams, SemVer, void, void>('coqtop/getCoqVersion')
 }
 
 export enum HighlightType {

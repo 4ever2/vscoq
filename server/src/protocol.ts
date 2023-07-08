@@ -2,6 +2,7 @@
 import { RequestType, NotificationType } from 'vscode-jsonrpc';
 import * as vscode from 'vscode-languageserver-types';
 import { RouteId } from './coqtop/coq-proto';
+import { SemVer } from 'semver';
 
 export interface DocumentFilter {
   language?: string,
@@ -285,7 +286,7 @@ export namespace GetSentencePrefixTextRequest {
 }
 
 export namespace GetCoqVersion {
-  export const type = new RequestType<CoqTopParams, string, void, void>('coqtop/getCoqVersion')
+  export const type = new RequestType<CoqTopParams, SemVer, void, void>('coqtop/getCoqVersion')
 }
 
 export enum HighlightType {
