@@ -191,6 +191,15 @@
           ],
           "default": "about",
           "markdownDescription": "Hover function used to display information about an identifier. `Check` is more concise but `About` has more information. (`About`; default)."
+        },
+        "coq.refman.browser": {
+          "type": "string",
+          "enum": [
+            "external",
+            "embedded"
+          ],
+          "default": "external",
+          "markdownDescription": "Determines which browser the reference manual will open in. `external` opens in the default system browser. `embedded` opens in the documentation inside VS Code."
         }
       }
     },
