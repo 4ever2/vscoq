@@ -7,7 +7,7 @@ import { initializeDecorations } from './Decorations';
 import * as editorAssist from './EditorAssist';
 import * as psm from './prettify-symbols-mode';
 import * as hover from "./HoverProvider";
-import { getRefmanUrl } from './Refman';
+import { openRefman, searchRefman } from './Refman';
 
 vscode.Range.prototype.toString = function rangeToString(this: vscode.Range) { return `[${this.start.toString()},${this.end.toString()})` }
 vscode.Position.prototype.toString = function positionToString(this: vscode.Position) { return `{${this.line}@${this.character}}` }
@@ -100,6 +100,8 @@ export function activate(context: ExtensionContext) {
   regTCmd('proofView.viewStateAt', viewProofStateAt);
   regTCmd('proofView.open', viewCurrentProofState);
   regTCmd('refman.open', viewDoc);
+  regTCmd('refman.search', searchDoc);
+  regTCmd('refman.prompt.search', searchDocPrompt);
   regProjectCmd('ltacProf.getResults', project.ltacProfGetResults);
   regCmd('display.toggle.implicitArguments', () => project.setDisplayOption(proto.DisplayOption.ImplicitArguments, proto.SetDisplayOption.Toggle));
   regCmd('display.toggle.coercions', () => project.setDisplayOption(proto.DisplayOption.Coercions, proto.SetDisplayOption.Toggle));
@@ -241,7 +243,26 @@ function viewCurrentProofState(editor: TextEditor, edit: TextEditorEdit) {
 
 function viewDoc(editor: TextEditor, edit: TextEditorEdit) {
   return withDocAsync(editor, async (doc) => {
+    openRefman(await doc.getCoqVersion());
+  })
+}
+
+function searchDoc(editor: TextEditor, edit: TextEditorEdit) {
+  return withDocAsync(editor, async (doc) => {
     const version = await doc.getCoqVersion();
-    vscode.env.openExternal(getRefmanUrl(version));
+    const query = await queryStringFromPosition("", editor);
+
+    if (query)
+      searchRefman(version, query)
+  })
+}
+
+function searchDocPrompt(editor: TextEditor, edit: TextEditorEdit) {
+  return withDocAsync(editor, async (doc) => {
+    const version = await doc.getCoqVersion();
+    const query = await queryStringFromPlaceholder("", editor);
+
+    if (query)
+      searchRefman(version, query)
   })
 }

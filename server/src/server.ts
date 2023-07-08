@@ -222,8 +222,7 @@ connection.onRequest(coqproto.GetSentencePrefixTextRequest.type, (params: coqpro
 });
 
 connection.onRequest(coqproto.GetCoqVersion.type, (params: coqproto.CoqTopParams, token: CancellationToken) => {
-  const version = project.lookup(params.uri).getCoqVersion();
-  return version ? version.version : "";
+  return project.lookup(params.uri).getCoqVersion();
 });
 
 

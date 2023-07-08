@@ -7,6 +7,7 @@ import * as proto from './protocol';
 import { workspace, ExtensionContext } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 import * as vscodeClient from 'vscode-languageclient';
+import { SemVer } from 'semver';
 
 // function createServerProcess(serverModule: string, debugOptions: string[]): ServerOptions {
 //   let nodejsPath = workspace.getConfiguration('nodejs')['path'] || '';
@@ -259,7 +260,7 @@ export class CoqLanguageServer implements vscode.Disposable {
     }, this.cancelRequest.token);
   }
 
-  public async getCoqVersion(uri : string): Promise<string> {
+  public async getCoqVersion(uri : string): Promise<SemVer> {
     await this.server.onReady();
     return this.server.sendRequest(proto.GetCoqVersion.type, { uri: uri });
   }

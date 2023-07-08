@@ -387,6 +387,17 @@
         "command": "extension.coq.refman.open",
         "title": "Open reference manual",
         "category": "Coq"
+      },
+      {
+        "command": "extension.coq.refman.search",
+        "title": "Search reference manual",
+        "description": "Search for the term pattern at the cursor in the reference manual",
+        "category": "Coq"
+      },
+      {
+        "command": "extension.coq.refman.prompt.search",
+        "title": "Promt search reference manual",
+        "category": "Coq"
       }
     ],
     "keybindings": [
