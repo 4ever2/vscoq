@@ -364,7 +364,7 @@
       },
       {
         "command": "extension.coq.display.toggle.allLowLevelContents",
-        "title": "Display All LowLevel Contents",
+        "title": "Display All Low Level Contents",
         "category": "Coq"
       },
       {

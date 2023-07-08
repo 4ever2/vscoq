@@ -25,21 +25,21 @@ import * as psm from './prettify-symbols-mode';
 namespace DisplayOptionPicks {
   type T = vscode.QuickPickItem & {displayItem: number};
   export const ImplicitArguments : T =
-  { label: "Implicit Arguments", description: "toggle display of *implicit arguments*", detail: "some detail", displayItem: proto.DisplayOption.ImplicitArguments };
+  { label: "Implicit Arguments", description: "toggle display of implicit arguments", detail: "some detail", displayItem: proto.DisplayOption.ImplicitArguments };
   export const Coercions : T =
-  { label: "Coercions", description: "toggle display of *coercions*", displayItem: proto.DisplayOption.Coercions };
+  { label: "Coercions", description: "toggle display of coercions", displayItem: proto.DisplayOption.Coercions };
   export const RawMatchingExpressions : T =
-  { label: "Raw Matching Expressions", description: "toggle display of *raw matching expressions*", displayItem: proto.DisplayOption.RawMatchingExpressions };
+  { label: "Raw Matching Expressions", description: "toggle display of raw matching expressions", displayItem: proto.DisplayOption.RawMatchingExpressions };
   export const Notations : T =
   { label: "Notations", description: "toggle display of notations", displayItem: proto.DisplayOption.Notations };
   export const AllBasicLowLevelContents : T =
-  { label: "All Basic Low Level Contents", description: "toggle display of ", displayItem: proto.DisplayOption.AllBasicLowLevelContents };
+  { label: "All Basic Low Level Contents", description: "toggle display of basic low level contents", displayItem: proto.DisplayOption.AllBasicLowLevelContents };
   export const ExistentialVariableInstances : T =
-  { label: "Existential Variable Instances", description: "toggle display of ", displayItem: proto.DisplayOption.ExistentialVariableInstances };
+  { label: "Existential Variable Instances", description: "toggle display of existential variables", displayItem: proto.DisplayOption.ExistentialVariableInstances };
   export const UniverseLevels : T =
-  { label: "Universe Levels", description: "toggle display of ", displayItem: proto.DisplayOption.UniverseLevels };
+  { label: "Universe Levels", description: "toggle display of universe levels", displayItem: proto.DisplayOption.UniverseLevels };
   export const AllLowLevelContents : T =
-  { label: "All Low Level Contents", description: "toggle display of ", displayItem: proto.DisplayOption.AllLowLevelContents };
+  { label: "All Low Level Contents", description: "toggle display of all low level contents", displayItem: proto.DisplayOption.AllLowLevelContents };
   export const allPicks = [ImplicitArguments, Coercions, RawMatchingExpressions, Notations, AllBasicLowLevelContents, ExistentialVariableInstances, UniverseLevels, AllLowLevelContents];
 }
 
@@ -427,8 +427,9 @@ export class CoqDocument implements vscode.Disposable {
       this.updateView(value, true);
       this.handleResult(value);
     } catch (err) {
+    } finally {
+      this.statusBar.setStateReady();
     }
-    this.statusBar.setStateReady();
   }
 
   public async stepBackward(editor: TextEditor) {
@@ -438,11 +439,12 @@ export class CoqDocument implements vscode.Disposable {
       this.rememberCursors();
       const value = await this.langServer.stepBackward();
       this.updateView(value, true);
-      if(this.handleResult(value))
-        this.statusBar.setStateReady();
+      this.handleResult(value);
       // const range = new vscode.Range(editor.document.positionAt(value.commandStart), editor.document.positionAt(value.commandEnd));
       // clearHighlight(editor, range);
     } catch (err) {
+    } finally {
+      this.statusBar.setStateReady();
     }
   }
 
@@ -450,8 +452,9 @@ export class CoqDocument implements vscode.Disposable {
     this.statusBar.setStateWorking('Finishing computations');
     try {
       await this.langServer.finishComputations();
-      this.statusBar.setStateReady();
     } catch (err) {
+    } finally {
+      this.statusBar.setStateReady();
     }
   }
 
@@ -468,8 +471,9 @@ export class CoqDocument implements vscode.Disposable {
       console.warn("Interpret to point failed: " + err.toString());
       if(err.stack)
         console.log("Stack: \n" + err.stack);
+    } finally {
+      this.statusBar.setStateReady();
     }
-    this.statusBar.setStateReady();
   }
 
   public async interpretToEnd(editor: TextEditor, synchronous = false) {
@@ -479,8 +483,10 @@ export class CoqDocument implements vscode.Disposable {
       const value = await this.langServer.interpretToEnd(synchronous);
       this.updateView(value, true);
       this.handleResult(value);
-    } catch (err) { }
-    this.statusBar.setStateReady();
+    } catch (err) {
+    } finally {
+      this.statusBar.setStateReady();
+    }
   }
 
   public async query(query: proto.QueryFunction, term: string | undefined) {

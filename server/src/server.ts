@@ -35,7 +35,7 @@ connection.onInitialize((params): InitializeResult => {
   console.warn = (e) => {connection.console.warn(">>> " + e)};
   console.error = (e) => {connection.console.error(">>> " + e)};
 
-  connection.console.log(`Coq Language Server: process.version: ${process.version}, process.arch: ${process.arch}}`);
+  connection.console.log(`Coq Language Server: process.version: ${process.version}, process.arch: ${process.arch}`);
   // connection.console.log(`execArgv: ${process.execArgv.join(' ')}`);
   // connection.console.log(`argv: ${process.argv.join(' ')}`);
   // connection.console.log('coq path: ' + currentSettings.coqPath);
