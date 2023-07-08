@@ -221,6 +221,11 @@ connection.onRequest(coqproto.GetSentencePrefixTextRequest.type, (params: coqpro
     .getSentencePrefixTextAt(params.position);
 });
 
+connection.onRequest(coqproto.GetCoqVersion.type, (params: coqproto.CoqTopParams, token: CancellationToken) => {
+  const version = project.lookup(params.uri).getCoqVersion();
+  return version ? version.version : "";
+});
+
 
 function sendHighlightUpdates(documentUri: string, highlights: coqproto.Highlights) {
   connection.sendNotification(coqproto.UpdateHighlightsNotification.type,
