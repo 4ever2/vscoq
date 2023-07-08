@@ -206,11 +206,9 @@ export class CoqDocument implements vscode.Disposable {
     }
   }
 
-
   public onDidChangeTextDocument(params: vscode.TextDocumentChangeEvent) {
     this.updateFocus(this.focus, false);
   }
-
 
   public async interruptCoq() {
     this.statusBar.setStateMessage('Killing CoqTop');
@@ -598,9 +596,9 @@ export class CoqDocument implements vscode.Disposable {
       await this.langServer.setDisplayOptions([{item: item, value: value}]);
       await this.refreshGoal();
     } catch(err) { }
- }
+  }
 
- public async viewGoalAt(editor: vscode.TextEditor, pos?: vscode.Position) {
+  public async viewGoalAt(editor: vscode.TextEditor, pos?: vscode.Position) {
     try {
       if(!pos)
         pos = editor.selection.active;
@@ -608,10 +606,14 @@ export class CoqDocument implements vscode.Disposable {
       if(proofview.type === "proof-view")
         this.updateView(proofview, false);
     } catch(err) { }
- }
+  }
 
- public getCurrentFocus() {
-   return this.focus;
- }
+  public getCurrentFocus() {
+    return this.focus;
+  }
+
+  public async getCoqVersion() {
+    return this.langServer.getCoqVersion();
+  }
 
 }

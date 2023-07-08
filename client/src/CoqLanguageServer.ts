@@ -258,6 +258,11 @@ export class CoqLanguageServer implements vscode.Disposable {
       options: options
     }, this.cancelRequest.token);
   }
+
+  public async getCoqVersion(uri : string): Promise<string> {
+    await this.server.onReady();
+    return this.server.sendRequest(proto.GetCoqVersion.type, { uri: uri });
+  }
 }
 
 
@@ -396,6 +401,10 @@ export class CoqDocumentLanguageServer implements vscode.Disposable {
 
   public setDisplayOptions(options: { item: proto.DisplayOption, value: proto.SetDisplayOption }[]): Thenable<void> {
     return this.server.setDisplayOptions(this.uri, options);
+  }
+
+  public getCoqVersion() {
+    return this.server.getCoqVersion(this.uri);
   }
 
 }

@@ -7,6 +7,7 @@ import { initializeDecorations } from './Decorations';
 import * as editorAssist from './EditorAssist';
 import * as psm from './prettify-symbols-mode';
 import * as hover from "./HoverProvider";
+import { getRefmanUrl } from './Refman';
 
 vscode.Range.prototype.toString = function rangeToString(this: vscode.Range) { return `[${this.start.toString()},${this.end.toString()})` }
 vscode.Position.prototype.toString = function positionToString(this: vscode.Position) { return `{${this.line}@${this.character}}` }
@@ -239,7 +240,8 @@ function viewCurrentProofState(editor: TextEditor, edit: TextEditorEdit) {
 }
 
 function viewDoc(editor: TextEditor, edit: TextEditorEdit) {
-  return withDocAsync(editor, async (doc) =>
-    vscode.env.openExternal(vscode.Uri.parse("https://coq.inria.fr/refman/index.html"))
-  )
+  return withDocAsync(editor, async (doc) => {
+    const version = await doc.getCoqVersion();
+    vscode.env.openExternal(getRefmanUrl(version));
+  })
 }

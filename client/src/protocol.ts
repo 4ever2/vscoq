@@ -277,6 +277,10 @@ export namespace GetSentencePrefixTextRequest {
   export const type = new RequestType<DocumentPositionParams, string, void, void>('coqtop/getSentencePrefixText')
 }
 
+export namespace GetCoqVersion {
+  export const type = new RequestType<CoqTopParams, string, void, void>('coqtop/getCoqVersion')
+}
+
 export enum HighlightType {
   StateError=0, Parsing=1, Processing=2, Incomplete=3, Processed=4, Axiom=5
 }
