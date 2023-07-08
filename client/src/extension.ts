@@ -101,6 +101,7 @@ export function activate(context: ExtensionContext) {
   regTCmd('proofView.open', viewCurrentProofState);
   regTCmd('refman.open', viewDoc);
   regTCmd('refman.search', searchDoc);
+  regTCmd('refman.prompt.search', searchDocPrompt);
   regProjectCmd('ltacProf.getResults', project.ltacProfGetResults);
   regCmd('display.toggle.implicitArguments', () => project.setDisplayOption(proto.DisplayOption.ImplicitArguments, proto.SetDisplayOption.Toggle));
   regCmd('display.toggle.coercions', () => project.setDisplayOption(proto.DisplayOption.Coercions, proto.SetDisplayOption.Toggle));
@@ -250,6 +251,16 @@ function searchDoc(editor: TextEditor, edit: TextEditorEdit) {
   return withDocAsync(editor, async (doc) => {
     const version = await doc.getCoqVersion();
     const query = await queryStringFromPosition("", editor);
+
+    if (query)
+      searchRefman(version, query)
+  })
+}
+
+function searchDocPrompt(editor: TextEditor, edit: TextEditorEdit) {
+  return withDocAsync(editor, async (doc) => {
+    const version = await doc.getCoqVersion();
+    const query = await queryStringFromPlaceholder("", editor);
 
     if (query)
       searchRefman(version, query)
