@@ -580,135 +580,135 @@
       "commandPalette": [
         {
           "command": "extension.coq.stepForward",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.stepBackward",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.interpretToPoint",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.interpretToPointSynchronous",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.interpretToEnd",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.interpretToEndSynchronous",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.finishComputations",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.interrupt",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.check",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.locate",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.search",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.print",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.about",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.searchAbout",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.moveCursorToFocus",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.prompt.check",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.prompt.locate",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.prompt.about",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.prompt.search",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.prompt.searchAbout",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.query.prompt.print",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.implicitArguments",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.coercions",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.rawMatchingExpressions",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.notations",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.allBasicLowLevelContents",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.existentialVariableInstances",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.universeLevels",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.display.toggle.allLowLevelContents",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.proofView.open",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.proofView.viewStateAt",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         },
         {
           "command": "extension.coq.ltacProf.getResults",
-          "when": "editorLangId == coq"
+          "when": "editorLangId == coq || activeWebviewPanelId == 'html_coq'"
         }
       ]
     },
