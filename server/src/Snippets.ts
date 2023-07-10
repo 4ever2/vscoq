@@ -424,3 +424,7 @@ export function getSnippetCompletions(prefix: string, version: SemVer): Completi
   else
     return getTriggerCompletions(prefix.trim(), version);
 }
+
+export function getTacticCompletions(): CompletionList | CompletionItem[] {
+  return [];
+}

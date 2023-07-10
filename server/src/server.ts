@@ -5,7 +5,7 @@ import {
 	Diagnostic,
 	InitializeResult, TextDocumentIdentifier, Position, TextDocumentPositionParams,
   CodeLensParams,
-	CompletionItem, ServerCapabilities, CodeActionParams, Command, CodeLens
+	CompletionItem, ServerCapabilities, CodeActionParams, Command, CodeLens, CompletionList
 } from 'vscode-languageserver';
 import * as vscodeLangServer from 'vscode-languageserver';
 import * as snippets from './Snippets';
@@ -106,17 +106,24 @@ process.on('SIGBREAK', function () {
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((textDocumentPosition: TextDocumentPositionParams) => {
-  try {
-    const prefix = project.lookup(textDocumentPosition.textDocument.uri)
-      .getSentencePrefixTextAt(textDocumentPosition.position);
+  let completions: CompletionList | CompletionItem[] = [];
 
-    const version = project.lookup(textDocumentPosition.textDocument.uri).getCoqVersion();
-    
-    return snippets.getSnippetCompletions(prefix, version);
+  try {
+    const doc = project.lookup(textDocumentPosition.textDocument.uri);
+    const isProofOpen = doc.hasFocusedGoal();
+
+    if (isProofOpen) {
+      snippets.getTacticCompletions();
+    } else {
+      const prefix = doc.getSentencePrefixTextAt(textDocumentPosition.position);
+
+      const version = doc.getCoqVersion();
+
+      return snippets.getSnippetCompletions(prefix, version);
+    }
   } catch(err) {
     return [];
   }
-
 
 	// The pass parameter contains the position of the text document in 
 	// which code complete got requested. For the example we ignore this
