@@ -12,7 +12,7 @@
   "license": "MIT",
   "icon": "images/logo.png",
   "engines": {
-    "vscode": "^1.66.0",
+    "vscode": "^1.76.0",
     "node": ">=14.0.0"
   },
   "categories": [
@@ -27,7 +27,6 @@
   "bugs": "https://github.com/coq-community/vscoq/issues",
   "homepage": "https://github.com/coq-community/vscoq/blob/vscoq1/README.md",
   "activationEvents": [
-    "onLanguage:coq"
   ],
   "contributes": {
     "languages": [
@@ -1018,7 +1017,7 @@
     "@types/node": "^18.11.9",
     "@types/sax": "^1.2.4",
     "@types/semver": "^7.1.1",
-    "@types/vscode": "^1.66.0",
+    "@types/vscode": "^1.76.0",
     "@types/ws": "^7.4.6",
     "jquery": "^3.5.0",
     "merge-options": "^3.0.4",
