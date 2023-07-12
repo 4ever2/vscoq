@@ -5,7 +5,7 @@ import {
 	Diagnostic,
 	InitializeResult, TextDocumentIdentifier, Position, TextDocumentPositionParams,
   CodeLensParams,
-	CompletionItem, ServerCapabilities, CodeActionParams, Command, CodeLens, CompletionList
+	CompletionItem, ServerCapabilities, CodeActionParams, Command, CodeLens
 } from 'vscode-languageserver';
 import * as vscodeLangServer from 'vscode-languageserver';
 import * as snippets from './Snippets';
@@ -106,19 +106,17 @@ process.on('SIGBREAK', function () {
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion((textDocumentPosition: TextDocumentPositionParams) => {
-  let completions: CompletionList | CompletionItem[] = [];
-
   try {
     const doc = project.lookup(textDocumentPosition.textDocument.uri);
     const isProofOpen = doc.hasFocusedGoal();
 
+    const prefix = doc.getSentencePrefixTextAt(textDocumentPosition.position);
+
+    const version = doc.getCoqVersion();
+
     if (isProofOpen) {
-      snippets.getTacticCompletions();
+      return snippets.getTacticCompletions(prefix, version);
     } else {
-      const prefix = doc.getSentencePrefixTextAt(textDocumentPosition.position);
-
-      const version = doc.getCoqVersion();
-
       return snippets.getSnippetCompletions(prefix, version);
     }
   } catch(err) {
