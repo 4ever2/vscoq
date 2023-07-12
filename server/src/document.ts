@@ -923,4 +923,11 @@ export class CoqDocument implements TextDocument {
     return this.stm && this.stm.isRunning();
   }
 
+  public hasFocusedGoal(): boolean {
+    if (!this.isStmRunning)
+      return false;
+
+    return this.stm.hasFocusedGoal();
+  }
+
 }

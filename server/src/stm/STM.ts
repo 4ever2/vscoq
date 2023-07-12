@@ -218,6 +218,13 @@ export class CoqStateMachine {
     return texts.join('');
   }
 
+  public hasFocusedGoal(): boolean {
+    if (this.focusedSentence == null)
+      return false;
+
+    return this.focusedSentence.hasGoal();
+  }
+
 
   /**
    * Applies the changes to the sentences
