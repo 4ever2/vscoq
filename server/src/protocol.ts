@@ -50,10 +50,6 @@ export interface AutoFormattingSettings {
   unindentOnCloseProof: boolean,
 }
 
-export interface ProofViewDiffSettings {
-  enabled: boolean;
-}
-
 export interface CoqSettings {
   /** Load settings from _CoqProject (if found at the root of the Code project). @default `true` */
   loadCoqProject: boolean,
@@ -83,8 +79,6 @@ export interface CoqSettings {
   },
   /** function used by hover provider to get info on identifier */
   hoverFunction: "about" | "check",
-  /** Enable/Disable proof view diff render */
-  proofViewDiff: ProofViewDiffSettings,
 }
 
 export interface FailValue {
@@ -141,12 +135,10 @@ export interface ScopedText {
 
 export type AnnotatedText = string | TextAnnotation | ScopedText | (string | TextAnnotation | ScopedText)[];
 
-export enum HypothesisDifference { None, Changed, New, MovedUp, MovedDown }
 export interface Hypothesis {
   identifier: string;
   relation: string;
   expression: AnnotatedText;
-  diff: HypothesisDifference;
 }
 export interface Goal {
   id: string;

@@ -16,6 +16,7 @@ interface SettingsUpdate extends SettingsState {
 }
 
 export interface ProofViewDiffSettings {
+  enabled: boolean,
   addedTextIsItalic : boolean,
   removedTextIsStrikedthrough : boolean,
 }
@@ -51,13 +52,10 @@ export interface ScopedText {
 export type AnnotatedText = string | TextAnnotation | ScopedText | (string | TextAnnotation | ScopedText)[];
 
 
-export enum HypothesisDifference { None, Changed, New, MovedUp, MovedDown }
-
 export interface Hypothesis {
   identifier: string;
   relation: string;
   expression: AnnotatedText;
-  diff: HypothesisDifference;
 }
 export interface Goal {
   id: number;

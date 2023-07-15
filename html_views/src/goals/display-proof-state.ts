@@ -2,7 +2,6 @@ import h = require("hyperscript");
 import {
   ProofView,
   UnfocusedGoalStack,
-  HypothesisDifference,
   TextDifference,
   AnnotatedText,
   ScopedText,
@@ -24,21 +23,6 @@ function countAllGoals(state: ProofView): number {
     (state.abandonedGoals ? state.abandonedGoals.length : 0) +
     (state.shelvedGoals ? state.shelvedGoals.length : 0);
   return result;
-}
-
-function getDifferenceClass(diff: HypothesisDifference) {
-  switch (diff) {
-    case HypothesisDifference.Changed:
-      return "changed";
-    case HypothesisDifference.New:
-      return "new";
-    case HypothesisDifference.MovedUp:
-      return "movedUp";
-    case HypothesisDifference.MovedDown:
-      return "movedDown";
-    default:
-      return "";
-  }
 }
 
 function getTextDiffClass(diff?: TextDifference): string {
@@ -100,12 +84,6 @@ function createHypothesis(hyp: Hypothesis): HTMLElement {
   ]);
 
   element.classList.add("hypothesis", "breakText");
-
-  const differenceClass = getDifferenceClass(hyp.diff);
-
-  if (differenceClass !== "") {
-    element.classList.add(differenceClass);
-  }
 
   element.addEventListener("dblclick", function () {
     const target = this;
