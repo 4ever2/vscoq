@@ -5,7 +5,6 @@ import * as parser from './../parsing/coq-parser';
 import * as textUtil from './../util/text-util';
 import {ProofView,} from '../protocol';
 import {AnnotatedText} from '../util/AnnotatedText';
-import * as diff from './DiffProofView';
 import {ProofViewReference, GoalsCache} from './GoalsCache'
 type StateId = number;
 
@@ -191,14 +190,10 @@ export class State {
     this.goal = goal;
   }
 
-  public getGoal(goalsCache: GoalsCache, proofViewDiff : boolean) : ProofView|null {
+  public getGoal(goalsCache: GoalsCache) : ProofView|null {
     if(!this.goal)
       return null;
     const newGoals = {...goalsCache.getProofView(this.goal), focus: this.textRange.end};
-    if(this.prev && this.prev.goal && proofViewDiff) {
-      const oldGoals = goalsCache.getProofView(this.prev.goal);
-      return diff.diffProofView(oldGoals, newGoals);
-    }
     return newGoals;
   }
 

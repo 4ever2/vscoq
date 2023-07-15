@@ -1,13 +1,6 @@
 import {AnnotatedText, TextAnnotation, ScopedText} from './protocol';
-export {ProofView, Goal, Hypothesis, AnnotatedText, HypothesisDifference, TextAnnotation, ScopedText} from './protocol';
+export {ProofView, Goal, Hypothesis, AnnotatedText, TextAnnotation, ScopedText} from './protocol';
 
-
-export interface Annotation {
-  /** the relationship this text has to the text of another state */
-  diff?: "added",
-  /** what to display instead of this text */
-  substitution?: string,
-}
 
 export function isScopedText(text: AnnotatedText): text is ScopedText {
   return text.hasOwnProperty('scope');
