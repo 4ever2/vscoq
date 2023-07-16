@@ -1116,6 +1116,7 @@ private routeId = 1;
     options.printingImplicit = this.currentCoqOptions.printingImplicit;
     options.printingAll = this.currentCoqOptions.printingAll;
     options.printingUniverses = this.currentCoqOptions.printingUniverses;
+    options.diffs = this.project.settings.coq.proofViewDiff.enabled;
     await this.coqtop.coqSetOptions(options);
   }
 

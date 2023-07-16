@@ -50,6 +50,12 @@ export interface AutoFormattingSettings {
   unindentOnCloseProof: boolean,
 }
 
+export interface ProofViewDiffSettings {
+  addedTextIsItalic: boolean;
+  removedTextIsStrikedthrough: boolean;
+  enabled: string;
+}
+
 export interface CoqSettings {
   /** Load settings from _CoqProject (if found at the root of the Code project). @default `true` */
   loadCoqProject: boolean,
@@ -79,6 +85,8 @@ export interface CoqSettings {
   },
   /** function used by hover provider to get info on identifier */
   hoverFunction: "about" | "check",
+  /** Enable/Disable proof view diff render */
+  proofViewDiff?: ProofViewDiffSettings;
 }
 
 export interface FailValue {

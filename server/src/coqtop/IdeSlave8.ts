@@ -463,6 +463,7 @@ const CoqOptionsMapping = {
   defaultProofUsing:                        "Default Proof Using",
   defaultTimeout:                           "Default Timeout",
   dependentPropositionsElimination:         "Dependent Propositions Elimination",
+  diffs:                                    "Diffs",
   discriminateIntroduction:                 "Discriminate Introduction",
   dumpBytecode:                             "Dump Bytecode",
   eliminationSchemes:                       "Elimination Schemes",
