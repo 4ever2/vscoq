@@ -119,10 +119,13 @@ function goalsLoad(_event: Event) {
 }
 
 function updateSettings(settings: SettingsState): void {
-  if (settings.prettifySymbolsMode !== undefined)
+  if (settings.prettifySymbolsMode !== undefined) {
     setPrettifySymbolsMode(settings.prettifySymbolsMode);
-  if (settings.proofViewDiff !== undefined)
+  }
+  if (settings.proofViewDiff !== undefined) {
     setProofViewDiffOptions(settings.proofViewDiff);
+    infoview.updateSettings(settings.proofViewDiff);
+  }
   computePrintingWidth();
 }
 
