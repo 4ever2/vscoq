@@ -171,29 +171,29 @@ body {
 .hypotheses .changed .ident {
   font-style: italic;
 }
-.charsAdded {
+
+.proofView_addedTextIsItalic span.diff-added{
+  font-style: italic;
+}
+
+.proofView_removedTextIsStrikedthrough span.diff-removed{
+  text-decoration: line-through;
+}
+
+span.diff-added {
   background-color: var(--vscode-coq-addedCharacter);
 }
-.proofView_addedTextIsItalic .charsAdded{
-  font-style: italic;
+
+span.diff-added-bg {
+  background-color: var(--vscode-coq-addedCharacterBackground);
 }
-span[class~=charsAdded][class~=substitution]::before {
-  font-style: var(--vscode-coq-proofViewDiff-addedInTermStyle);
-}
-.proofView_addedTextIsItalic span[class~=charsAdded][class~=substitution]::before  {
-  font-style: italic;
-}
-.charsRemoved {
+
+span.diff-removed {
   background-color: var(--vscode-coq-removedCharacter);
 }
-.proofView_removedTextIsStrikedthrough .charsRemoved{
-  text-decoration: line-through;
-}
-span[class~=charsRemoved][class~=substitution]::before {
-  background-color: var(--vscode-coq-removedCharacter);
-}
-.proofView_removedTextIsStrikedthrough span[class~=charsRemoved][class~=substitution]::before  {
-  text-decoration: line-through;
+
+span.diff-removed-bg {
+  background-color: var(--vscode-coq-removedCharacterBackground);
 }
 
 .hypotheses, .hypothesis, .goal, #stdout {
