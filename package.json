@@ -143,8 +143,13 @@
           "description": "Create the proof view when a Coq script is opened, the user first interacts with coqtop, or else let the user do it manually."
         },
         "coq.proofViewDiff.enabled": {
-          "type": "boolean",
-          "default": true,
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "removed"
+          ],
+          "default": "on",
           "markdownDescription": "Enable/disable VsCoq's Proof View Diff. Only has acceptable performance on small goals."
         },
         "coq.proofViewDiff.addedTextIsItalic": {
