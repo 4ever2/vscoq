@@ -827,6 +827,8 @@ private routeId = 1;
     return this.currentError;
   }
 
+
+
   private parseConvertGoal(goal: coqProto.Subgoal) : proto.Goal {
     return <proto.Goal>{
       id: goal.id,

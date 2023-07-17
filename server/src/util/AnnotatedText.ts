@@ -118,6 +118,23 @@ export function textSplit(text: AnnotatedText, separator: string|RegExp, limit?:
   }
 }
 
+/* export function splitHypotheses(hyp: AnnotatedText, separator: string|RegExp) : {splits: (string | TextAnnotation | ScopedText)[], rest: AnnotatedText} {
+  //  /(:=|:)([^]*)/
+  if(typeof hyp === 'string') {
+    const result = hyp.split(separator as any).filter((v) => v!=="");
+    if (result.length > 1) {
+      return {splits: result.slice(0,1), rest: }
+    }
+    return {splits: result.slice(0,limit), rest: limit===undefined ? [] : result.slice(limit)}
+  } else if(hyp instanceof Array) {
+
+  } else if(isScopedText(hyp)) {
+
+  } else {// TextAnnotation
+
+  }
+} */
+
 function subtextHelper<T extends AnnotatedText>(text: T, pos: number, start: number, end?: number) : {result: T, length: number, next: number} {
   if(typeof text === 'string') {
     const t = text as string;
