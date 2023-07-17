@@ -433,9 +433,6 @@ export class CoqStateMachine {
       endCommand();
     }
   }
-  private get proofViewDiff(): boolean {
-    return this.project.settings.coq.proofViewDiff.enabled;
-  }
 
   /**
    * Return the cached goal for the given position
@@ -445,7 +442,7 @@ export class CoqStateMachine {
     try {
       const state = (direction==="subsequent" ? this.getStateAt(pos) : null) || this.getPrecedingStateAt(pos);
       if(state && state.hasGoal())
-        return Object.assign({type: 'proof-view'} as {type: 'proof-view'}, state.getGoal(this.goalsCache, this.proofViewDiff));
+        return Object.assign({type: 'proof-view'} as {type: 'proof-view'}, state.getGoal(this.goalsCache));
       else
         return {type: "no-proof"}
     } catch(error) {
@@ -882,7 +879,7 @@ private routeId = 1;
           focus: this.getFocusedPosition()
         });
         this.focusedSentence.setGoal(pv);
-        return {type: 'proof-view', ...this.focusedSentence.getGoal(this.goalsCache, this.proofViewDiff)};
+        return {type: 'proof-view', ...this.focusedSentence.getGoal(this.goalsCache)};
       default:
         this.console.warn("Goal returned an unexpected value: " + util.inspect(goals,false,undefined));
     }
@@ -1131,6 +1128,7 @@ private routeId = 1;
     options.printingImplicit = this.currentCoqOptions.printingImplicit;
     options.printingAll = this.currentCoqOptions.printingAll;
     options.printingUniverses = this.currentCoqOptions.printingUniverses;
+    options.diffs = this.project.settings.coq.proofViewDiff.enabled;
     await this.coqtop.coqSetOptions(options);
   }
 

@@ -208,6 +208,7 @@ export interface CoqOptions {
   defaultProofUsing?: any,
   defaultTimeout?: number,
   dependentPropositionsElimination?: boolean,
+  diffs?: string,
   discriminateIntroduction?: boolean,
   dumpBytecode?: boolean,
   eliminationSchemes?: boolean,

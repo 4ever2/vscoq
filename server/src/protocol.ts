@@ -52,7 +52,9 @@ export interface AutoFormattingSettings {
 }
 
 export interface ProofViewDiffSettings {
-  enabled: boolean;
+  addedTextIsItalic: boolean;
+  removedTextIsStrikedthrough: boolean;
+  enabled: string;
 }
 
 export interface CoqSettings {
@@ -85,7 +87,7 @@ export interface CoqSettings {
   /** function used by hover provider to get info on identifier */
   hoverFunction: "about" | "check",
   /** Enable/Disable proof view diff render */
-  proofViewDiff: ProofViewDiffSettings,
+  proofViewDiff?: ProofViewDiffSettings;
 }
 
 export interface FailValue {
@@ -142,12 +144,10 @@ export interface ScopedText {
 
 export type AnnotatedText = string | TextAnnotation | ScopedText | (string | TextAnnotation | ScopedText)[];
 
-export enum HypothesisDifference { None, Changed, New, MovedUp, MovedDown }
 export interface Hypothesis {
   identifier: string;
   relation: string;
   expression: AnnotatedText;
-  diff: HypothesisDifference;
 }
 export interface Goal {
   id: string;

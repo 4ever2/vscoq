@@ -2,13 +2,13 @@ import h = require("hyperscript");
 import {
   ProofView,
   UnfocusedGoalStack,
-  HypothesisDifference,
   TextDifference,
   AnnotatedText,
   ScopedText,
   Hypothesis,
   Goal,
   CommandResult,
+  ProofViewDiffSettings
 } from "./protocol";
 import { makeBreakingText } from "./ui-util";
 
@@ -26,21 +26,6 @@ function countAllGoals(state: ProofView): number {
   return result;
 }
 
-function getDifferenceClass(diff: HypothesisDifference) {
-  switch (diff) {
-    case HypothesisDifference.Changed:
-      return "changed";
-    case HypothesisDifference.New:
-      return "new";
-    case HypothesisDifference.MovedUp:
-      return "movedUp";
-    case HypothesisDifference.MovedDown:
-      return "movedDown";
-    default:
-      return "";
-  }
-}
-
 function getTextDiffClass(diff?: TextDifference): string {
   if (diff === "added") return "charsAdded";
   if (diff === "removed") return "charsRemoved";
@@ -53,7 +38,7 @@ function isScopedText(text: AnnotatedText): text is ScopedText {
 
 function createAnnotatedText(text: AnnotatedText): HTMLElement[] {
   function helper(text: AnnotatedText): (Text | HTMLElement)[] {
-    if (typeof text === "string") return makeBreakingText(text);
+    if (typeof text === "string") return [h("span", makeBreakingText(text))];
     else if (text instanceof Array) return text.map(helper).flat();
     else if (isScopedText(text)) {
       if (text.scope.trim() !== "") {
@@ -101,12 +86,6 @@ function createHypothesis(hyp: Hypothesis): HTMLElement {
 
   element.classList.add("hypothesis", "breakText");
 
-  const differenceClass = getDifferenceClass(hyp.diff);
-
-  if (differenceClass !== "") {
-    element.classList.add(differenceClass);
-  }
-
   element.addEventListener("dblclick", function () {
     const target = this;
 
@@ -140,6 +119,34 @@ function createFocusedGoals(goals: Goal[]): HTMLElement {
   const element = h("ul", goals.map(createGoal));
   element.classList.add("goalsList");
   return element;
+}
+
+function createDiff(enabled: string) {
+  if (enabled === "on" || enabled === "removed") {
+    $('.start-diff\\.added\\.bg').each(function(){
+      $(this).nextUntil('.end-diff\\.added\\.bg').addBack()
+        .next('.end-diff\\.added\\.bg').addBack()
+        .wrapAll('<span class="diff-added-bg"/>')
+    });
+    $('.start-diff\\.added').each(function(){
+      $(this).nextUntil('.end-diff\\.added').addBack()
+        .next('.end-diff\\.added').addBack()
+        .wrapAll('<span class="diff-added"/>')
+    });
+  }
+
+  if (enabled === "removed") {
+    $('.start-diff\\.removed\\.bg').each(function(){
+      $(this).nextUntil('.end-diff\\.removed\\.bg').addBack()
+        .next('.end-diff\\.removed\\.bg').addBack()
+        .wrapAll('<span class="diff-removed-bg"/>')
+    });
+    $('.start-diff\\.removed').each(function(){
+      $(this).nextUntil('.end-diff\\.removed').addBack()
+        .next('.end-diff\\.removed').addBack()
+        .wrapAll('<span class="diff-removed"/>')
+    });
+  }
 }
 
 export const ProofState = () => {
@@ -240,6 +247,7 @@ export const Infoview = () => {
   const element = h("div");
 
   let proofStateInstance: ReturnType<typeof ProofState> | undefined = undefined;
+  let diffsEnabled: string = "off";
 
   const updateState = (state: CommandResult) => {
     if (state.type === "proof-view") {
@@ -250,6 +258,7 @@ export const Infoview = () => {
       }
 
       proofStateInstance.updateState(state);
+      createDiff(diffsEnabled);
     } else {
       if (proofStateInstance !== undefined) {
         proofStateInstance.unmount();
@@ -287,5 +296,9 @@ export const Infoview = () => {
     element.parentNode.removeChild(element);
   };
 
-  return { element, updateState, unmount };
+  const updateSettings = (settings: ProofViewDiffSettings) => {
+    diffsEnabled = settings.enabled;
+  } 
+
+  return { element, updateState, unmount, updateSettings };
 };

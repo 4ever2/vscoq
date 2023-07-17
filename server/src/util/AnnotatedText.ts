@@ -1,12 +1,10 @@
 import * as diff from 'diff';
 
 import {AnnotatedText, TextAnnotation, ScopedText} from '../protocol';
-export {ProofView, Goal, Hypothesis, AnnotatedText, HypothesisDifference, TextAnnotation, ScopedText} from '../protocol';
+export {ProofView, Goal, Hypothesis, AnnotatedText, TextAnnotation, ScopedText} from '../protocol';
 
 
 export interface Annotation {
-  /** the relationship this text has to the text of another state */
-  diff?: "added"|"removed",
   /** what to display instead of this text */
   substitution?: string,
 }
@@ -70,10 +68,6 @@ export function textDisplayLength(text: AnnotatedText) : number {
 }
 
 export function copyAnnotation(x: Annotation) : Annotation {
-  if(x.diff!==undefined && x.substitution!==undefined)
-    return {diff: x.diff, substitution: x.substitution};
-  if(x.diff!==undefined)
-    return {diff: x.diff};
   if(x.substitution!==undefined)
     return {substitution: x.substitution};
   else
@@ -202,7 +196,7 @@ export function mapAnnotation(text: AnnotatedText, map: (text: string, annotatio
  * 2) both have substitutions and one will be substituted with ""
  */
 export function compatibleAnnotations<T extends Annotation>(ann1: T, ann2: T) : boolean {
-  return ann1.diff === ann2.diff && ((ann1.substitution === undefined && ann2.substitution === undefined) || (ann1.substitution === "" || ann2.substitution === ""))
+  return (ann1.substitution === undefined && ann2.substitution === undefined) || (ann1.substitution === "" || ann2.substitution === "")
 }
 
 function concatText(text1: AnnotatedText, text2: AnnotatedText) : AnnotatedText {
@@ -417,17 +411,6 @@ export function annotateDiffAdded(text: AnnotatedText, differences: diff.Change[
       return parts;
   });
   return result;
-}
-
-export function diffText(oldText: AnnotatedText, newText: AnnotatedText, normalize = true) : {text: AnnotatedText, different: boolean} {
-  if(!oldText)
-    return {text: newText, different: false};
-  const difference = diff.diffWords(textToDisplayString(oldText), textToDisplayString(newText));
-  const result = annotateDiffAdded(newText, difference, {diffSubstitutions: true, mode: "new"});
-  if(normalize)
-    return {text: normalizeText(result), different: difference.length > 1 }
-  else
-    return {text: result, different: difference.length > 1 }
 }
 
 
