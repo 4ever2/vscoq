@@ -8,9 +8,9 @@ import {
   Hypothesis,
   Goal,
   CommandResult,
-  ProofViewDiffSettings
 } from "./protocol";
 import { makeBreakingText } from "./ui-util";
+import { ProofViewDiffSettings } from "@lib/settings";
 
 function countUnfocusedGoals(u: UnfocusedGoalStack | undefined): number {
   if (!u) return 0;

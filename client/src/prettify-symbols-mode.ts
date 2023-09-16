@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import * as text from './AnnotatedText';
-import { LanguageEntry } from '@lib';
+import { LanguageEntry } from '@lib/settings';
 
 /** Essentially mirrors vscode.DecorationRenderOptions, but restricted to the
  * properties that apply to both :before/:after decorations and plain decorations */
-interface PrettyStyleProperties {
+/* interface PrettyStyleProperties {
   border?: string,
 	textDecoration?: string,
 	color?: string,
@@ -14,7 +14,7 @@ interface PrettyStyleProperties {
 interface PrettyStyle extends PrettyStyleProperties {
 	dark?: PrettyStyleProperties,
 	light?: PrettyStyleProperties,
-}
+} */
 
 
 interface PrettifySymbolsMode {

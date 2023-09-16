@@ -17,8 +17,8 @@ import {AnnotatedText} from '../util/AnnotatedText'
 import * as text from '../util/AnnotatedText'
 import {GoalsCache} from './GoalsCache';
 import * as semver from 'semver';
+import { Settings } from '@lib/settings';
 
-import {Settings} from '../protocol';
 export {StateStatus} from './State';
 
 type StateId = number;

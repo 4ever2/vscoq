@@ -6,6 +6,7 @@ import {CoqDocument} from './CoqDocument'
 export {CoqDocument} from './CoqDocument'
 import {CoqLanguageServer} from './CoqLanguageServer'
 import * as editorAssist from './EditorAssist'
+import { CoqSettings } from '@lib/settings';
 
 export function getProject() : CoqProject {
   const coq = CoqProject.getInstance();
@@ -22,7 +23,7 @@ export class CoqProject implements vscode.Disposable {
   private activeDoc : CoqDocument|null = null;
   private static instance : CoqProject|null = null;
   private langServer : CoqLanguageServer;
-  private currentSettings: proto.CoqSettings;
+  private currentSettings: CoqSettings;
   private subscriptions : vscode.Disposable[] = [];
 
   // lazily created output windows
@@ -54,7 +55,7 @@ export class CoqProject implements vscode.Disposable {
   }
 
   private loadConfiguration() {
-    let conf = vscode.workspace.getConfiguration("coq") as vscode.WorkspaceConfiguration & proto.CoqSettings;
+    let conf = vscode.workspace.getConfiguration("coq") as vscode.WorkspaceConfiguration & CoqSettings;
     if(conf.moveCursorToFocus === undefined)
       conf.moveCursorToFocus = true;
     this.currentSettings = conf;
@@ -106,7 +107,7 @@ export class CoqProject implements vscode.Disposable {
     return this.langServer;
   }
 
-  public get settings() : proto.CoqSettings {
+  public get settings() : CoqSettings {
     return this.currentSettings;
   }
 

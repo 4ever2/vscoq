@@ -10,8 +10,8 @@ import {
 import * as vscodeLangServer from 'vscode-languageserver';
 import * as snippets from './Snippets';
 import * as coqproto from './protocol';
-import {Settings} from './protocol';
-import {CoqProject} from './CoqProject';
+import { Settings } from '@lib/settings';
+import { CoqProject } from './CoqProject';
 import { RouteId } from './coqtop/coq-proto';
 import { setDefaultResultOrder } from 'dns';
 

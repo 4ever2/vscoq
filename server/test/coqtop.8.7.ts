@@ -11,8 +11,8 @@ import * as text from '../src/util/AnnotatedText';
 import * as coqProto from '../src/coqtop/coq-proto';
 import {CoqTop as CoqTop8} from '../src/coqtop/CoqTop8';
 import * as coqtop from '../src/coqtop/CoqTop';
-import * as proto from '../src/protocol';
 import { RemoteConsole } from 'vscode-languageserver';
+import { CoqTopSettings } from '../../lib/src/settings';
 
 const COQBIN_8_6 = process.env.COQBIN_8_6 || 'C:/Coq_trunk_build/bin';
 
@@ -39,7 +39,7 @@ describe("Coqtop 8.6", function() {
       console.warn("Detected version of coqtop is not one of: " + knownVersions.join(', '));
   })
 
-  const settings : proto.CoqTopSettings = {
+  const settings : CoqTopSettings = {
     binPath: COQBIN_8_6,
     coqtopExe: "coqtop",
     coqidetopExe: "coqidetop.opt",

@@ -7,7 +7,7 @@ import * as semver from 'semver';
 import {URI} from 'vscode-uri'
 
 import {ChildProcess, spawn} from 'child_process';
-import {CoqTopSettings} from '../protocol';
+import {CoqTopSettings} from '@lib/settings';
 
 import * as coqtop from './CoqTop';
 export {Interrupted, CoqtopSpawnError, CallFailure,

@@ -5,7 +5,7 @@ import * as vscrpc from 'vscode-jsonrpc';
 import * as semver from 'semver';
 
 import {CoqStateMachine, StateMachineCallbacks} from '../src/stm/STM';
-import {Settings, CoqSettings, CoqTopSettings} from '../src/protocol';
+import {Settings, CoqSettings, CoqTopSettings} from '../../lib/src/settings';
 import * as coqtop from '../src/coqtop/CoqTop';
 
 function getText(text: string, range?: vscode.Range) : string {

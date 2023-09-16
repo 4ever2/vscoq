@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {CoqSettings} from './protocol';
+import {CoqSettings} from '@lib/settings';
 
 let subscriptions : vscode.Disposable[] = [];
 

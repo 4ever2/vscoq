@@ -9,6 +9,7 @@ import * as docs from "./CoqProject";
 import * as psm from "./prettify-symbols-mode";
 
 import mustache = require("mustache");
+import { ProofViewDiffSettings, SettingsState } from "@lib/settings";
 
 interface ControllerEvent {
   eventName: string;
@@ -26,20 +27,6 @@ interface GoalUpdate {
 
 interface SettingsUpdate extends SettingsState {
   command: "settings-update";
-}
-
-export interface ProofViewDiffSettings {
-  addedTextIsItalic: boolean;
-  removedTextIsStrikedthrough: boolean;
-  enabled: string;
-}
-
-interface SettingsState {
-  fontFamily?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  prettifySymbolsMode?: boolean;
-  proofViewDiff?: ProofViewDiffSettings;
 }
 
 type ProofViewProtocol = GoalUpdate | SettingsUpdate;
