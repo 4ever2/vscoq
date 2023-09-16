@@ -6,6 +6,7 @@
   "references": [
     { "path": "./client" },
     { "path": "./html_views" },
-    { "path": "./server" }
+    { "path": "./server" },
+    { "path": "./lib" }
   ]
 }

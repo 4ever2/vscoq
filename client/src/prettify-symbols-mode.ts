@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as text from './AnnotatedText';
+import { LanguageEntry } from '@lib';
 
 /** Essentially mirrors vscode.DecorationRenderOptions, but restricted to the
  * properties that apply to both :before/:after decorations and plain decorations */
@@ -13,22 +14,6 @@ interface PrettyStyleProperties {
 interface PrettyStyle extends PrettyStyleProperties {
 	dark?: PrettyStyleProperties,
 	light?: PrettyStyleProperties,
-}
-
-/** An individual substitution */
-interface Substitution {
-	ugly: string;        // regular expression describing the text to replace
-	pretty: string;      // plain-text symbol to show instead
-	pre?: string;        // regular expression guard on text before "ugly"
-	post?: string;       // regular expression guard on text after "ugly"
-	style?: PrettyStyle; // stylings to apply to the "pretty" text, if specified, or else the ugly text
-}
-
-interface LanguageEntry {
-	/** language(s) to apply these substitutions on */
-	language:  vscode.DocumentSelector;
-	/** substitution rules */
-	substitutions: Substitution[];
 }
 
 

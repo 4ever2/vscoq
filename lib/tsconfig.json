@@ -1,8 +1,8 @@
 {
-    "extends": "../tsconfig",
-    "compilerOptions": {
-        "outDir": "out",
-        "composite": true,
-    },
-    "files": ["src/index.ts", "src/protocol.ts"]
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    "outDir": "out",
+    "composite": true,
+  },
+  "files": ["src/index.ts", "src/protocol.ts", "src/settings.ts"]
 }

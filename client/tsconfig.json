@@ -6,8 +6,12 @@
     "rootDir": "src",
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "paths": {
+      "@lib/*": ["../lib/src/*"],
+      "@lib": ["../lib/src"],
+    }
   },
   "include": ["src"],
-  "references": [{ "path": "../server" }, { "path": "../html_views" }]
+  "references": [{ "path": "../server" }, { "path": "../html_views" }, { "path": "../lib" }]
 }

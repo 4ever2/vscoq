@@ -1,5 +1,5 @@
 import {CoqDocument, DocumentCallbacks, TextDocumentItem} from './document';
-import {Settings, DocumentSelector} from './protocol';
+import {Settings} from './protocol';
 import * as vscode from 'vscode-languageserver';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -8,6 +8,7 @@ import * as nodeAsync from './util/nodejs-async';
 import {CoqTop} from './coqtop/CoqTop';
 import {CoqTop as CoqTop8} from './coqtop/CoqTop8';
 import stringArgv from 'string-argv';
+import { DocumentSelector } from "@lib";
 
 
 const coqProjectFileName = '_CoqProject';
