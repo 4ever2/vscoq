@@ -26,10 +26,10 @@ export namespace fs {
     })
   }
 
-  export function readFile(filename: string, encoding: string) : Promise<string>;
+  export function readFile(filename: string, encoding: BufferEncoding) : Promise<string>;
   export function readFile(filename: string) : Promise<Buffer>;
   export function readFile(filename: string, options: {flag?:string}) : Promise<Buffer>;
-  export function readFile(filename: string, options: {encoding: string, flag?:string}) : Promise<string>;
+  export function readFile(filename: string, options: {encoding: BufferEncoding, flag?:string}) : Promise<string>;
   export function readFile(...args: any[]) : Promise<Buffer|string> {
     return new Promise<Buffer|string>((resolve,reject) => {
       nfs.readFile(args[0], args[1], (err,data) => {
@@ -41,6 +41,7 @@ export namespace fs {
     });
   }
 
+  
   export function exists(path: string|Buffer) : Promise<boolean> {
     return new Promise<boolean>((resolve,reject) => {
       nfs.exists(path, (ex) => resolve(ex));
@@ -76,5 +77,4 @@ export namespace fs {
       }
     })
   }
-
 }
