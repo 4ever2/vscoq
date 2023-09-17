@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as text from './AnnotatedText';
+import * as text from '@lib/AnnotatedText';
 import { LanguageEntry } from '@lib/settings';
 
 /** Essentially mirrors vscode.DecorationRenderOptions, but restricted to the

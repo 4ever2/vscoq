@@ -1,7 +1,8 @@
 import h = require("hyperscript");
 import { makeBreakingText } from "./ui-util";
 import { ProofViewDiffSettings } from "@lib/settings";
-import { AnnotatedText, CommandResult, Goal, Hypothesis, ProofView, ScopedText, TextDifference, UnfocusedGoalStack } from "@lib/protocol";
+import { CommandResult, Goal, Hypothesis, ProofView, UnfocusedGoalStack } from "@lib/protocol";
+import { AnnotatedText, ScopedText, TextDifference } from "@lib/AnnotatedText";
 
 function countUnfocusedGoals(u: UnfocusedGoalStack | undefined): number {
   if (!u) return 0;

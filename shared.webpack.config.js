@@ -42,7 +42,7 @@ module.exports =
       filename: '[name].js',
       path: path.resolve(__dirname, "out"),
       libraryTarget: "commonjs",
-      clean: true
+      clean: false
     },
     externals: {
       'vscode': 'commonjs vscode', // ignored because it doesn't exist

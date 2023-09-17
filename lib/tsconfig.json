@@ -4,5 +4,5 @@
     "outDir": "out",
     "composite": true,
   },
-  "files": ["src/index.ts", "src/protocol.ts", "src/settings.ts", "src/coqview.ts"]
+  "include": ["src"]
 }

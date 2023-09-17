@@ -2,28 +2,8 @@
 import { Position, Range } from 'vscode-languageserver-types';
 import { RequestType, NotificationType } from 'vscode-jsonrpc';
 import { SemVer } from 'semver';
+import { AnnotatedText } from './AnnotatedText';
 
-export type TextDifference = "added"|"removed";
-
-export interface TextAnnotation {
-  /** the relationship this text has to the text of another state */
-  diff?: TextDifference,
-  /** what to display instead of this text */
-  substitution?: string,
-  /** the underlying text, possibly with more annotations */
-  text: string
-}
-
-export interface ScopedText {
-  /** A scope identifier */
-  scope: string,
-  /** Extra stuff */
-  attributes?: any,
-  /** the underlying text, possibly with more annotations */
-  text: AnnotatedText,
-}
-
-export type AnnotatedText = string | TextAnnotation | ScopedText | (string | TextAnnotation | ScopedText)[];
 
 export interface Hypothesis {
   identifier: string;
