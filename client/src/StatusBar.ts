@@ -2,12 +2,12 @@
  * 
  */
 import * as vscode from 'vscode';
-import * as proto from './protocol';
 import * as textUtil from './text-util';
+import { ComputingStatus } from '@lib/protocol';
 
 type StoppedState = { status: "stopped" };
 type ReadyState = { status: "ready" };
-type ComputingState = { status: "computing",  message: string, startTime: [number,number], computeTimeMS: number, computeStatus: proto.ComputingStatus, updateTime: () => number };
+type ComputingState = { status: "computing",  message: string, startTime: [number,number], computeTimeMS: number, computeStatus: ComputingStatus, updateTime: () => number };
 type MessageState = { status: "message", message: string };
 
 type State = StoppedState | ReadyState | ComputingState | MessageState;
@@ -44,7 +44,7 @@ class CoqStatusBarManager implements vscode.Disposable {
 
   public showState(state: State) {
     this.statusBar.show();
-    if(this.computingTimer && (state.status != "computing" || state.computeStatus !== proto.ComputingStatus.Computing)) {
+    if(this.computingTimer && (state.status != "computing" || state.computeStatus !== ComputingStatus.Computing)) {
       clearInterval(this.computingTimer);
       this.computingTimer = null;
       this.showingComputingTimeStatus = false;      
@@ -73,16 +73,16 @@ class CoqStatusBarManager implements vscode.Disposable {
       case "computing": {
         this.statusBar.text = state.message;
         switch(state.computeStatus) {
-          case proto.ComputingStatus.Finished:
+          case ComputingStatus.Finished:
             this.computingStatusBar.hide();
             this.interruptButtonStatusBar.hide();
             break;
-          case proto.ComputingStatus.Computing:
+          case ComputingStatus.Computing:
             if(!this.computingTimer)
               this.computingTimer = setInterval(() => this.setComputeMS(state.updateTime()), 500);
             this.setComputeMS(state.computeTimeMS);
             break;
-          case proto.ComputingStatus.Interrupted:
+          case ComputingStatus.Interrupted:
             this.computingStatusBar.text = `[Interrupted $(watch) ${textUtil.formatTimeSpanMS(state.computeTimeMS)}]`;
             this.computingStatusBar.show();
             this.interruptButtonStatusBar.hide();
@@ -168,10 +168,10 @@ export class StatusBar implements vscode.Disposable {
   //     return ""
   // }
 
-  public setStateComputing(computeStatus: proto.ComputingStatus, message?: string) {
+  public setStateComputing(computeStatus: ComputingStatus, message?: string) {
     let startTime : [number,number];
     let computeTime = 0;
-    if(this.state.status !== 'computing' || (computeStatus === proto.ComputingStatus.Computing && this.state.computeStatus !== computeStatus))
+    if(this.state.status !== 'computing' || (computeStatus === ComputingStatus.Computing && this.state.computeStatus !== computeStatus))
       startTime = process.hrtime();
     else {
       startTime = this.state.startTime;
@@ -185,7 +185,7 @@ export class StatusBar implements vscode.Disposable {
       , computeTimeMS: computeTime
       , computeStatus: computeStatus
       , updateTime: () => {
-        if(this.state.status != "computing" || this.state.computeStatus !== proto.ComputingStatus.Computing)
+        if(this.state.status != "computing" || this.state.computeStatus !== ComputingStatus.Computing)
           return 0;
         const delta = process.hrtime(this.state.startTime);
         this.state.computeTimeMS = delta[0] * 1000.0 + (delta[1] / 1000000.0);
@@ -216,7 +216,7 @@ export class StatusBar implements vscode.Disposable {
   public setStateWorking(name: string) {
     if(this.isStopped())
       return;
-    this.setStateComputing(proto.ComputingStatus.Computing, name);
+    this.setStateComputing(ComputingStatus.Computing, name);
   }
 
   public setStateMessage(name: string) {

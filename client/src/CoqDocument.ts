@@ -13,7 +13,6 @@ import {Highlights} from './Highlights';
 // import {MDCoqView} from './MDCoqView';
 import {HtmlCoqView} from './HtmlCoqView';
 import {HtmlLtacProf} from './HtmlLtacProf';
-import * as proto from './protocol';
 import * as textUtil from './text-util';
 import {extensionContext} from './extension';
 import {CoqDocumentLanguageServer} from './CoqLanguageServer';
@@ -21,6 +20,7 @@ import {CoqView, adjacentPane} from './CoqView';
 import {StatusBar} from './StatusBar';
 import {CoqProject} from './CoqProject';
 import * as psm from './prettify-symbols-mode';
+import * as proto from '@lib/protocol';
 
 namespace DisplayOptionPicks {
   type T = vscode.QuickPickItem & {displayItem: number};

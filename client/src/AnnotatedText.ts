@@ -1,5 +1,5 @@
-import {AnnotatedText, TextAnnotation, ScopedText} from './protocol';
-export {ProofView, Goal, Hypothesis, AnnotatedText, TextAnnotation, ScopedText} from './protocol';
+import { AnnotatedText, ScopedText, TextAnnotation } from '@lib/protocol';
+export { AnnotatedText, ScopedText, TextAnnotation } from '@lib/protocol';
 
 
 export function isScopedText(text: AnnotatedText): text is ScopedText {

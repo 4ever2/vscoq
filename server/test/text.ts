@@ -4,6 +4,7 @@ import * as assert from 'assert';
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as text from '../src/util/AnnotatedText';
+import { AnnotatedText } from '../../lib/src/protocol';
 
 // Defines a Mocha test suite to group tests of similar kind together
 describe("AnnotatedText", () => {
@@ -82,10 +83,10 @@ describe("AnnotatedText", () => {
     assert.deepStrictEqual(text.normalizeText({diff:"added",text:"aabbaa"}),{diff:"added",text:"aabbaa"});
     assert.deepStrictEqual(text.normalizeText([{text: 'aa',diff: 'added'},{text: 'bb',diff: 'added'},{text: 'aa',diff: 'added'}]), { diff: 'added', text: 'aabbaa' });
 
-    function notation(s: text.AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
+    function notation(s: AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
       return {scope: "constr.notation", text: s}
     }
-    function variable(s: text.AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
+    function variable(s: AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
       return {scope: "constr.variable", text: s}
     }
     const x1 = [notation("["),variable("d")];
@@ -110,7 +111,7 @@ describe("AnnotatedText", () => {
 
   it("mapAnnotation", (() => {    
     let hist : [string,text.Annotation,number,number][] = [];
-    let x : text.AnnotatedText = "foo";
+    let x : AnnotatedText = "foo";
     assert.deepStrictEqual(text.mapAnnotation(x,(plainText,annotation,start, startD) => {
       hist.push([plainText,annotation,start, startD])
       return Object.assign(text.copyAnnotation(annotation),{text:plainText})

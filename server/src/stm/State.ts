@@ -3,7 +3,7 @@ import * as vscode from 'vscode-languageserver';
 import * as coqProto from './../coqtop/coq-proto';
 import * as parser from './../parsing/coq-parser';
 import * as textUtil from './../util/text-util';
-import {ProofView,} from '../protocol';
+import { ProofView } from '@lib/protocol';
 import {AnnotatedText} from '../util/AnnotatedText';
 import {ProofViewReference, GoalsCache} from './GoalsCache'
 type StateId = number;

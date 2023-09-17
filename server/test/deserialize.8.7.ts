@@ -9,6 +9,7 @@ import * as db from '../src/coqtop/xml-protocol/deserialize.base';
 import * as d from '../src/coqtop/xml-protocol/deserialize.8.7';
 import * as p from '../src/coqtop/xml-protocol/coq-xml';
 import * as stream from 'stream';
+import { AnnotatedText } from '../../lib/src/protocol';
 
 // Defines a Mocha test suite to group tests of similar kind together
 describe("Deserialize 8.7", () => {
@@ -45,13 +46,13 @@ describe("Deserialize 8.7", () => {
   });
 
   it("richpp", async function () {
-    function richpp(s: text.AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
+    function richpp(s: AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
       return {scope: "_", text: s}
     }
-    function notation(s: text.AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
+    function notation(s: AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
       return {scope: "constr.notation", text: s}
     }
-    function variable(s: text.AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
+    function variable(s: AnnotatedText) : (string | text.TextAnnotation | text.ScopedText) {
       return {scope: "constr.variable", text: s}
     }
     const results = await parse(`

@@ -1,5 +1,7 @@
 'use strict';
-import {AnnotatedText} from '../protocol';
+
+import { AnnotatedText } from "@lib/protocol";
+
 
 // export type CoqValue = any;
 

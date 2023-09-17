@@ -2,10 +2,9 @@
 
 
 import * as vscode from 'vscode';
-import * as proto from './protocol';
+import * as proto from '@lib/protocol';
 import {decorations} from './Decorations';
 // import {RangeSet} from './RangeSet';
-
 import { TextEditor } from 'vscode';
 
 function toRange(range: {start: {line: number, character: number}, end: {line: number, character: number}}) {

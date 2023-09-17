@@ -3,7 +3,7 @@
 import {TextDocument, TextDocumentContentChangeEvent, RemoteConsole, Position, Range, Diagnostic} from 'vscode-languageserver';
 import * as vscode from 'vscode-languageserver';
 import {CancellationToken} from 'vscode-jsonrpc';
-import * as thmProto from './protocol';
+import * as thmProto from '@lib/protocol';
 import * as coqProto from './coqtop/coq-proto';
 import * as coqParser from './parsing/coq-parser';
 import * as textUtil from './util/text-util';
@@ -12,6 +12,7 @@ import {CoqStateMachine, GoalResult, StateStatus} from './stm/STM';
 import {FeedbackSync, DocumentFeedbackCallbacks} from './FeedbackSync';
 import {SentenceCollection} from './sentence-model/SentenceCollection';
 import {CoqProject} from './CoqProject';
+import { CommandResult } from '@lib/protocol';
 
 /** vscode needs to export this class */
 export interface TextDocumentItem {
@@ -734,7 +735,7 @@ export class CoqDocument implements TextDocument {
   //     throw error;
   // }
 
-  private toGoal(goal: GoalResult) : thmProto.CommandResult {
+  private toGoal(goal: GoalResult) : CommandResult {
     if(goal.type === 'not-running')
       return goal;
     else if(!this.isStmRunning())
@@ -782,7 +783,7 @@ export class CoqDocument implements TextDocument {
   }
 
 
-  public async stepForward(token: CancellationToken) : Promise<thmProto.CommandResult> {
+  public async stepForward(token: CancellationToken) : Promise<CommandResult> {
     this.assertStm();
     try {
       this.parsingRanges = [];
@@ -797,7 +798,7 @@ export class CoqDocument implements TextDocument {
     }
   }
 
-  public async stepBackward(token: CancellationToken) : Promise<thmProto.CommandResult> {
+  public async stepBackward(token: CancellationToken) : Promise<CommandResult> {
     this.assertStm();
     try {
     const error = await this.stm.stepBackward();
@@ -810,7 +811,7 @@ export class CoqDocument implements TextDocument {
     }
   }
 
-  public async interpretToPoint(location: number|vscode.Position, synchronous = false, token: CancellationToken) : Promise<thmProto.CommandResult> {
+  public async interpretToPoint(location: number|vscode.Position, synchronous = false, token: CancellationToken) : Promise<CommandResult> {
     this.assertStm();
     try {
       const pos = (typeof location === 'number') ? this.positionAt(location) : location;
@@ -829,11 +830,11 @@ export class CoqDocument implements TextDocument {
 
   }
 
-  public async interpretToEnd(synchronous = false, token: CancellationToken) : Promise<thmProto.CommandResult> {
+  public async interpretToEnd(synchronous = false, token: CancellationToken) : Promise<CommandResult> {
     return await this.interpretToPoint(this.document.getText().length,synchronous,token);
   }
 
-  public async getGoal() : Promise<thmProto.CommandResult> {
+  public async getGoal() : Promise<CommandResult> {
     if(!this.isStmRunning())
       return {type: 'not-running', reason: "not-started"};
     try {
@@ -843,7 +844,7 @@ export class CoqDocument implements TextDocument {
     }
   }
 
-  public async getCachedGoal(pos: vscode.Position, direction: "preceding"|"subsequent") : Promise<thmProto.CommandResult> {
+  public async getCachedGoal(pos: vscode.Position, direction: "preceding"|"subsequent") : Promise<CommandResult> {
     if(!this.isStmRunning())
       return {type: 'not-running', reason: "not-started"};
     try {
@@ -853,7 +854,7 @@ export class CoqDocument implements TextDocument {
     }
   }
 
-  public async getStatus(force: boolean) : Promise<thmProto.CommandResult> {
+  public async getStatus(force: boolean) : Promise<CommandResult> {
     if(!this.isStmRunning())
       return {type: 'not-running', reason: "not-started"};
     try {

@@ -5,7 +5,7 @@ import {CancellationToken} from 'vscode-jsonrpc';
 import * as vscode from 'vscode-languageserver';
 import * as coqProto from './../coqtop/coq-proto';
 import * as util from 'util';
-import * as proto from './../protocol';
+import * as proto from '@lib/protocol';
 import * as textUtil from './../util/text-util';
 import * as coqtop from './../coqtop/CoqTop';
 import * as coqParser from './../parsing/coq-parser';
@@ -18,6 +18,7 @@ import * as text from '../util/AnnotatedText'
 import {GoalsCache} from './GoalsCache';
 import * as semver from 'semver';
 import { Settings } from '@lib/settings';
+import { BusyResult, FailValue, FailureResult, FailureTag, FocusPosition, Goal, InterruptedResult, NoProofResult, NotRunningResult, ProofViewResult, UnfocusedGoalStack } from '@lib/protocol';
 
 export {StateStatus} from './State';
 
@@ -70,11 +71,11 @@ const dummyCallbacks : StateMachineCallbacks = {
 
 export type CommandIterator = (begin: Position, end?: Position) => Iterable<{text: string, range: Range}>;
 
-type GoalErrorResult = proto.NotRunningResult | proto.FailureResult | proto.InterruptedResult
-export type GoalResult = proto.NoProofResult | proto.NotRunningResult | proto.BusyResult |
-  proto.FailureResult |
-  proto.ProofViewResult |
-  proto.InterruptedResult
+type GoalErrorResult = NotRunningResult | FailureResult | InterruptedResult
+export type GoalResult = NoProofResult | NotRunningResult | BusyResult |
+  FailureResult |
+  ProofViewResult |
+  InterruptedResult
 
 class InconsistentState {
   constructor(
@@ -82,7 +83,7 @@ class InconsistentState {
   ) {}
 }
 
-class AddCommandFailure implements proto.FailValue {
+class AddCommandFailure implements FailValue {
   constructor(
     public message: AnnotatedText,
     public range: vscode.Range,
@@ -116,7 +117,7 @@ export class CoqStateMachine {
   // feedback may arrive before a sentence is assigned a stateId; buffer feedback messages for later
   private bufferedFeedback: BufferedFeedback[] = [];
   /** The error from the most recent Coq command (`null` if none) */
-  private currentError : proto.FailValue = null;
+  private currentError : FailValue = null;
   private status = STMStatus.Ready;
   /** The current state of coq options */
   private currentCoqOptions : coqtop.CoqOptions = {
@@ -340,9 +341,9 @@ export class CoqStateMachine {
   /**
    * Adds the next command
    * @param verbose - generate feedback messages with more info
-   * @throw proto.FailValue if advancing failed
+   * @throw FailValue if advancing failed
    */
-  public async stepForward(commandSequence: CommandIterator, verbose: boolean = false) : Promise<(proto.FailureResult & proto.FocusPosition)|proto.NotRunningResult|null>  {
+  public async stepForward(commandSequence: CommandIterator, verbose: boolean = false) : Promise<(FailureResult & FocusPosition)|NotRunningResult|null>  {
     const endCommand = await this.startCommand();
     if(!endCommand)
       return;
@@ -371,9 +372,9 @@ export class CoqStateMachine {
   /**
    * Steps back from the currently focused sentence
    * @param verbose - generate feedback messages with more info
-   * @throws proto.FailValue if advancing failed
+   * @throws FailValue if advancing failed
    */
-  public async stepBackward() : Promise<proto.NotRunningResult|null>  {
+  public async stepBackward() : Promise<NotRunningResult|null>  {
     const endCommand = await this.startCommand();
     if(!endCommand)
       return null;
@@ -403,7 +404,7 @@ export class CoqStateMachine {
     //   const start = textUtil.positionAtRelative(sent.getRange().start,sent.getText(),err.range.start);
     //   const end = textUtil.positionAtRelative(sent.getRange().start,sent.getText(),err.range.stop);
     //   const range = Range.create(start,end); // err.range
-    //   return Object.assign<proto.FailureTag,proto.FailValue>({type: 'failure'}, <proto.FailValue>{message: err.message, range: range, sentence: this.sentences.get(err.stateId).getRange()})
+    //   return Object.assign<proto.FailureTag,FailValue>({type: 'failure'}, <FailValue>{message: err.message, range: range, sentence: this.sentences.get(err.stateId).getRange()})
     else
       throw err;
   }
@@ -426,7 +427,7 @@ export class CoqStateMachine {
       if(error instanceof coqtop.CallFailure) {
         const sent = this.focusedSentence;
         const failure = await this.handleCallFailure(error, {range: sent.getRange(), text: sent.getText() });
-        return Object.assign(failure, <proto.FailureTag>{type: 'failure'})
+        return Object.assign(failure, <FailureTag>{type: 'failure'})
       } else
         return this.convertCoqTopError(error)
     } finally {
@@ -470,7 +471,7 @@ export class CoqStateMachine {
   }
 
 
-  public async getStatus(force: boolean) : Promise<(proto.FailureResult & proto.FocusPosition)|proto.NotRunningResult|null> {
+  public async getStatus(force: boolean) : Promise<(FailureResult & FocusPosition)|NotRunningResult|null> {
     if(!this.isCoqReady())
       return {type: 'not-running', reason: "not-started"}
     const endCommand = await this.startCommand();
@@ -490,9 +491,9 @@ export class CoqStateMachine {
   /** Interpret to point
    * Tell Coq to process the proof script up to the given point
    * This may not fully process everything, or it may rewind the state.
-   * @throws proto.FailValue if advancing failed
+   * @throws FailValue if advancing failed
    */
-  public async interpretToPoint(position: Position, commandSequence: CommandIterator, interpretToEndOfSentence: boolean, synchronous: boolean, token: CancellationToken) : Promise<(proto.FailureResult & proto.FocusPosition)|proto.NotRunningResult|null> {
+  public async interpretToPoint(position: Position, commandSequence: CommandIterator, interpretToEndOfSentence: boolean, synchronous: boolean, token: CancellationToken) : Promise<(FailureResult & FocusPosition)|NotRunningResult|null> {
     const endCommand = await this.startCommand();
     if(!endCommand)
       return;
@@ -811,7 +812,7 @@ private routeId = 1;
   /**
    * Converts a CallFailure from coqtop (where ranges are w.r.t. the start of the command/sentence) to a FailValue (where ranges are w.r.t. the start of the Coq script).
    */
-  private async handleCallFailure(error: coqtop.CallFailure, command: {range: Range, text: string}) : Promise<proto.FailValue> {
+  private async handleCallFailure(error: coqtop.CallFailure, command: {range: Range, text: string}) : Promise<FailValue> {
     let errorRange : Range = undefined;
     if(error.range) {
       const version = this.coqtop.getVersion();
@@ -839,8 +840,8 @@ private routeId = 1;
     return this.currentError;
   }
 
-  private parseConvertGoal(goal: coqProto.Subgoal) : proto.Goal {
-    return <proto.Goal>{
+  private parseConvertGoal(goal: coqProto.Subgoal) : Goal {
+    return <Goal>{
       id: goal.id,
       goal: server.project.getPrettifySymbols().prettify(goal.goal),
       hypotheses: goal.hypotheses.map((hyp) => {
@@ -854,7 +855,7 @@ private routeId = 1;
     };
   }
 
-  private convertUnfocusedGoals(focusStack: coqProto.UnfocusedGoalStack) : proto.UnfocusedGoalStack {
+  private convertUnfocusedGoals(focusStack: coqProto.UnfocusedGoalStack) : UnfocusedGoalStack {
     if(focusStack)
       return {
         before: focusStack.before.map(this.parseConvertGoal),

@@ -1,7 +1,7 @@
 import * as diff from 'diff';
 
-import {AnnotatedText, TextAnnotation, ScopedText} from '../protocol';
-export {ProofView, Goal, Hypothesis, AnnotatedText, TextAnnotation, ScopedText} from '../protocol';
+import { AnnotatedText, ScopedText, TextAnnotation } from '@lib/protocol';
+export { AnnotatedText, ScopedText, TextAnnotation } from '@lib/protocol';
 
 
 export interface Annotation {

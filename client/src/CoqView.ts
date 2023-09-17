@@ -1,14 +1,13 @@
 'use strict';
 
 import * as vscode from 'vscode'
-
-import * as proto from './protocol'
+import { CommandResult, UnfocusedGoalStack } from '@lib/protocol';
 
 export enum DisplayState {
   Proof, Top, Error
 }
 
-export function getDisplayState(state: proto.CommandResult) {
+export function getDisplayState(state: CommandResult) {
   switch(state.type) {
     case 'failure':
       return DisplayState.Error;
@@ -23,14 +22,14 @@ export function getDisplayState(state: proto.CommandResult) {
   }
 }
 
-function countUnfocusedGoalStack(u: proto.UnfocusedGoalStack|undefined) : number {
+function countUnfocusedGoalStack(u: UnfocusedGoalStack|undefined) : number {
   if(u)
     return u.before.length + u.after.length + countUnfocusedGoalStack(u.next);
   else
     return 0;
 }
 
-export function countAllGoals(state: proto.CommandResult): number {
+export function countAllGoals(state: CommandResult): number {
   if(state.type === 'proof-view') {
     const result =
       state.goals.length
@@ -52,11 +51,11 @@ export function adjacentPane(pane: vscode.ViewColumn) : vscode.ViewColumn {
 
 export interface CoqView extends vscode.Disposable {
 
-  update(state: proto.CommandResult) : void;
+  update(state: CommandResult) : void;
   // message(message: string) : void;
   readonly resize : vscode.Event<number>;
 
-  show(pane: vscode.ViewColumn, state?: proto.CommandResult) : Promise<void>;
+  show(pane: vscode.ViewColumn, state?: CommandResult) : Promise<void>;
 
   isVisible() : boolean;
 

@@ -1,5 +1,4 @@
-import {AnnotatedText, TextAnnotation} from '../protocol';
-import {combineAnnotationText, Annotation, mapAnnotation} from './AnnotatedText';
+import {combineAnnotationText, Annotation, mapAnnotation, AnnotatedText, TextAnnotation} from './AnnotatedText';
 import * as server from '../server';
 import { Substitution } from '@lib/settings';
 

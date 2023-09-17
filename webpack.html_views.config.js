@@ -11,26 +11,6 @@ module.exports = withDefaults({
     goals: path.resolve(__dirname, "./html_views/src/goals/goals.ts"),
     ltacprof: path.resolve(__dirname, "./html_views/src/ltacprof/ltacprof.ts"),
   },
-  module: {
-    rules: [
-      {
-        test: /\.([cm]?ts|tsx)$/,
-        exclude: /node_modules/,
-        use: {
-            loader: "ts-loader",
-            options: {
-                "projectReferences": true
-            }
-        }
-      }
-    ]
-  },
-  resolve: {
-    modules: [
-      "node_modules",
-      path.resolve(__dirname)
-    ]
-  },
   output: {
     filename: '[name].js',
     path: path.join(__dirname, './html_views/out')
