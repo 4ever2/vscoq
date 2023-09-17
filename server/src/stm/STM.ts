@@ -6,7 +6,7 @@ import * as vscode from 'vscode-languageserver';
 import * as coqProto from './../coqtop/coq-proto';
 import * as util from 'util';
 import * as proto from '@lib/protocol';
-import * as textUtil from './../util/text-util';
+import * as textUtil from '@lib/text-util';
 import * as coqtop from './../coqtop/CoqTop';
 import * as coqParser from './../parsing/coq-parser';
 import * as errorParsing from '../parsing/error-parsing';

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode-languageserver';
 import * as ast from '../parsing/ast-types';
 import * as parser from '../parsing/coq-parser';
-import * as textUtil from '../util/text-util';
+import * as textUtil from '@lib/text-util';
 
 // // export enum SymbolKind {
 // //   Definition,

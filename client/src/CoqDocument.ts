@@ -13,7 +13,6 @@ import {Highlights} from './Highlights';
 // import {MDCoqView} from './MDCoqView';
 import {HtmlCoqView} from './HtmlCoqView';
 import {HtmlLtacProf} from './HtmlLtacProf';
-import * as textUtil from './text-util';
 import {extensionContext} from './extension';
 import {CoqDocumentLanguageServer} from './CoqLanguageServer';
 import {CoqView, adjacentPane} from './CoqView';
@@ -21,6 +20,7 @@ import {StatusBar} from './StatusBar';
 import {CoqProject} from './CoqProject';
 import * as psm from './prettify-symbols-mode';
 import * as proto from '@lib/protocol';
+import { positionIsBefore } from '@lib/text-util';
 
 namespace DisplayOptionPicks {
   type T = vscode.QuickPickItem & {displayItem: number};
@@ -270,7 +270,7 @@ export class CoqDocument implements vscode.Disposable {
       return;
     editor.selections = [new vscode.Selection(pos, pos)]
     if(scroll) {
-      if (scrollHorizontal || textUtil.positionIsBefore(pos, this.document.lineAt(pos.line).range.end))
+      if (scrollHorizontal || positionIsBefore(pos, this.document.lineAt(pos.line).range.end))
         editor.revealRange(new vscode.Range(pos, pos), vscode.TextEditorRevealType.Default)
       else
         editor.revealRange(new vscode.Range(pos.line, 0, pos.line + 1, 0), vscode.TextEditorRevealType.Default)

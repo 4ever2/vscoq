@@ -1,5 +1,6 @@
 'use strict';
-import {Position, Range, TextDocumentContentChangeEvent} from 'vscode-languageserver';
+import { Position, Range, TextDocumentContentChangeEvent } from 'vscode-languageserver';
+
 
 // 'sticky' flag is not yet supported :()
 const lineEndingRE = /([^\r\n]*)(\r\n|\r|\n)?/;
@@ -51,128 +52,6 @@ export function rangeTouches(range1: Range, range2: Range) : boolean {
 export function rangeToString(r: Range) {
   return `${r.start.line}:${r.start.character}-${r.end.line}:${r.end.character}`;
 }
-// enum PositionComparison {
-//   Before   = 0,
-//   Equal    = 1,
-//   After    = 2,
-// }
-// export function comparePositions(pos1: Position, pos2: Position) : PositionComparison {
-//   if(pos1.line < pos2.line)
-//     return PositionComparison.Before;
-//   else if(pos1.line > pos2.line)
-//     return PositionComparison.After;
-//   else if(pos1.character < pos2.character)
-//     return PositionComparison.Before;
-//   else if(pos1.character > pos2.character)
-//     return PositionComparison.After;
-//   else
-//     return PositionComparison.Equal;
-//   }
-
-// enum PositionRangeIntersection {
-//   Before   = 1 << 0, // 001
-//   Within   = 1 << 1, // 010
-//   After    = 1 << 2, // 100
-//   AtStart  = 3,      // 011 
-//   AtEnd    = 1 << 1, // 10
-// }
-// export function positionRangeIntersection(pos: Position, range: Range) : PositionRangeIntersection {
-//   switch(comparePositions(pos,range.start)) {
-//     case PositionComparison.Before:
-//       return PositionRangeIntersection.Before;
-//     case PositionComparison.Equal:
-//     case PositionComparison.After:
-//       // pos.line >= range.end.line
-//       if(pos.line > range.end.line || pos.character > range.end.character)
-//         return PositionRangeIntersection.After;
-//       else
-//         return PositionRangeIntersection.Within;
-//   }
-// }
-// enum EndPositionRangeIntersection {
-//   EndBefore  = 1,
-//   EndAfter   = 2,
-//   EndWithin  = 3,
-// }
-// export function endPositionRangeIntersection(pos: Position, range: Range) : EndPositionRangeIntersection {
-//   switch(comparePositions(pos,range.start)) {
-//     case PositionComparison.Before:
-//     case PositionComparison.Equal:
-//       return EndPositionRangeIntersection.EndBefore;
-//     case PositionComparison.After:
-//       // pos.line >= range.end.line
-//       if(pos.line > range.end.line || pos.character > range.end.character)
-//         return EndPositionRangeIntersection.EndAfter;
-//       else
-//         return EndPositionRangeIntersection.EndWithin;
-//   }
-// }
-
-// enum RangeIntersection {
-//   StartBefore = PositionRangeIntersection.Before,        // 1      = 0001
-//   StartAfter  = PositionRangeIntersection.After,         // 2      = 0010
-//   StartWithin = PositionRangeIntersection.Within,        // 3      = 0011
-//   EndBefore   = EndPositionRangeIntersection.EndBefore,  // 1 << 2 = 0100
-//   EndAfter    = EndPositionRangeIntersection.EndAfter,   // 2 << 2 = 1000
-//   EndWithin   = EndPositionRangeIntersection.EndWithin,  // 3 << 2 = 1100
-
-//   /** Ex: [++++  ----] or [++++----] */
-//   Before = StartBefore | EndBefore,
-//   /** Ex: [+++**---] */
-//   OverlapBefore = StartBefore | EndWithin,
-//   /** Ex: [+++***] or [+++***+++] or [***+++] */
-//   Contains,
-
-//   /** Ex: [****] */
-//   Equal,
-
-//   /** Ex: [---***] or [---***] or [---***---] */
-//   Within,
-//   /** Ex: [---**+++] */
-//   OverlapAfter,
-//   /** Ex: [----  ++++] or [----++++] */
-//   After
-// }
-// export function rangeIntersection(range1: Range, range2: Range) : RangeIntersection {
-//   let result = <number>comparePositions(range1.start,range2.start) | (<number>comparePositions(range1.start,range2.start)) << 3;
-  
-//   if(result & RangeIntersection.StartLT || result & RangeIntersection.StartEq)
-//     result|= RangeIntersection.StartLE;
-//   else if(result & RangeIntersection.StartGT || result & RangeIntersection.StartEq)
-//     result|= RangeIntersection.StartGE;
-
-//   if(result & RangeIntersection.EndLT || result & RangeIntersection.StartEq)
-//     result|= RangeIntersection.StartLE;
-//   else if(result & RangeIntersection.StartGT || result & RangeIntersection.StartEq)
-//     result|= RangeIntersection.StartGE;
-
-//   return result;
-// }
-
-/** Calculates the offset into text of pos, where textStart is the position where text starts and both pos and textStart are absolute positions 
- * @return the offset into text indicated by pos, or -1 if pos is out of range
- * 
- * 'abc\ndef'
- * 'acbX\ndef'
- * +++*** --> +++_***
- * */
-export function relativeOffsetAtAbsolutePosition(text: string, textStart: Position, pos: Position) : number {
-  let line = textStart.line;
-  let currentOffset = 0;
-  // count the relative lines and offset w.r.t text
-  while(line < pos.line) {
-    const match = lineEndingRE.exec(text.substring(currentOffset));
-    ++line;   // there was a new line
-    currentOffset += match[0].length;
-  }
-
-  if(line > pos.line)
-    return -1
-  else if(textStart.line === pos.line)
-    return Math.max(-1, pos.character - textStart.character);
-  else // if(line === pos.line)
-    return Math.max(-1, pos.character + currentOffset);
-}
 
 export function offsetAt(text: string, pos: Position) : number {
   let line = pos.line;
@@ -190,55 +69,6 @@ export function offsetAt(text: string, pos: Position) : number {
 }
 
 /**
- * @returns the Position (line, column) for the location (character position), assuming that text begins at start
- */
-export function positionAtRelative(start: Position, text: string, offset: number) : Position {
-  if(offset > text.length)
-    offset = text.length;
-  let line = start.line;
-  let currentOffset = 0;  // offset into text we are current at; <= `offset`
-  let lineOffset = start.character;
-  while(true) {
-    const match = lineEndingRE.exec(text.substring(currentOffset));
-    // match[0] -- characters plus newline
-    // match[1] -- characters up to newline
-    // match[2] -- newline (\n, \r, or \r\n)
-    if(!match || match[0].length === 0 || currentOffset + match[1].length >= offset)
-      return Position.create(line, lineOffset + Math.max(offset - currentOffset, 0))
-    currentOffset+= match[0].length;
-    lineOffset = 0;
-    ++line;
-  }
-}
-
-/**
- * @returns the Position (line, column) for the location (character position), assuming that text begins at start.
- * 
- * @param offset -- counts all newlines (e.g. '\r\n') as *one character* 
- */
-export function positionAtRelativeCNL(start: Position, text: string, offset: number) : Position {
-  if(offset > text.length) {
-    return positionAtRelative(start, text, text.length);
-  }
-  let line = start.line;
-  let currentOffset = 0;  // offset into text we are current at; <= `offset`
-  let lineOffset = start.character;
-  while(true) {
-    const match = lineEndingRE1.exec(text.substring(currentOffset));
-    // match[0] -- characters plus newline
-    // match[1] -- characters up to newline
-    // match[2] -- newline (\n, \r, or \r\n)
-    const value = match[0].length - match[1].length;
-    if(!match || match[0].length === 0 || match[1].length >= offset)
-      return Position.create(line, lineOffset + offset)
-    currentOffset+= match[0].length;
-    offset -= match[1].length + (Math.floor(value / 2)  + 1);
-    lineOffset = 0;
-    line += Math.floor((value + 1) / 2);
-  }
-}
-
-/**
  * @returns the Position (line, column) for the location (character position)
  */
 export function positionAt(text: string, offset: number) : Position {
@@ -248,6 +78,8 @@ export function positionAt(text: string, offset: number) : Position {
   let lastIndex = 0;
   while(true) {
     const match = lineEndingRE.exec(text.substring(lastIndex));
+    // if(!match || lastIndex + match[1].length >= offset)
+      // return new Position(line, offset - lastIndex)
     if(lastIndex + match[1].length >= offset)
       return Position.create(line, Math.max(offset - lastIndex,0))
     lastIndex+= match[0].length;
@@ -330,6 +162,81 @@ export function rangeDeltaTranslate(range: Range, delta: RangeDelta) {
     positionRangeDeltaTranslate(range.start, delta),
     positionRangeDeltaTranslateEnd(range.end, delta)
   )
+}
+
+
+/** Calculates the offset into text of pos, where textStart is the position where text starts and both pos and textStart are absolute positions 
+ * @return the offset into text indicated by pos, or -1 if pos is out of range
+ * 
+ * 'abc\ndef'
+ * 'acbX\ndef'
+ * +++*** --> +++_***
+ * */
+export function relativeOffsetAtAbsolutePosition(text: string, textStart: Position, pos: Position) : number {
+  let line = textStart.line;
+  let currentOffset = 0;
+  // count the relative lines and offset w.r.t text
+  while(line < pos.line) {
+    const match = lineEndingRE.exec(text.substring(currentOffset));
+    ++line;   // there was a new line
+    currentOffset += match[0].length;
+  }
+
+  if(line > pos.line)
+    return -1
+  else if(textStart.line === pos.line)
+    return Math.max(-1, pos.character - textStart.character);
+  else // if(line === pos.line)
+    return Math.max(-1, pos.character + currentOffset);
+}
+
+/**
+ * @returns the Position (line, column) for the location (character position), assuming that text begins at start
+ */
+export function positionAtRelative(start: Position, text: string, offset: number) : Position {
+  if(offset > text.length)
+    offset = text.length;
+  let line = start.line;
+  let currentOffset = 0;  // offset into text we are current at; <= `offset`
+  let lineOffset = start.character;
+  while(true) {
+    const match = lineEndingRE.exec(text.substring(currentOffset));
+    // match[0] -- characters plus newline
+    // match[1] -- characters up to newline
+    // match[2] -- newline (\n, \r, or \r\n)
+    if(!match || match[0].length === 0 || currentOffset + match[1].length >= offset)
+      return Position.create(line, lineOffset + Math.max(offset - currentOffset, 0))
+    currentOffset+= match[0].length;
+    lineOffset = 0;
+    ++line;
+  }
+}
+
+/**
+ * @returns the Position (line, column) for the location (character position), assuming that text begins at start.
+ * 
+ * @param offset -- counts all newlines (e.g. '\r\n') as *one character* 
+ */
+export function positionAtRelativeCNL(start: Position, text: string, offset: number) : Position {
+  if(offset > text.length) {
+    return positionAtRelative(start, text, text.length);
+  }
+  let line = start.line;
+  let currentOffset = 0;  // offset into text we are current at; <= `offset`
+  let lineOffset = start.character;
+  while(true) {
+    const match = lineEndingRE1.exec(text.substring(currentOffset));
+    // match[0] -- characters plus newline
+    // match[1] -- characters up to newline
+    // match[2] -- newline (\n, \r, or \r\n)
+    const value = match[0].length - match[1].length;
+    if(!match || match[0].length === 0 || match[1].length >= offset)
+      return Position.create(line, lineOffset + offset)
+    currentOffset+= match[0].length;
+    offset -= match[1].length + (Math.floor(value / 2)  + 1);
+    lineOffset = 0;
+    line += Math.floor((value + 1) / 2);
+  }
 }
 
 /** Sums the two positions. In effect, gets the absolute position of `relPos`.

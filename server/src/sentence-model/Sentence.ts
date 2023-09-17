@@ -1,4 +1,4 @@
-import * as textUtil from '../util/text-util'
+import * as textUtil from '@lib/text-util'
 import {Position, Range} from 'vscode-languageserver';
 import * as vscode from 'vscode-languageserver';
 import {State} from '../stm/State'

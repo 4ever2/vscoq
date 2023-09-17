@@ -2,8 +2,27 @@
  * 
  */
 import * as vscode from 'vscode';
-import * as textUtil from './text-util';
 import { ComputingStatus } from '@lib/protocol';
+
+
+const formatTimSpanNumber = new Intl.NumberFormat(undefined,<Intl.NumberFormatOptions>{useGrouping: false, minimumIntegerDigits: 2, maximumFractionDigits: 0});
+function formatTimeSpanMS(durationMS: number) {
+  const days = Math.floor(durationMS / 1000 / 60 / 60 / 24);
+  const hours = Math.floor(durationMS / 1000 / 60 / 60) - days*24;
+  const minutes = Math.floor(durationMS / 1000 / 60) - hours*60;
+  const seconds = Math.floor(durationMS / 1000) - minutes*60;
+  
+  if (days > 0)
+    return `${days}.${formatTimSpanNumber.format(hours)}:${formatTimSpanNumber.format(minutes)}:${formatTimSpanNumber.format(seconds)}`;
+  else
+    return `${hours}:${formatTimSpanNumber.format(minutes)}:${formatTimSpanNumber.format(seconds)}`;
+  // else if(hours > 0)
+  //   return `${hours}:${formatTimSpanNumber.format(minutes)}:${formatTimSpanNumber.format(seconds)}`;
+  // else if(minutes > 0)
+  //   return `${minutes}:${formatTimSpanNumber.format(seconds)}`;
+  // else
+  //   return `${seconds}`;
+}
 
 type StoppedState = { status: "stopped" };
 type ReadyState = { status: "ready" };
@@ -83,7 +102,7 @@ class CoqStatusBarManager implements vscode.Disposable {
             this.setComputeMS(state.computeTimeMS);
             break;
           case ComputingStatus.Interrupted:
-            this.computingStatusBar.text = `[Interrupted $(watch) ${textUtil.formatTimeSpanMS(state.computeTimeMS)}]`;
+            this.computingStatusBar.text = `[Interrupted $(watch) ${formatTimeSpanMS(state.computeTimeMS)}]`;
             this.computingStatusBar.show();
             this.interruptButtonStatusBar.hide();
             break;
@@ -95,7 +114,7 @@ class CoqStatusBarManager implements vscode.Disposable {
 
   private setComputeMS(timeMS: number) {
     if(timeMS > 2000) {
-      this.computingStatusBar.text = `[${textUtil.formatTimeSpanMS(timeMS)}]`;
+      this.computingStatusBar.text = `[${formatTimeSpanMS(timeMS)}]`;
       if(!this.showingComputingTimeStatus) {
         this.showingComputingTimeStatus = true;
         this.computingStatusBar.show();

@@ -6,7 +6,7 @@ import {CancellationToken} from 'vscode-jsonrpc';
 import * as thmProto from '@lib/protocol';
 import * as coqProto from './coqtop/coq-proto';
 import * as coqParser from './parsing/coq-parser';
-import * as textUtil from './util/text-util';
+import * as textUtil from '@lib/text-util';
 import {AnnotatedText, textToDisplayString} from './util/AnnotatedText';
 import {CoqStateMachine, GoalResult, StateStatus} from './stm/STM';
 import {FeedbackSync, DocumentFeedbackCallbacks} from './FeedbackSync';
