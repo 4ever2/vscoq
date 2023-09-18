@@ -14,8 +14,6 @@ export class Mutex {
 
   public static reasonCancelled = 'cancelled';
   public static reasonTimout = 'timeout';
-  // public static reasonAllCancelled = 'all-cancelled';
-  // private static announceAllCancelled = 'announce-all-cancelled';
 
   private nextId = 0;
 
@@ -87,7 +85,6 @@ export class Mutex {
             self.locked = true;
             if(!isCancelled)// avoid double decrement
               --this.waitingCount;
-            // this.canceller = cancelNext;
             logger.log(`acquired lock ${myId} ${self.toString()}`);
             return unlockNext;
           })
@@ -97,10 +94,6 @@ export class Mutex {
           --this.waitingCount;
           isCancelled = true;
           logger.log(`locking cancelled for: ${reason}; ${self.toString()}`);
-          // // When we eventually receive the lock, immediately unlock the next waiter
-          // if(reason === Mutex.reasonAllCancelled)
-          //   cancelNext(reason);
-          // But forward the rejection to our awaiter
           return Promise.reject(reason);
         });
     else
@@ -108,17 +101,12 @@ export class Mutex {
         self.locked = true;
         if(!isCancelled)// avoid double decrement
           --this.waitingCount;
-        // self.canceller = cancelNext;
         logger.log(`acquired lock ${myId} ${self.toString()}`);
         return unlockNext;
       }, (reason) => {
         --this.waitingCount;
         isCancelled = true;
         logger.log(`locking cancelled for: ${reason}; ${self.toString()}`);
-        // // When we eventually receive the lock, immediately unlock the next waiter
-        // if(reason === Mutex.reasonAllCancelled)
-        //   cancelNext(reason);
-        // But forward the rejection to our awaiter
         return Promise.reject(reason);
       });
 
@@ -137,24 +125,5 @@ export class Mutex {
 
     return willUnlock;
   }
-
-  /**
-   * Rejects all threads/callers who are awaiting this mutex, but does not affect the current owner of the lock
-   */
-//   public cancelAll() {
-//     if(!this.locked)
-//       return;
-//     logger.log('Mutex.cancelAll()');
-//     this.cancellingInProgress = true;
-//
-//     // Make sure the lock is immediately released upon the next unlock
-//     const result = this.locking.then(() => {
-//       logger.log(`cancel-all next`);
-//     }, () => {
-//       logger.log(`cancel-all next-reject`);
-//     });
-//
-//     this.canceller(Mutex.reasonAllCancelled);
-//   }
 }
 

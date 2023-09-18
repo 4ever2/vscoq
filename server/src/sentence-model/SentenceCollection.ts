@@ -377,19 +377,6 @@ export class SentenceCollection implements vscode.TextDocument {
             && currentOffset+sent.text.length === this.sentences[oldSentenceCandidate].getDocumentEndOffset()
             && sent.text === this.sentences[oldSentenceCandidate].getText())
           fixByLocalGlueing = oldSentenceCandidate - start; //found the old, parsed document again
-/*
-        if (idx >= minCount && start+idx < this.sentences.length
-            && currentOffset+sent.text.length === this.sentences[start+idx].getDocumentEndOffset()
-            && sent.text === this.sentences[start+idx].getText())
-          fixByLocalGlueing = 0; //we probably edited inside the sentence before this
-        else if(idx >= minCount && start+idx+1 < this.sentences.length 
-            && currentOffset+sent.text.length === this.sentences[start+idx+1].getDocumentEndOffset()
-            && sent.text === this.sentences[start+idx+1].getText())
-          fixByLocalGlueing = 1; //we probably joined two sentences by removing a "."
-        else if(idx >= minCount && 0 <= start+idx-1 && start+idx-1 < this.sentences.length 
-              && currentOffset+sent.text.length === this.sentences[start+idx-1].getDocumentEndOffset()
-              && sent.text === this.sentences[start+idx-1].getText())
-          fixByLocalGlueing = -1;//we probably seperated a sentence into two by adding a "."*/
         
         if(fixByLocalGlueing !== undefined) {
           // no need to parse further; keep remaining sentences
@@ -407,10 +394,7 @@ export class SentenceCollection implements vscode.TextDocument {
             if(this.sentences[start])
               this.sentences[start].prev = this.sentences[start-1] || null;
           }
-          // this.sentences[start+reparsed.length-1].next = this.sentences[start+reparsed.length]||null;
-          // if(start+reparsed.length < this.sentences.length)           
-          //   this.sentences[start+reparsed.length].prev = this.sentences[start+reparsed.length-1]||null;           
-          //
+
           if (removed.length>1 && reparsed.length > 1 && removed[removed.length-2].getText()===reparsed[reparsed.length-2].getText())
             console.log("Internal inefficiency: detecting unchanged suffix after editing and reparsed more than needed ("+reparsed.length+" total), please report.");
           removed.forEach((sent) => sent.dispose());

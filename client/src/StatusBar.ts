@@ -16,12 +16,6 @@ function formatTimeSpanMS(durationMS: number) {
     return `${days}.${formatTimSpanNumber.format(hours)}:${formatTimSpanNumber.format(minutes)}:${formatTimSpanNumber.format(seconds)}`;
   else
     return `${hours}:${formatTimSpanNumber.format(minutes)}:${formatTimSpanNumber.format(seconds)}`;
-  // else if(hours > 0)
-  //   return `${hours}:${formatTimSpanNumber.format(minutes)}:${formatTimSpanNumber.format(seconds)}`;
-  // else if(minutes > 0)
-  //   return `${minutes}:${formatTimSpanNumber.format(seconds)}`;
-  // else
-  //   return `${seconds}`;
 }
 
 type StoppedState = { status: "stopped" };
@@ -179,13 +173,6 @@ export class StatusBar implements vscode.Disposable {
         StatusBar.manager.hide();
     }
   }
-
-  // private currentMessage() : string {
-  //   if(this.state.status === "message" || this.state.status === "computing")
-  //     return (<MessageState|ComputingState>this.state).message;
-  //   else
-  //     return ""
-  // }
 
   public setStateComputing(computeStatus: ComputingStatus, message?: string) {
     let startTime : [number,number];

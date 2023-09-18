@@ -51,7 +51,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
 
   }
 
-  public /* override */ dispose() {
+  public dispose() {
     if(this.isRunning() && this.callbacks.onClosed) {
       this.callbacks.onClosed(false);
     }
@@ -101,7 +101,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   }
 
 
-  protected async /* override */ checkState() : Promise<void> {
+  protected async checkState() : Promise<void> {
     if(this.coqtopProc === null)
       this.startCoq();
     super.checkState();
@@ -125,10 +125,6 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
       server.once('connection', (socket:net.Socket) => {
         this.sockets.push(socket);
         this.console.log(`Client connected on ${name} (port ${socket.localPort})`);
-        // socket.setEncoding('utf8');
-        // // if (dataHandler)
-        //   socket.on('data', (data:string) => dataHandler(data));
-        // socket.on('error', (err:any) => this.onCoqTopError(err.toString() + ` (${name})`));
         resolve(socket);
       });
     });
@@ -194,7 +190,6 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
         this.callbacks.onClosed(true, 'coqtop closed with code: ' + code);
       this.dispose();
     });
-    // this.coqtopProc.stdin.write('\n');
   }
 
   private coqtopOut(data:string) {
@@ -225,9 +220,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     }
     if (semver.satisfies(this.coqtopVersion, ">= 8.9")) {
       var coqtopModule = this.coqidetopBin;
-      // var coqtopModule = 'cmd';
       var args = [
-        // '/D /C', this.coqPath + '/coqtop.exe',
         '-main-channel', mainAddr,
         '-control-channel', controlAddr,
         '-async-proofs', 'on',
@@ -236,9 +229,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
       ];
     } else {
       var coqtopModule = this.coqtopBin;
-      // var coqtopModule = 'cmd';
       var args = [
-        // '/D /C', this.coqPath + '/coqtop.exe',
         '-main-channel', mainAddr,
         '-control-channel', controlAddr,
         '-ideslave',
@@ -250,7 +241,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     return spawn(coqtopModule, args, {detached: false, cwd: this.projectRoot});
   }
 
-  public /* override */ async coqInterrupt() : Promise<boolean> {
+  public async coqInterrupt() : Promise<boolean> {
     if(!this.coqtopProc)
       return false;
     else {

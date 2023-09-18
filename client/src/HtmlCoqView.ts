@@ -9,7 +9,7 @@ import * as psm from "./prettify-symbols-mode";
 import mustache = require("mustache");
 import { ProofViewDiffSettings, SettingsState } from "@lib/settings";
 import { CommandResult } from "@lib/protocol";
-import { ControllerEvent, ProofViewProtocol, ResizeEvent } from '../../lib/src/coqview';
+import { ControllerEvent, ProofViewProtocol, ResizeEvent } from '@lib/coqview';
 
 
 const VIEW_PATH = "html_views";

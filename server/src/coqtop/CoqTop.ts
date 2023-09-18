@@ -103,12 +103,9 @@ export function detectVersion(coqtopModule: string, cwd: string, console?: {log:
 
       coqtop.on('close', () => {
         const ver = /^\s*The Coq Proof Assistant, version (.+?)\s/.exec(result);
-        // if(!ver)
-        //   console.warn('Could not detect coqtop version');
         resolve(!ver ? undefined : ver[1]);
       });
       coqtop.on('error', (code:number) => {
-        // console.warn(`Could not start coqtop; error code: ${code}`)
         reject(new CoqtopSpawnError(coqtopModule, `error code: ${code}`));
       });
     } catch(err) {
@@ -137,7 +134,6 @@ export abstract class IdeSlave {
     return { dispose: () => { this.callbacks.onClosed = undefined; } }
   }
 
-  // connect(version: string, mainR: stream.Readable, mainW: stream.Writable, controlR: stream.Readable, controlW: stream.Writable);
   public abstract dispose() : void;
   public abstract isConnected() : boolean;
   public abstract coqInterrupt() : Promise<boolean>;
@@ -162,11 +158,6 @@ export abstract class CoqTop extends IdeSlave {
   public abstract isRunning() : boolean;
   public abstract getVersion() : semver.SemVer;
   public abstract startCoq() : Promise<InitResult>;
-
-  /** Start coqtop.
-   * Use two ports: one for reading & one for writing; i.e. HOST:READPORT:WRITEPORT
-   */
-  // setupCoqTopReadAndWritePorts() : Promise<void>;
   public abstract isConnected() : boolean;
   public abstract coqInterrupt() : Promise<boolean>;
   public abstract coqInit() : Promise<InitResult>;

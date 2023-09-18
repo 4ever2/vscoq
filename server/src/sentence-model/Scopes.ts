@@ -3,178 +3,8 @@ import * as ast from '../parsing/ast-types';
 import * as parser from '../parsing/coq-parser';
 import * as textUtil from '@lib/text-util';
 
-// // export enum SymbolKind {
-// //   Definition,
-// //   Class,
-// //   Constructor,
-// //   Module, 
-// // }
-
-// // export class SymbolDefinition {
-// //   private range: vscode.Range;
-// //   public constructor(
-// //     /** short name used to declare the symbol */
-// //     public readonly name: string,
-// //     /** full name of the symbol, considering its context (within a module, etc.) */
-// //     public readonly fullName: string,
-// //     /** where the symbol was defined */
-// //     definitionRange: vscode.Range,
-// //     /** what kind of symbol is this? */
-// //     public readonly kind: SymbolKind,
-// //   ) {
-// //     this.range = definitionRange;
-// //   }
-
-// //   public get definitionRange() : vscode.Range {
-// //     return this.range;
-// //   }
-
-// //   public setRange(range: vscode.Range) {
-// //     this.range = range;
-// //   }
-// // }
-
-// // export class SymbolDbState {
-// //   private parent: SymbolDbState | null;
-// //   private children: SymbolDbState[];
-// //   private symbols: SymbolDefinition[];
-
-// //   public lookupIdentifier(ident: string) : SymbolDefinition {
-// //     return undefined;
-// //   }
-// // }
-
-// type QualId = string[];
-
-// /** Determines whether `shortId` is a sub-id of `fullId` */
-// function qualIdMatch(fullId: QualId, shortId: QualId) : boolean {
-//   if(shortId.length > fullId.length)
-//     return false;
-//   for(let idx = 1; idx <= shortId.length; ++idx) {
-//     const fPart = fullId[fullId.length - idx];
-//     const sPart = fullId[fullId.length - idx];
-//     if(fPart !== sPart)
-//       return false;
-//   }
-//   return true;
-// }
-
-// interface SymbolDefinition {
-//   /**  */
-//   // availabilityScope: Scope,
-//   /** where the definition is named */
-//   nameRange: vscode.Range,
-//   /** full qualified id  */
-//   fullId: QualId;
-//   /** the sentence that created the definition */
-//   source: Sentence;
-// }
-
-// abstract class Scope {
-//   public abstract lookupDefinition(id: QualId, currentScope: QualId) : SymbolDefinition|null;
-//   }
-// }
-
-// class TopScope extends Scope {
-//   public lookupDefinition(id: QualId, currentScope: QualId) : SymbolDefinition|null {
-//     return undefined;
-//   }
-  
-// }
-
-// class SectionScope extends Scope {
-//   public lookupDefinition(id: QualId, currentScope: QualId) : SymbolDefinition|null {
-//     return undefined;
-//   }
-// }
-
-// class ModuleScope extends Scope {
-//   public constructor(identifier: string, range: vscode.Range) {
-//     super();
-
-//   }
-
-//   public lookupDefinition(id: QualId, currentScope: QualId) : SymbolDefinition|null {
-//     return undefined;
-//   }
-// }
-
-// class DefinitionScope extends Scope {
-//   private definitions : {identifier: string, range: vscode.Range}[];
-//   public constructor(definitions: {identifier: string, range: vscode.Range}[], private source: Sentence) {
-//     super();
-//     // We store the defs in reverse order, so that symbols can be searched from the start
-//     this.definitions = definitions.reverse();
-//   }
-
-//   public lookupDefinition(id: QualId, currentScope: QualId) : SymbolDefinition|null {
-//     const fullId = [...currentScope, undefined];    
-//     for(let def of this.definitions) {
-//       fullId[fullId.length-1] = def.identifier;
-//       if(qualIdMatch(fullId, id)) {
-//         return {
-//           nameRange: def.range,
-//           fullId: fullId,
-//           source: this.source,
-//         }
-//       }
-//     }
-//     return null;
-//   }
-// }
-
-
-
-// // class ScopeStack {
-// //   private parent : Scope;
-// //   private scopes: Scope[];
-
-// //   public getParent() {
-// //     return this.parent;
-// //   }
-
-// //   public lookupDefinition(id: QualId) : {scope: Scope} {
-// //     return undefined;
-// //   }
-
-// // }
-
-
-// // export class DocumentScopes {
-// //   private root: SymbolDbState;
-// //   private currentState: SymbolDbState;
-
-// //   public processSentenceAst(ast: ast.Sentence) : SymbolDbState {
-// //     return this.currentState;
-// //   }
-// // }
 
 export type QualId = string[];
-// class QualId extends Array<string> {
-//   public contains(id: QualId|string[]) : boolean {
-//     return containsQualId(this,id); 
-//   }
-
-//   public resolve(id: QualId|string[]) : QualId | null {
-//     return resolveQualId(this,id); 
-//   }
-
-//   public match(x: QualId|string[]) : QualId|null {
-//     return matchQualId(this,x);
-//   }
-// }
-
-// export function containsQualId(id1: QualId, id2: QualId) : boolean {
-//   if(id2.length > id1.length)
-//     return false;
-//   for(let idx = 1; idx <= id2.length; ++idx) {
-//     const fPart = id1[id1.length - idx];
-//     const sPart = id2[id2.length - idx];
-//     if(fPart !== sPart)
-//       return false;
-//   }
-//   return true;
-// }
 
 export function resolveQualId(id1: QualId, id2: QualId) : QualId | null { 
   if(id2.length > id1.length)
@@ -208,31 +38,7 @@ export function matchQualId(x: QualId, y: QualId) : {which: 0|1, prefix: QualId,
     id: x };
   }
 
-// function matchQualId(prefix: QualId|string[], ident: string, id: QualId|string[]) : {assumedPrefix: QualId, id: QualId}|null {
-//   if(id.length < prefix.length+1) {
-
-
-//   if(id.length <= prefix.length+1) {
-//     const result = resolveQualId([...prefix, ident], id);
-//     if(result)
-//       return {assumedPrefix: emptyQualId, id: result}
-//     else
-//       return null;
-//   } else {
-//     const result = resolveQualId(id, [...prefix, ident]);
-//     if(result)
-//       return {assumedPrefix: id.slice(), id: result}
-//     else
-//       return null;    
-
-//   }
-    
-  // x is now the shortest
-
-
 export interface SymbolInformation<S> {
-  /**  */
-  // availabilityScope: Scope,
   /** where the definition is named */
   symbol: Symbol,
   /** full qualified id  */
@@ -427,43 +233,11 @@ export class ScopeDeclaration<S extends {prev: S, next: S, getScope() : ScopeDec
       return s;
     } else
       return null;
-
-    // const fullId = resolveQualId([...prefixes, s.id[s.id.length-1]], [...s.assumedPrefix, ...s.id]);
-    // if(fullId) {
-    //   s.assumedPrefix = [];
-    //   s.id = fullId;
-    //   return s;
-    // } else
-    //   return null
   }
 
   private resolveId(id: QualId, idPrefixes: QualId[], flags: ScopeFlags) : SymbolInformation<S>|null {
     return this.resolveSymbol(this.lookupHere(id, flags), idPrefixes);
   }
-
-  // public lookup(id: QualId, flags: ScopeFlags) : SymbolInformation<S>|null {
-  //   let scope : ScopeDeclaration<S> = this;
-  //   const results: SymbolInformation<S>[] = [];
-  //   const flagStack : ScopeFlags[] = [];
-  //   while(scope) {
-  //     const result = scope.lookupHere(id,flags);
-  //     if(result) {
-  //       results.push(result);
-  //       scope = scope.getParentScope();
-  //     }
-  //     // Only check the internals of the first declaration
-  //     flags &= ~ScopeFlags.Private;
-
-  //     if(scope.isEnd()) {
-  //       flagStack.push(flags);
-  //       flags &= ~ScopeFlags.Local;
-  //     } else if(scope.isBegin() && flagStack.length > 0)
-  //       flags = flagStack.pop();
-  //     scope = scope.getPreviousSentence();
-  //   }
-
-  //   return null;
-  // }
 
   public lookup(id: QualId, flags: ScopeFlags) : SymbolInformation<S>[] {
     let idPrefixes = this.getPrefixes();
@@ -534,16 +308,12 @@ namespace parseAstSymbols {
   export function module<S extends {prev: S, next: S, getScope() : ScopeDeclaration<S>|null}>(ast: ast.SModule, sent: S, pos: vscode.Position) : ScopeDeclaration<S> {
     const result = new ScopeDeclaration(sent, [ast.ident.text], {kind: "begin", name: ast.ident.text, exports: ast.intro==="Export"});
     result.addExportSymbol(identToSymbol(ast.ident, SymbolKind.Module, pos));
-    //  [ ast.ident, ...Array.prototype.concat(...ast.bindings.map((b) => b.idents)) ]
-    //   .map((id) => identToSymbol(id, vscode.SymbolKind.Module, pos))
     return result;
   }
   export function moduleType<S extends {prev: S, next: S, getScope() : ScopeDeclaration<S>|null}>(ast: ast.SModuleType, sent: S, pos: vscode.Position) : ScopeDeclaration<S> {
     const result = new ScopeDeclaration(sent, [ast.ident.text], {kind: "begin", name: ast.ident.text, exports: false});
     result.addExportSymbol(identToSymbol(ast.ident, SymbolKind.Module, pos));
     return result;
-    // return [ ast.ident, ...Array.prototype.concat(...ast.bindings.map((b) => b.idents)) ]
-    //   .map((id) => identToSymbol(id, vscode.SymbolKind.Module, pos))
   }
   export function moduleBind<S extends {prev: S, next: S, getScope() : ScopeDeclaration<S>|null}>(ast: ast.SModuleBind, sent: S, pos: vscode.Position) : ScopeDeclaration<S> {
     const result = new ScopeDeclaration(sent, [], null);

@@ -117,7 +117,6 @@ describe("AnnotatedText", () => {
       return Object.assign(text.copyAnnotation(annotation),{text:plainText})
     }),{ text: 'foo' })
     assert.deepStrictEqual(hist, [["foo",{},0,0]]);
-    //////
     hist = [];
     x = [{substitution: "bar!!", text: "foo"}, "def"]
     assert.deepStrictEqual(text.mapAnnotation(x,(plainText,annotation,start, startD) => {

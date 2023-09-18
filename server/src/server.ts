@@ -24,13 +24,6 @@ export let project : CoqProject = null;
 // since coqidetop and coqtop does not support ipv6
 setDefaultResultOrder('ipv4first');
 
-// // Create a simple text document manager. The text document manager
-// // supports full document sync only
-// let documents: TextDocuments = new TextDocuments();
-// // Make the text document manager listen on the connection
-// // for open, change and close text document events
-// documents.listen(connection);
-
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites. 
 connection.onInitialize((params): InitializeResult => {
@@ -40,20 +33,9 @@ connection.onInitialize((params): InitializeResult => {
   console.error = (e) => {connection.console.error(">>> " + e)};
 
   connection.console.log(`Coq Language Server: process.version: ${process.version}, process.arch: ${process.arch}`);
-  // connection.console.log(`execArgv: ${process.execArgv.join(' ')}`);
-  // connection.console.log(`argv: ${process.argv.join(' ')}`);
-  // connection.console.log('coq path: ' + currentSettings.coqPath);
 
-  // let x: vscodeLangServer.RemoteConsole = {
-  //   log: (x) => {},
-  //   error: (x) => {},
-  //   warn: (x) => {},
-  //   info: (x) => {}
-  // }
-  // project = new CoqProject(params.rootPath, x);
   project = new CoqProject(params.rootPath, connection);
 
-  // var x : ServerCapabilities;
 	return {
 		capabilities: <ServerCapabilities>{
 			textDocumentSync: TextDocumentSyncKind.Incremental,
@@ -69,40 +51,13 @@ connection.onShutdown(() => {
   project.shutdown();
 })
 
-// documents.onDidChangeContent((change) => {
-//   var uri = change.document.uri;
-// });
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
-// documents.onDidChangeContent((change) => {
-//   var uri = change.document.uri;
-//   if (typeof coqInstances[uri] === "undefined") {
-//   	connection.console.log(`${uri} opened.`);
-//     coqInstances[uri] = new CoqDocument(coqPath, change.document, connection.console, {
-//       sendHighlightUpdates: (h) => sendHighlightUpdates(uri, h),
-//       sendDiagnostics: (diagnostics) => sendDiagnostics(uri, diagnostics)
-//       });
-//   }
-//   else {
-//   }
-// });
-
-
 // The settings have changed. Is send on server activation
 // as well.
 connection.onDidChangeConfiguration((change) => {
 	let settings = change.settings as Settings;
   project.updateSettings(settings);
 	connection.console.log('Coqtop binPath is: ' + project.settings.coqtop.binPath);
-	// Revalidate any open text documents
-	//documents.all().forEach(validateTextDocument);
 });
-
-
-// connection.onDidChangeWatchedFiles((change) => {
-// 	// Monitored files have change in VSCode
-// 	connection.console.log('We received a file change event');
-// });
 
 process.on('SIGBREAK', function () {
   connection.console.log('SIGBREAK fired')
@@ -126,27 +81,6 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams) => {
   } catch(err) {
     return [];
   }
-
-	// The pass parameter contains the position of the text document in 
-	// which code complete got requested. For the example we ignore this
-	// info and always provide the same completion items.
-	//return [];
-	// 	{
-	// 		label: 'idtac',
-	// 		kind: CompletionItemKind.Snippet,
-	// 		data: 1
-	// 	},
-	// 	{
-	// 		label: 'Definition',
-	// 		kind: CompletionItemKind.Keyword,
-	// 		data: 2
-	// 	},
-	// 	{
-	// 		label: 'reflexivity.',
-	// 		kind: CompletionItemKind.Text,
-	// 		data: 4
-	// 	}
-	// ]
 });
 
 
@@ -161,10 +95,6 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 	}
 	return item;
 });
-
-// export interface RequestHandler<P, R, E> {
-//     (params: P, token: CancellationToken): R | ResponseError<E> | Thenable<R | ResponseError<E>>;
-// }
 
 connection.onRequest(coqproto.InterruptCoqRequest.type, (params: coqproto.CoqTopParams, token: CancellationToken) => {
   return project.lookup(params.uri)
@@ -278,7 +208,6 @@ connection.onDidOpenTextDocument((params: vscodeLangServer.DidOpenTextDocumentPa
         message: message,
         uri: uri,
         routeId
-        // rich_message: rich_message,
       };
       connection.sendNotification(coqproto.CoqMessageNotification.type, params)},
     sendReset: () =>

@@ -52,7 +52,6 @@ function formatCheck(response: string) {
   // § Strip output of anything but the type
   const array = response.split("\nwhere\n");
   let type = array[0];
-  // let where = array[1];
   type = type.replace(/^.*?\n\t : /, ""); // remove identifier
   type = type.replace(/^ {7}/gm, ""); // remove indent
 
@@ -60,8 +59,6 @@ function formatCheck(response: string) {
   type = compactify(type);
 
   let hover = [md_code_block("coq", type)];
-  // if (where)
-  //  hover.push(md_code_block("coq", where));
   return new vscode.Hover(hover);
 }
 

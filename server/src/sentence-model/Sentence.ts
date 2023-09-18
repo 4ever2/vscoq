@@ -146,19 +146,6 @@ export class Sentence {
       return "contains";
   }
 
-  // public addSemantics(sem: SentenceSemantics) {
-  //   if(this.semantics) {
-  //     if (this.semantics.every((x) => !x.isEqual(sem)))
-  //       this.semantics.push(sem);
-  //   } else
-  //     this.semantics = [sem];
-  // }
-
-  // public *getSemantics() : Iterable<SentenceSemantics> {
-  //   if(this.semantics)
-  //     yield* this.semantics;
-  // }
-
   public toString() : string {
     return this.text;
   }

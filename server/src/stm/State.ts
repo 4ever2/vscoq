@@ -239,8 +239,6 @@ export class State {
             newText.substring(0,beginOffset)
             + change.text
             + newText.substring(beginOffset+textUtil.getCHangeEventRangeLength(change));
-          // newRange = Range.create(newRange.start,textUtil.positionRangeDeltaTranslateEnd(newRange.end,delta));
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
           newRange.end = textUtil.positionRangeDeltaTranslateEnd(newRange.end,delta);
 
           var translate = this.translateDiagnostic;

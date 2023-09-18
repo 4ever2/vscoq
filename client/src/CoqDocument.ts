@@ -7,8 +7,6 @@ import * as os from 'os';
 
 import {decorations} from './Decorations';
 import {Highlights} from './Highlights';
-// import {CoqView, SimpleCoqView} from './SimpleCoqView';
-// import {MDCoqView} from './MDCoqView';
 import {HtmlCoqView} from './HtmlCoqView';
 import {HtmlLtacProf} from './HtmlLtacProf';
 import {extensionContext} from './extension';
@@ -61,13 +59,11 @@ export class CoqDocument implements vscode.Disposable {
   private stateViewFocus?: vscode.Position;
   private project: CoqProject;
   private currentLtacProfView: HtmlLtacProf|null = null;
-  //private coqtopRunning = false;
 
   constructor(document: vscode.TextDocument, project: CoqProject) {
     this.statusBar = new StatusBar();
     this.document = document;
     this.project = project;
-    // this.document = vscode.workspace.textDocuments.find((doc) => doc.uri === uri);
 
     this.documentUri = document.uri.toString();
     try {
@@ -78,8 +74,6 @@ export class CoqDocument implements vscode.Disposable {
     }
 
     this.view = new HtmlCoqView(document.uri, extensionContext);
-    // this.view = new SimpleCoqView(uri.toString());
-    // this.view = new MDCoqView(uri);
     if(this.project.settings.showProofViewOn === "open-script") {
       let viewCol = this.currentViewColumn();
       if (viewCol)
@@ -94,11 +88,9 @@ export class CoqDocument implements vscode.Disposable {
     this.langServer.onUpdateCoqStmFocus((p) => this.updateFocus(p.position));
     this.langServer.onLtacProfResults((p) => this.onLtacProfResults(p));
     this.langServer.onCoqtopStart(p => {
-      //this.coqtopRunning = true;
       this.statusBar.setCoqtopStatus(true);
   })
     this.langServer.onCoqtopStop(p => {
-      //this.coqtopRunning = false;
       if(p.reason === proto.CoqtopStopReason.Anomaly || p.reason === proto.CoqtopStopReason.InternalError)
         vscode.window.showErrorMessage(p.message || "Coqtop quit for an unknown reason.")
       this.statusBar.setCoqtopStatus(false);
@@ -167,11 +159,6 @@ export class CoqDocument implements vscode.Disposable {
   private onDidUpdateHighlights(params: proto.Highlights) {
     this.highlights.set(this.allEditors(),params);
   }
-
-
-  // private onUpdateComputingStatus(params: proto.NotifyComputingStatusParams) {
-  //   this.statusBar.setStateComputing(params.status);
-  // }
 
   private onCoqMessage(params: proto.NotifyMessageParams) {
     if (params.routeId == this.queryRouteId) {
@@ -436,8 +423,6 @@ export class CoqDocument implements vscode.Disposable {
       const value = await this.langServer.stepBackward();
       this.updateView(value, true);
       this.handleResult(value);
-      // const range = new vscode.Range(editor.document.positionAt(value.commandStart), editor.document.positionAt(value.commandEnd));
-      // clearHighlight(editor, range);
     } catch (err) {
     } finally {
       this.statusBar.setStateReady();
@@ -539,12 +524,6 @@ export class CoqDocument implements vscode.Disposable {
       this.currentLtacProfView = new HtmlLtacProf({total_time: 0, tactics: []});
       this.currentLtacProfView.show(true);
       await this.langServer.ltacProfGetResults(offset);
-      // const view = new HtmlLtacProf(results);
-      // const out = vscode.window.createOutputChannel("LtacProfiler");
-      // results.forEach((value,key) => {
-      //     out.appendLine("-----------------------------------");
-      //     this.outputLtacProfTreeNode(out, "", key, value);
-      //   });
     } catch (err) {
     } finally {
       this.statusBar.setStateReady();
@@ -566,14 +545,7 @@ export class CoqDocument implements vscode.Disposable {
     this.showFocusDecorations();
     this.highlights.refresh([editor]);
     this.statusBar.focus();
-    // await this.view.show(true);
   }
-
-  // public async doOnSwitchActiveEditor(oldEditor: TextEditor, newEditor: TextEditor) {
-  //   this.showFocusDecorations();
-  //   this.highlights.refresh([newEditor]);
-  //   this.statusBar.focus();
-  // }
 
   private async queryDisplayOptionChange() : Promise<proto.DisplayOption|null> {
       const result = await vscode.window.showQuickPick(DisplayOptionPicks.allPicks);
@@ -613,5 +585,4 @@ export class CoqDocument implements vscode.Disposable {
   public async getCoqVersion() {
     return this.langServer.getCoqVersion();
   }
-
 }

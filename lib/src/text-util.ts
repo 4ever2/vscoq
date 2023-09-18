@@ -116,7 +116,7 @@ export function positionRangeDeltaTranslate(pos: Position, delta: RangeDelta) : 
       x = x + delta.start.character;
     return Position.create(pos.line + delta.linesDelta, x);
   }
-  else // if(pos.line > delta.end.line)
+  else
     return Position.create(pos.line + delta.linesDelta, pos.character);
 }
 
@@ -133,7 +133,7 @@ export function positionRangeDeltaTranslateEnd(pos: Position, delta: RangeDelta)
       else if (delta.start.line === delta.end.line + delta.linesDelta && delta.linesDelta < 0) 
         x = x + delta.start.character;
       result = Position.create(pos.line + delta.linesDelta, x);
-    } else // if(pos.line > delta.end.line)
+    } else
       result = Position.create(pos.line + delta.linesDelta, pos.character);    
     // But do not move above that delta's start position
     if(positionIsBefore(result,delta.start))
@@ -141,19 +141,6 @@ export function positionRangeDeltaTranslateEnd(pos: Position, delta: RangeDelta)
     else
       return result;
   }
-
-  // if(positionIsEqual(pos,delta.end) && (delta.linesDelta > 0 || (delta.linesDelta == 0 && delta.charactersDelta > 0)))
-  //   return pos; // equal, but the change is extending from the end instead of moving intop the end
-  // else if (delta.end.line === pos.line) {
-  //   let x = pos.character + delta.charactersDelta;
-  //   if (delta.linesDelta > 0) 
-  //     x = x - delta.end.character;
-  //   else if (delta.start.line === delta.end.line + delta.linesDelta && delta.linesDelta < 0) 
-  //     x = x + delta.start.character;
-  //   return Position.create(pos.line + delta.linesDelta, x);
-  // }
-  // else // if(pos.line > delta.end.line)
-  //   return Position.create(pos.line + delta.linesDelta, pos.character);
 }
 
 export function rangeDeltaTranslate(range: Range, delta: RangeDelta) {
@@ -185,7 +172,7 @@ export function relativeOffsetAtAbsolutePosition(text: string, textStart: Positi
     return -1
   else if(textStart.line === pos.line)
     return Math.max(-1, pos.character - textStart.character);
-  else // if(line === pos.line)
+  else
     return Math.max(-1, pos.character + currentOffset);
 }
 

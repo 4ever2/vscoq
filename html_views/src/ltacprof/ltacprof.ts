@@ -47,23 +47,15 @@ function loadResultsTable(results: LtacProfResults, tbody: JQuery) {
         .append($(document.createElement('span')).addClass(name).addClass('minutes').text(minutes).hide())
         .append($(document.createElement('span')).addClass(name).addClass('hhmmss').text(hhmmss).hide())
         .append($(document.createElement('span')).addClass(name).addClass('percent').text(percent).show());
-      // return $(document.createElement('td')).text(time);
-      // const percent = ((0.0+time) / (0.0 + totalTime)).toFixed(3);
-      // return $(document.createElement('td')).text(percent);
     }
   }
 
   function* buildTacticResultRow(parentId: number, tactic: LtacProfTactic) : IterableIterator<JQuery> {
     ++currentId;
     yield $(document.createElement('tr'))
-      // .addClass('treegrid-'+ this.currentId)
-      // .addClass(`treegrid-${currentId}` + (parentId > 0 ? ` treegrid-parent-${parentId}` : ''))
       .attr('row-id',currentId)
-      // .map(() => { if(parentId>0) return $(this).attr('parent-id', parentId); else return $(this); })
       .map((idx,elm) => parentId > 0 ? $(elm).attr('parent-id',parentId).get() : elm)
-      // .attr('parent-id',parentId)
       .attr('tabindex',currentId)
-      // .map((idx,element) => parentId > 0 ? $(element).addClass('treegrid-parent-'+parentId) : $(element))
         .append($(document.createElement('td')).text(tactic.name))
         .append(buildTime(tactic.statistics.local,totalTime,'local'))
         .append(buildTime(tactic.statistics.total,totalTime,'total'))
@@ -82,15 +74,6 @@ function loadResultsTable(results: LtacProfResults, tbody: JQuery) {
   for(let entry of buildTacticsResults(0,results.tactics))
     tbody.append(entry);
   console.timeEnd('load');
-
-  // setTimeout(() => {
-  // for(let entry of buildResults(0,result.results)) {
-  //   setTimeout(() => {
-  //     tbody.append(entry);
-  //     // sleepFor(100);
-  //   }, 100);
-  // }
-  // }, 10);
 }
 
 function getDescendants(node: JQuery) : JQuery {
@@ -99,7 +82,6 @@ function getDescendants(node: JQuery) : JQuery {
 }
 
 function expandNode(node: JQuery, recursive: boolean) : JQuery {
-  // node.treegrid(recursive ? 'expandRecursive' : 'expand');
   if(recursive) {
     getDescendants(node)
       .removeClass('tbltree-collapsed')
@@ -109,7 +91,6 @@ function expandNode(node: JQuery, recursive: boolean) : JQuery {
 }
 
 function collapseNode(node: JQuery, recursive: boolean) : JQuery {
-  // node.treegrid(recursive ? 'collapseRecursive' : 'collapse');
   if(recursive) {
     getDescendants(node)
       .addClass('tbltree-collapsed')
@@ -119,12 +100,10 @@ function collapseNode(node: JQuery, recursive: boolean) : JQuery {
 }
 
 function isExpanded(node: JQuery) : boolean {
-  // node.treegrid(recursive ? 'collapseRecursive' : 'collapse');
   return $('#results').tbltree('isExpanded',node);
 }
 
 function getParentNode(node: JQuery) : JQuery {
-  // return node.treegrid)'getParentNode');
   return $('#results').tbltree('getRow',$('#results').tbltree('getParentID', node));
 }
 
@@ -212,17 +191,6 @@ function updateResults() {
   }
   loadResultsTable(currentResults, tbody);
 
-  // time('treegrid', () => {
-  // $('#results').treegrid({
-  //   initialState: 'collapsed',
-  //   saveState: false,
-  //   onChange: () => {
-  //     $('#results tr:visible:even').removeClass('result-odd');
-  //     $('#results tr:visible:odd').addClass('result-odd');
-  //   }
-  // });
-  // });
-
   console.time('tbltree');
   $('#results').tbltree({
     initState: 'collapsed',
@@ -231,43 +199,6 @@ function updateResults() {
   });
   console.timeEnd('tbltree');
 
-
-
-  // time('resizable', () => {
-  // $('#results')
-  //   .css('table-layout','auto')
-  //   .resizableColumns()
-  //   .css('table-layout','fixed');
-  // });
-
-  // time('resizable', () => {
-  // $('#results')
-  //   .css('table-layout','auto')
-  //   .colResizable({
-  //     resizeMode: 'fit', liveDrag: true,
-  //     // onResize: (e:JQueryEventObject) => {
-  //     //   console.log('resize');
-  //     //   // $('#sticky-results-header').remove('thead'); //.append($('results thead'));
-  //     // }
-  //   })
-  //   .css('table-layout','fixed');
-
-  // });
-
-
-  // $('#results').floatThead('reflow');
-  // time('floatThead', () => {
-  //   $('#results').floatThead({})
-  // });
-
-  // time('sticky', () => {
-  //   $('#results thead').sticky({topSpacing: 0, getWidthFrom: '#results'});
-  //   $('#results thead').sticky('update');
-  // });
-
-
-  // $('#results tr:visible:even').removeClass('result-odd');
-  // $('#results tr:visible:odd').addClass('result-odd');
   updateResultsAlternatingBackground(0);
 }
 

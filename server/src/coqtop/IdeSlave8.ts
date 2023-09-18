@@ -75,9 +75,6 @@ export class IdeSlave extends coqtop.IdeSlave {
         this.coqResultValueListener.onValue(value);
     });
 
-    // this.mainChannelR.on('data', (data) => this.onMainChannelR(data));
-    // this.controlChannelR.on('data', (data) => this.onControlChannelR(data));
-
     mainR.setEncoding('utf8');
     if(mainR as any == mainW as any) {
       this.setupChannel(mainR, "main channel", (data) => this.onMainChannelR(data));
@@ -109,12 +106,8 @@ export class IdeSlave extends coqtop.IdeSlave {
   public dispose() {
     this.callbacks = {};
     this.state = IdeSlaveState.Shutdown;
-    // if (this.mainChannelR)
-    //   this.mainChannelR.end();
     if (this.mainChannelW)
       this.mainChannelW.end();
-    // if (this.controlChannelR)
-    //   this.controlChannelR.end();
     if (this.controlChannelW)
       this.controlChannelW.end();
 
@@ -134,8 +127,6 @@ export class IdeSlave extends coqtop.IdeSlave {
         return;
 
       this.console.error(`Error on ${channelName}: ` + message);
-      // if(this.callbacks.onClosed)
-      //   this.callbacks.onClosed(true, message);
     } finally {
       this.dispose();      
       this.state = IdeSlaveState.Error;
@@ -159,9 +150,7 @@ export class IdeSlave extends coqtop.IdeSlave {
       this.callbacks.onMessage(msg, routeId, stateId);
   }
 
-  private doOnOther(tag: string, x: any) {
-      // this.console.log("reponse: " + tag + ": " + util.inspect(x));
-  }
+  private doOnOther(tag: string, x: any) {}
   private doOnSerializationError(x: any) {}
 
 
@@ -172,7 +161,6 @@ export class IdeSlave extends coqtop.IdeSlave {
       let error = new CallFailure(value.message,value.stateId)
       if(value.location)
         error.range = value.location;
-      // this.console.log(`ERROR ${logIdent || ""}: ${value.stateId} --> ${value.error.message} ${value.error.range ? `@ ${value.error.range.start}-${value.error.range.stop}`: ""}`);
       throw error;
     }
   }
@@ -270,36 +258,16 @@ export class IdeSlave extends coqtop.IdeSlave {
         shelvedGoals: value.shelvedGoals,
         abandonedGoals: value.abandonedGoals
       };
-      // this.console.log(`Goal: () --> focused: ${result.goals.length}, unfocused: ${this.countBackgroundGoals(result.backgroundGoals)}, shelved: ${result.shelvedGoals.length}, abandoned: ${result.abandonedGoals.length}`);
       return Object.assign(result, <ProofModeResult>{mode: 'proof'});
     } else {
-      // this.console.log(`Goal: () --> No Proof`);
       return <GoalResult>{mode: 'no-proof'};
     }
-    // this.console.log(`Goal: -->`);
-    // if (result.goals && result.goals.length > 0) {
-    //   this.console.log("Current:");
-    //   result.goals.forEach((g, i) => this.console.log(`    ${i + 1}:${g.id}= ${g.goal}`));
-    // }
-    // if (result.backgroundGoals) {
-    //   this.console.log("Background: ...");
-    //   // result.backgroundGoals.forEach((g, i) => this.console.log(`    ${i + 1}) ${util.inspect(g, false, null)}`));
-    // }
-    // if (result.shelvedGoals && result.shelvedGoals.length > 0) {
-    //   this.console.log("Shelved:");
-    //   result.shelvedGoals.forEach((g, i) => this.console.log(`    ${i + 1}) ${util.inspect(g, false, null)}`));
-    // }
-    // if (result.abandonedGoals && result.abandonedGoals.length > 0) {
-    //   this.console.log("Abandoned:");
-    //   result.abandonedGoals.forEach((g, i) => this.console.log(`    ${i + 1}) ${util.inspect(g, false, null)}`));
-    // }
  }
 
   public async getStatus(force: boolean) : Promise<coqProto.CoqStatus> {
     await this.checkState();
 
     const coqResult = this.coqGetResultOnce('Status');
-    // const verboseStr = verbose===true ? "true" : "false";
     this.console.log('--------------------------------');
     this.console.log(`Call Status(force: ${force})`);
     this.writeMain(`<call val="Status"><bool val="${force ? "true" : "false"}" /></call>`);
@@ -311,7 +279,6 @@ export class IdeSlave extends coqtop.IdeSlave {
     await this.checkState();
 
     const coqResult = this.coqGetResultOnce('Add');
-    // const verboseStr = verbose===true ? "true" : "false";
     const verboseStr = verbose === false ? "false" : "true";
     this.console.log('--------------------------------');
     this.console.log(`Call Add("${command.trim().substr(0, 20) + (command.trim().length > 20 ? "..." : "")}", editId: ${editId}, stateId: ${stateId}, verbose: ${verboseStr})`);
@@ -402,7 +369,6 @@ export class IdeSlave extends coqtop.IdeSlave {
     this.checkState();
 
     const coqResult = this.coqGetResultOnce('GetOptions');
-    // const coqMessageResult = this.coqGetMessageOnce();
     this.console.log('--------------------------------');
     this.console.log(`Call GetOptions()`);
     this.writeMain(`<call val="GetOptions"><unit/></call>`);
@@ -423,10 +389,8 @@ export class IdeSlave extends coqtop.IdeSlave {
       }
     }
     const coqResult = this.coqGetResultOnce('SetOptions');
-    // const coqMessageResult = this.coqGetMessageOnce();
     this.console.log('--------------------------------');
     this.console.log(`Call SetOptions(...)`);
-    // this.console.log(`Call SetOptions(${xmlTypes.encode(xmlOptions)})`);
     this.writeMain(`<call val="SetOptions">${xmlTypes.encode(xmlOptions)}</call>`);    
 
     coqProto.GetValue('SetOptions', await coqResult);
@@ -552,5 +516,4 @@ const CoqOptionsMapping = {
   // [DEPRECATED] Extraction AccessOpaque: boolean;
   // [DEPRECATED] Refine Instance Mode: boolean;
   // [DEPRECATED] Tactic Pattern Unification: boolean;
-
 }

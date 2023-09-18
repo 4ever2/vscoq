@@ -22,7 +22,6 @@ export namespace Nodes {
   export interface IntNode {
     $name: "int",
     $: { },
-    // $text: string
     $children: {[0]: string} & {}[],
   }
   export interface BoolNode {
@@ -33,7 +32,6 @@ export namespace Nodes {
   export interface StringNode {
     $name: "string",
     $: { },
-    // $text: string
     $children: {[0]: string} & {}[],
   }
   export interface UnitNode {
@@ -330,14 +328,7 @@ export namespace Nodes {
   export function isGoodValue(value: ValueNode) : value is GoodValueNode {
     return value.$.val === 'good';
   }
-
- 
 }
-
-
-
-
-
 
 
 function check(t:'state_id', r: StateId) : CoqValue;
@@ -548,8 +539,6 @@ export abstract class Deserialize {
         filename: value.$children[1]
       };
       return result;
-      // (Feedback.GlobRef (loc, filepath, modpath, ident, ty))
-      // Feedback.feedback (Feedback.GlobDef (loc, id, secpath, ty))
     case 'globref':
       result = {
         feedbackKind: 'glob-ref',

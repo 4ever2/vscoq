@@ -157,7 +157,6 @@ export class CoqStateMachine {
     this.status = STMStatus.Shutdown;
     this.sentences = undefined;
     this.bufferedFeedback = undefined;
-    // this.project = undefined;
     this.setFocusedSentence(undefined);
     this.callbacks = dummyCallbacks;
     if(this.coqtop)
@@ -174,9 +173,6 @@ export class CoqStateMachine {
 
   private get console() { return this.project.console; }
 
-  /**
-   *
-  */
   public async interrupt() : Promise<void> {
     if(!this.isBusy() || this.isShutdown())
       return;
@@ -188,9 +184,6 @@ export class CoqStateMachine {
       // this will fail on user interrupt
       this.console.error('Exception thrown while interrupting Coq: ' + err.toString());
     } finally {
-      // The command being interrupted should update this.status
-      // If not, then it is probably best to kill coqtop via this.shutdown()
-      // this.status = STMStatus.Ready
     }
   }
 
@@ -242,15 +235,6 @@ export class CoqStateMachine {
       }
 
       for (let sent of this.lastSentence.backwards()) {
-        // // optimization: remove any changes that will no longer overlap with the ancestor sentences
-        // while (sortedChanges.length > 0 && textUtil.positionIsAfterOrEqual(sortedChanges[0].range.start, sent.getRange().end)) {
-        //   // this change comes after this sentence and all of its ancestors, so get rid of it
-        //   sortedChanges.shift();
-        // }
-        // // If there are no more changes, then we are done adjusting sentences
-        // if (sortedChanges.length == 0)
-        //   break sent; // sent
-
         // apply the changes
         const preserved = sent.applyTextChanges(sortedChanges,deltas, updatedDocumentText);
         if(!preserved) {
@@ -397,12 +381,6 @@ export class CoqStateMachine {
       return {type: 'interrupted', range: this.sentences.get(err.stateId).getRange()}
     else if(err instanceof coqtop.CoqtopSpawnError)
       return {type: 'not-running', reason: "spawn-failed", coqtop: err.binPath}
-    // else if(err instanceof coqtop.CallFailure) {
-    //   const sent = this.sentences.get(err.stateId);
-    //   const start = textUtil.positionAtRelative(sent.getRange().start,sent.getText(),err.range.start);
-    //   const end = textUtil.positionAtRelative(sent.getRange().start,sent.getText(),err.range.stop);
-    //   const range = Range.create(start,end); // err.range
-    //   return Object.assign<proto.FailureTag,FailValue>({type: 'failure'}, <FailValue>{message: err.message, range: range, sentence: this.sentences.get(err.stateId).getRange()})
     else
       throw err;
   }
@@ -587,13 +565,6 @@ private routeId = 1;
       endCommand();
     }
   }
-  //     ltacProfResults: (offset?: number) => this.enqueueCoqOperation(async () => {
-  //       if(offset) {
-  //         const sent = this.sentences.findAtTextPosition(offset);
-  //         return this.coqTop.coqLtacProfilingResults(sent===null ? undefined : sent.stateId);
-  //       } else
-  //         return this.coqTop.coqLtacProfilingResults();
-  //     }, true),
 
 
   public async setDisplayOptions(options: {item: proto.DisplayOption, value: proto.SetDisplayOption}[]) {
@@ -637,7 +608,6 @@ private routeId = 1;
           break;
       }
     }
-    //await this.setCoqOptions(this.currentCoqOptions);
   }
 
 
@@ -933,9 +903,6 @@ private routeId = 1;
 
 
   private async cancelSentence(sentence: State) {
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    // if(!this.sentences.has(sentence.getStateId()))
-    //   return;
     await this.focusSentence(sentence.getParent());
   }
 
@@ -973,8 +940,6 @@ private routeId = 1;
           sent.updateStatus(feedback.status);
           this.callbacks.sentenceStatusUpdate(sent.getRange(), sent.getStatus())
         } else if(feedback.type === "fileLoaded") {
-          // if(sent.getText().includes(feedback.module))
-          //   sent.addSemantics(new LoadModule(feedback.filename, feedback.module));
         }
       });
     this.bufferedFeedback = [];
@@ -1062,8 +1027,6 @@ private routeId = 1;
     return () => {
       this.status = STMStatus.Ready
       release();
-      // if()
-      //   this.assertSentenceConsistency();
     };
   }
 
@@ -1190,18 +1153,6 @@ private routeId = 1;
 
 }
 
-// function createDebuggingSentence(sent: Sentence) : {cmd: string, range: string} {
-//   const cmd = sent.getText();
-//   const range = `${sent.getRange().start.line}:${sent.getRange().start.character}-${sent.getRange().end.line}:${sent.getRange().end.character}`;
-//   function DSentence() {
-//     this.cmd = cmd;
-//     this.range = range;
-//     Object.defineProperty(this,'__proto__',{enumerable: false});
-//   }
-// //  Object.defineProperty(DSentence, "name", { value: cmd });
-//   Object.defineProperty(DSentence, "name", { value: "A" });
-//   return new DSentence();
-// }
 function abbrString(s:string) {
   var s2 = coqParser.normalizeText(s);
   if(s2.length > 80)
@@ -1213,20 +1164,3 @@ type DSentence = string;
 function createDebuggingSentence(sent: State) : DSentence {
   return `${sent.getRange().start.line}:${sent.getRange().start.character}-${sent.getRange().end.line}:${sent.getRange().end.character} -- ${abbrString(sent.getText().trim())}`;
 }
-
-
-
-// class DSentence {
-//   public cmd: string;
-//   public range: string;
-//   constructor(sent: Sentence) {
-//     this.cmd = sent.getText();
-//     this.range = `${sent.getRange().start.line}:${sent.getRange().start.character}-${sent.getRange().end.line}:${sent.getRange().end.character}`;
-//  }
-//   public toString() {
-//     return this.cmd;
-//   }
-//   public inspect() {
-//     return {cmd: this.cmd, range: this.range}
-//   }
-// }

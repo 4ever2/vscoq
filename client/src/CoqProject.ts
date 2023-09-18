@@ -129,8 +129,6 @@ export class CoqProject implements vscode.Disposable {
     if(!doc)
       return;
     doc.onDidChangeTextDocument(params);
-// FOR DEBUGGING ONLY!!!
-// doc.highlights.refresh(doc.allEditors());
   }
 
   private onDidOpenTextDocument(doc: vscode.TextDocument) {

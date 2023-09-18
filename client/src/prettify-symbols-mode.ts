@@ -4,18 +4,6 @@ import { LanguageEntry } from '@lib/settings';
 
 /** Essentially mirrors vscode.DecorationRenderOptions, but restricted to the
  * properties that apply to both :before/:after decorations and plain decorations */
-/* interface PrettyStyleProperties {
-  border?: string,
-	textDecoration?: string,
-	color?: string,
-	backgroundColor?: string,
-}
-
-interface PrettyStyle extends PrettyStyleProperties {
-	dark?: PrettyStyleProperties,
-	light?: PrettyStyleProperties,
-} */
-
 
 interface PrettifySymbolsMode {
   /** Register a handler to receive notifications when PSM is enabled or disabled.

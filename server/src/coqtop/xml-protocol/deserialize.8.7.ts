@@ -85,13 +85,5 @@ export class Deserialize_8_7 extends Deserialize {
     }
   }
 
-  // public deserializeFeedbackContent(v: Node) : any {
-  //   const value = v as Nodes_8_7.FeedbackContentNode;
-  //   switch (value.$kind) {
-  //   default:
-  //     return super.deserializeFeedbackContent(value);
-  //   }
-  // }
-
   public static readonly baseVersion = "8.6";
 }

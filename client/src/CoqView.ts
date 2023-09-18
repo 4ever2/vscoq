@@ -50,7 +50,6 @@ export function adjacentPane(pane: vscode.ViewColumn) : vscode.ViewColumn {
 export interface CoqView extends vscode.Disposable {
 
   update(state: CommandResult) : void;
-  // message(message: string) : void;
   readonly resize : vscode.Event<number>;
 
   show(pane: vscode.ViewColumn, state?: CommandResult) : Promise<void>;

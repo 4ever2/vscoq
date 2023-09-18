@@ -17,9 +17,7 @@ class IFrameDocumentProvider implements vscode.TextDocumentContentProvider {
     return `<!DOCTYPE HTML><body style="margin:0px;padding:0px;width:100%;height:100vh;border:none;position:absolute;top:0px;left:0px;right:0px;bottom:0px">
 <iframe src="${coqViewToFileUri(uri)}" seamless style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;border:none;margin:0px;padding:0px;width:100%;height:100%" />
 </body>`;
-
   }
-  // function () {document.getElementById("box").style.backgroundColor='red'
 
   public get onDidChange(): vscode.Event<vscode.Uri> {
     return this.onDidChangeEmitter.event;
@@ -98,10 +96,7 @@ export class HtmlLtacProf {
 
   public async show(preserveFocus: boolean) {
     await this.bufferReady;
-    // const focusedDoc = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document : null;
     await vscode.commands.executeCommand('vscode.previewHtml', this.coqViewUri, vscode.ViewColumn.Two, "LtacProf");
-    // if(preserveFocus && focusedDoc)
-    //   await vscode.window.showTextDocument(focusedDoc);
   }
 
   dispose() {

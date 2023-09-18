@@ -108,16 +108,6 @@ namespace parseAstSymbols {
   }
 }
 
-// export function parseAst(ast: parser.Sentence, pos: vscode.Position) : SentenceSemantics[] {
-//   switch(ast.type) {
-//   case "definition": return parseAstDefinition(ast,pos);
-//   case "inductive": return parseAstInductive(ast,pos);
-//   default:
-//     return []
-//   }
-// }
-
-
 export function parseAstForSymbols(ast: parser.Sentence, pos: vscode.Position) : vscode.SymbolInformation[] {
   try {
     switch(ast.type) {

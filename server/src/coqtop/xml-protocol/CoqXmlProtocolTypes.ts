@@ -119,11 +119,6 @@ export class Status extends ProtocolTypeBase {
     super()
   }
 
-  // static decode(path: ProtocolType, proofName: ProtocolType, allProofs: ProtocolType, proofNumber: ProtocolType) : Status|Unknown {
-  //   if(path instanceof Array && typeof path[0] === 'string' &&
-  //     proofName instance)
-  // }
-
   public encode() {
     return `<status>${encode(this.path)}${encode(this.proofName)}${encode(this.allProofs)}${encode(this.proofNumber)}</status>`;
   }

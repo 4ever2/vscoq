@@ -18,10 +18,8 @@ export interface EventCallbacks {
 
 export interface Node {
   $name: string;
-  // $text: string;
   /* attributes */
   $: { };
-  /* children */
   $children : {}[];
 }
 
@@ -99,7 +97,6 @@ export class XmlStream extends events.EventEmitter {
       let topNode = {
         $name: node.name,
         $: node.attributes,
-        // $text: "",
         $children: <any[]>[]
       };
       this.stack.push(topNode);
@@ -158,8 +155,6 @@ export class XmlStream extends events.EventEmitter {
         top.text = [top.text, text];
     } else if(this.stack.length > 0) {
       this.stack[this.stack.length-1].$children.push(text);
-      // let plainText = entities.decodeXML(text);
-      // this.stack[this.stack.length-1].$text += text;
     }
   }
 

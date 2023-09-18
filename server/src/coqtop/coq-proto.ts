@@ -1,8 +1,6 @@
 import { AnnotatedText } from "@lib/AnnotatedText";
 
 
-// export type CoqValue = any;
-
 export type StateId = number;
 export type EditId = number;
 export type RouteId = number;
@@ -18,25 +16,6 @@ export function hasStateId(objectId: ObjectId) : objectId is {objectKind: "state
 export interface UnionL<X> { tag: 'inl', value: X }
 export interface UnionR<X> { tag: 'inr', value: X }
 export type Union<X,Y> = UnionL<X> | UnionR<Y>
-
-// export type StateFeedback2 =
-//   (WorkerStatus | (CustomFeedback&FeedbackBase) | SentenceFeedback | MessageFeedback | FileLoaded | FileDependency | GlobReference | GlobDefinition | UnknownFeedback)
-//   & FeedbackBase;
-
-
-
-
-
-// export interface StateFeedback {
-//   stateId : number;
-//   route : number;
-//   workerStatus?: WorkerStatus[];
-//   fileDependencies?: Map<string,string[]>;
-//   fileLoaded?: FileLoaded;
-//   sentenceFeedback?: SentenceFeedback;
-//   custom?: CustomFeedback
-//   error?: ErrorMessage;
-// }
 
 export enum WorkerState { Idle, Processing, Dead, Proof };
 export interface WorkerStatus {
@@ -64,14 +43,6 @@ export interface FailValue {
   message: AnnotatedText;
   location?: Location;
 }
-
-// export interface Value {
-//   stateId?: number;
-//   error?: FailValue;
-//   value?: any;
-//   message?: AnnotatedText;
-//   unfocusedStateId?: number;
-// }
 
 export interface SentenceFeedback {
   feedbackKind: "sentence-status",
@@ -216,7 +187,6 @@ export interface Goals {
   backgroundGoals: UnfocusedGoalStack,
   shelvedGoals: Subgoal[],
   abandonedGoals: Subgoal[],
-// error?: FailValue;
 }
 
 export type StateFeedback =
