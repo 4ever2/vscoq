@@ -3,6 +3,10 @@
   "compilerOptions": {
     "outDir": "out",
     "composite": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true
   },
   "include": ["src"]
 }

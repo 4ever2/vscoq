@@ -6,6 +6,8 @@
     "rootDir": "src",
     "noImplicitAny": true,
     "noImplicitReturns": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
     "paths": {
       "@lib/*": ["../lib/src/*"],
       "@lib": ["../lib/src"],

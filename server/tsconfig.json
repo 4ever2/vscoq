@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "out",
     "tsBuildInfoFile": "out/tsconfig.tsBuildInfoFile",
+    "strictBindCallApply": true,
     "paths": {
       "@lib/*": ["../lib/src/*"],
       "@lib": ["../lib/src"],

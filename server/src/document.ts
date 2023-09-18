@@ -36,7 +36,7 @@ export interface CoqtopStartCallback {
 }
 
 export interface CoqtopStopCallback {
-  sendCoqtopStop(reason: thmProto.CoqtopStopReason, message?: string);
+  sendCoqtopStop(reason: thmProto.CoqtopStopReason, message?: string) : void;
 }
 
 export type DocumentCallbacks = MessageCallback & ResetCallback & LtacProfCallback & CoqtopStartCallback & CoqtopStopCallback & DocumentFeedbackCallbacks;
@@ -327,7 +327,7 @@ export class CoqDocument implements TextDocument {
   }
 
   private commandSequence(highlight=false) {
-    return (begin,end?) => this.commandSequenceGenerator(begin,end,highlight);
+    return (begin:Position, end?:Position) => this.commandSequenceGenerator(begin,end,highlight);
   }
 
   // /**
