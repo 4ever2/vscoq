@@ -1,4 +1,3 @@
-'use strict';
 import {CancellationToken} from 'vscode-jsonrpc';
 import {
 	createConnection, IConnection, TextDocumentSyncKind,

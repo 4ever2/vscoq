@@ -1,5 +1,3 @@
-'use strict';
-
 import * as vscode from 'vscode';
 import { TextEditor, Disposable } from 'vscode';
 import * as vscodeTypes from 'vscode-languageserver-types';

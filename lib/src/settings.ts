@@ -1,5 +1,3 @@
-'use strict';
-
 export interface DocumentFilter {
   language?: string,
   pattern?: string,

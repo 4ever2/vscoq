@@ -1,5 +1,3 @@
-'use strict';
-
 import * as util from 'util';
 import * as coqXml from './xml-protocol/coq-xml';
 import * as vscode from 'vscode-languageserver';

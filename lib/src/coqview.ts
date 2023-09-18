@@ -1,5 +1,3 @@
-'use strict';
-
 import { CommandResult } from "./protocol";
 import { SettingsState } from "./settings";
 

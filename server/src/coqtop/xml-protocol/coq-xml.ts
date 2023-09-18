@@ -1,4 +1,3 @@
-'use strict';
 import * as events from 'events';
 import * as sax from 'sax';
 import * as coqProto from '../coq-proto';

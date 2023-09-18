@@ -1,4 +1,3 @@
-'use strict';
 import { Position, Range, TextDocumentContentChangeEvent } from 'vscode-languageserver';
 
 

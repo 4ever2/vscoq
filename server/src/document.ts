@@ -1,5 +1,3 @@
-'use strict';
-
 import {TextDocument, TextDocumentContentChangeEvent, RemoteConsole, Position, Range, Diagnostic} from 'vscode-languageserver';
 import * as vscode from 'vscode-languageserver';
 import {CancellationToken} from 'vscode-jsonrpc';

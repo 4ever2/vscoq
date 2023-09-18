@@ -1,5 +1,3 @@
-'use strict';
-
 import * as net from 'net';
 import * as path from 'path';
 import * as vscode from 'vscode-languageserver';

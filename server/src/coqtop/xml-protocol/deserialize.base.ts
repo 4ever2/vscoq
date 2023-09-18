@@ -1,4 +1,3 @@
-'use strict';
 import * as coqProto from '../coq-proto';
 import * as util from 'util';
 import {Node} from './coq-xml';

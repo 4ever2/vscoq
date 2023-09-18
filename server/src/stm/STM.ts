@@ -1,5 +1,3 @@
-'use strict'
-
 import {Position, Range, TextDocumentContentChangeEvent, DiagnosticSeverity} from 'vscode-languageserver';
 import {CancellationToken} from 'vscode-jsonrpc';
 import * as vscode from 'vscode-languageserver';

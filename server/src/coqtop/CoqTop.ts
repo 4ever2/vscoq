@@ -1,5 +1,3 @@
-'use strict';
-
 import * as coqProto from './coq-proto';
 import {spawn} from 'child_process';
 import * as semver from 'semver';

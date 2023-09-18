@@ -1,5 +1,3 @@
-'use strict';
-
 export class Semaphore {
   // points to the decr job-promise for executeOneTask to wait for
   // when executeOneTask is resumed, it calls the result of the promise to advance the decr pointer
