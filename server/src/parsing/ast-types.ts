@@ -1,4 +1,3 @@
-'use strict';
 import * as peg from 'pegjs'
 export {ExpectedItem, LocationRange} from 'pegjs';
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as proto from '@lib/protocol';

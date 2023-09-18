@@ -68,7 +68,7 @@ export class CoqProject {
     return this.psm;
   }
   
-  private matchesCoq(selector: DocumentSelector) {
+  private matchesCoq(selector: DocumentSelector) : boolean {
     if(typeof selector === 'string')
       return selector === 'coq';
     else if(selector instanceof Array)

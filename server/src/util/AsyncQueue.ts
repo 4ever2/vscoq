@@ -1,5 +1,3 @@
-'use strict';
-
 export class Semaphore {
   // points to the decr job-promise for executeOneTask to wait for
   // when executeOneTask is resumed, it calls the result of the promise to advance the decr pointer
@@ -46,7 +44,7 @@ export class AsyncQueue<X> {
 
 
 export class AsyncWorkQueue {
-  private work = new AsyncQueue<{task: ()=>Promise<any>; resolve: (any)=>void, reject: (any)=>void}>();
+  private work = new AsyncQueue<{task: ()=>Promise<any>; resolve: (any: any)=>void, reject: (any: any)=>void}>();
   
   public async process<X>(task: () => Promise<X>) : Promise<X> {
     return new Promise<X>((resolve,reject) => {

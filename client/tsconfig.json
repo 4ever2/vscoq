@@ -7,6 +7,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "strictNullChecks": true,
+    "strictFunctionTypes": true,
     "paths": {
       "@lib/*": ["../lib/src/*"],
       "@lib": ["../lib/src"],

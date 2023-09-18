@@ -1,5 +1,3 @@
-'use strict'
-
 import {Position, Range, TextDocumentContentChangeEvent, DiagnosticSeverity} from 'vscode-languageserver';
 import {CancellationToken} from 'vscode-jsonrpc';
 import * as vscode from 'vscode-languageserver';
@@ -394,7 +392,7 @@ export class CoqStateMachine {
   }
 
 
-  private convertCoqTopError(err) : GoalErrorResult {
+  private convertCoqTopError(err:coqtop.CoqtopError) : GoalErrorResult {
     if(err instanceof coqtop.Interrupted)
       return {type: 'interrupted', range: this.sentences.get(err.stateId).getRange()}
     else if(err instanceof coqtop.CoqtopSpawnError)

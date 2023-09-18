@@ -1,4 +1,3 @@
-'use strict';
 // import * as peg from 'pegjs'
 import * as util from 'util'
 import * as textUtil from '@lib/text-util'

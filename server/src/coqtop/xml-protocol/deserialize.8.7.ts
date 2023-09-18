@@ -1,4 +1,3 @@
-'use strict';
 import * as coqProto  from '../coq-proto';
 import {AnnotatedText} from '../../util/AnnotatedText';
 import {Deserialize, Node, Nodes} from './deserialize.base';

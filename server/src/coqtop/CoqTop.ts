@@ -1,9 +1,9 @@
-'use strict';
-
 import * as coqProto from './coq-proto';
 import {spawn} from 'child_process';
 import * as semver from 'semver';
 import {AnnotatedText, normalizeText, textToDisplayString} from '../util/AnnotatedText';
+
+export type CoqtopError = Interrupted|CoqtopSpawnError|CallFailure;
 
 /** Coqtop was interrupted; call cancelled */
 export class Interrupted {
@@ -89,7 +89,7 @@ export interface EventCallbacks {
   onClosed?: (isError: boolean, message?: string) => void;
 }
 
-export function detectVersion(coqtopModule: string, cwd: string, console?: {log: (string)=>void, warn: (string)=>void}) : Promise<string|null> {
+export function detectVersion(coqtopModule: string, cwd: string, console?: {log: (string: string)=>void, warn: (string: string)=>void}) : Promise<string|null> {
   if(console)
     console.log('exec: ' + coqtopModule + ' -v');
   return new Promise<string>((resolve,reject) => {

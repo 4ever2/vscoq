@@ -1,4 +1,3 @@
-'use strict';
 import * as vscode from 'vscode';
 import { CoqProject } from './CoqProject';
 import * as editorAssist from './EditorAssist';

@@ -12,6 +12,7 @@
     "noImplicitThis": true,
     "allowUnreachableCode": false,
     "moduleResolution": "node",
-    "noEmit": false
+    "noEmit": false,
+    "alwaysStrict": true
   }
 }

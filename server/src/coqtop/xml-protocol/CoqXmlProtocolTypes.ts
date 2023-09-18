@@ -1,5 +1,3 @@
-'use strict';
-
 export abstract class ProtocolTypeBase {
   public abstract encode() : string;
 }

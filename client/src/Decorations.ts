@@ -1,4 +1,3 @@
-'use strict';
 import * as vscode from 'vscode';
 
 const STM_FOCUS_IMAGE = "client/images/stm-focus.svg";

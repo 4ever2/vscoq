@@ -1,4 +1,3 @@
-'use strict';
 import * as coqProto from '../coq-proto';
 import * as util from 'util';
 import {Node} from './coq-xml';
@@ -341,29 +340,29 @@ export namespace Nodes {
 
 
 
-function check(t:'state_id', r: StateId);
-function check(t:'edit_id', r: EditId);
-function check(t:'int', r: number);
-function check(t:'bool', r: boolean);
-function check(t:'string', r: string);
-function check(t:'unit', r: {});
-function check(t:'pair', r: Pair<CoqValue,CoqValue>);
-function check(t:'list', r: CoqValueList);
-function check(t:'ltacprof_tactic', r: LtacProfTactic);
-function check(t:'ltacprof', r: LtacProfResults);
-function check(t:'feedback_content', r: FeedbackContent);
-function check(t:'feedback', r: StateFeedback);
-function check(t:'union', r: UnionCoqValue);
-function check(t:'option', r?: CoqValue);
-function check(t:'option_value', r?: number|string|boolean);
-function check(t:'option_state', r?: OptionState);
-function check(t:'goal', r?: Subgoal);
-function check(t:'goals', r?: Goals);
-function check(t:'loc', r?: Location );
-function check(t:'message_level', r?: MessageLevel );
-function check(t:'message', r?: Message );
-function check(t:'status', r?: CoqStatus );
-function check(t:'value', r?: ValueReturn|FailValue );
+function check(t:'state_id', r: StateId) : CoqValue;
+function check(t:'edit_id', r: EditId) : CoqValue;
+function check(t:'int', r: number) : CoqValue;
+function check(t:'bool', r: boolean) : CoqValue;
+function check(t:'string', r: string) : CoqValue;
+function check(t:'unit', r: {}) : CoqValue;
+function check(t:'pair', r: Pair<CoqValue,CoqValue>) : CoqValue;
+function check(t:'list', r: CoqValueList) : CoqValue;
+function check(t:'ltacprof_tactic', r: LtacProfTactic) : CoqValue;
+function check(t:'ltacprof', r: LtacProfResults) : CoqValue;
+function check(t:'feedback_content', r: FeedbackContent) : CoqValue;
+function check(t:'feedback', r: StateFeedback) : CoqValue;
+function check(t:'union', r: UnionCoqValue) : CoqValue;
+function check(t:'option', r?: CoqValue) : CoqValue;
+function check(t:'option_value', r?: number|string|boolean) : CoqValue;
+function check(t:'option_state', r?: OptionState) : CoqValue;
+function check(t:'goal', r?: Subgoal) : CoqValue;
+function check(t:'goals', r?: Goals) : CoqValue;
+function check(t:'loc', r?: Location ) : CoqValue;
+function check(t:'message_level', r?: MessageLevel ) : CoqValue;
+function check(t:'message', r?: Message ) : CoqValue;
+function check(t:'status', r?: CoqStatus ) : CoqValue;
+function check(t:'value', r?: ValueReturn|FailValue ) : CoqValue;
 function check(tag:string, result:CoqValue) : CoqValue {
   return result;
 } 

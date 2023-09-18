@@ -1,5 +1,3 @@
-'use strict';
-
 // const logger = console;
 const logger = {
   log: (x:string) => {}

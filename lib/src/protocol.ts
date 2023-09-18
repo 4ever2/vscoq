@@ -1,4 +1,3 @@
-'use strict';
 import { Position, Range } from 'vscode-languageserver-types';
 import { RequestType, NotificationType } from 'vscode-jsonrpc';
 import { SemVer } from 'semver';

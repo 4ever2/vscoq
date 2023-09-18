@@ -1,5 +1,3 @@
-'use strict';
-
 import { SemVer, satisfies } from 'semver';
 import * as vscode from 'vscode';
 

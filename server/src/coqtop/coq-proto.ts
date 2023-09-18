@@ -1,5 +1,3 @@
-'use strict';
-
 import { AnnotatedText } from "@lib/AnnotatedText";
 
 
