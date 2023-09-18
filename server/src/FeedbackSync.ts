@@ -1,5 +1,5 @@
 import {Position, Diagnostic} from 'vscode-languageserver';
-import {Highlights} from './protocol';
+import {Highlights} from '@lib/protocol';
 
 export interface DocumentFeedbackCallbacks {
   sendHighlightUpdates(highlights: Highlights) : void;

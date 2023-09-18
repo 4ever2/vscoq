@@ -5,7 +5,12 @@
     "tsBuildInfoFile": "out/tsconfig.tsBuildInfoFile",
     "rootDir": "src",
     "noImplicitAny": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "paths": {
+      "@lib/*": ["../lib/src/*"],
+      "@lib": ["../lib/src"],
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [{ "path": "../lib" }]
 }

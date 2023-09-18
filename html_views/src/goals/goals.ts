@@ -1,14 +1,9 @@
 import { WebviewApi } from "vscode-webview";
-import {
-  ControllerEvent,
-  ResizeEvent,
-  SettingsState,
-  ProofViewProtocol,
-  ProofViewDiffSettings,
-} from "./protocol";
 import { Infoview } from "./display-proof-state";
 import "@vscode/webview-ui-toolkit/dist/toolkit";
 import h = require("hyperscript");
+import { ProofViewDiffSettings, SettingsState } from "@lib/settings";
+import { ControllerEvent, ProofViewProtocol, ResizeEvent } from "../../../lib/src/coqview";
 
 const infoview = Infoview();
 const root = document.getElementById("root");

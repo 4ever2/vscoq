@@ -3,46 +3,15 @@ import * as vscode from "vscode";
 
 import * as view from "./CoqView";
 import { extensionContext } from "./extension";
-import * as proto from "./protocol";
 import * as path from "path";
 import * as docs from "./CoqProject";
 import * as psm from "./prettify-symbols-mode";
 
 import mustache = require("mustache");
+import { ProofViewDiffSettings, SettingsState } from "@lib/settings";
+import { CommandResult } from "@lib/protocol";
+import { ControllerEvent, ProofViewProtocol, ResizeEvent } from '../../lib/src/coqview';
 
-interface ControllerEvent {
-  eventName: string;
-  params: ResizeEvent; // | | | | | ;
-}
-
-interface ResizeEvent {
-  columns: number;
-}
-
-interface GoalUpdate {
-  command: "goal-update";
-  goal: proto.CommandResult;
-}
-
-interface SettingsUpdate extends SettingsState {
-  command: "settings-update";
-}
-
-export interface ProofViewDiffSettings {
-  addedTextIsItalic: boolean;
-  removedTextIsStrikedthrough: boolean;
-  enabled: string;
-}
-
-interface SettingsState {
-  fontFamily?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  prettifySymbolsMode?: boolean;
-  proofViewDiff?: ProofViewDiffSettings;
-}
-
-type ProofViewProtocol = GoalUpdate | SettingsUpdate;
 
 const VIEW_PATH = "html_views";
 
@@ -63,7 +32,7 @@ export class HtmlCoqView implements view.CoqView {
   private coqViewUri: vscode.Uri;
   private currentSettings: SettingsState = {};
   private visible = false;
-  private initialState: undefined | proto.CommandResult;
+  private initialState: undefined | CommandResult;
 
   private panel: vscode.WebviewPanel | null = null;
 
@@ -193,7 +162,7 @@ export class HtmlCoqView implements view.CoqView {
     }
   }
 
-  public async show(pane: vscode.ViewColumn, state?: proto.CommandResult) {
+  public async show(pane: vscode.ViewColumn, state?: CommandResult) {
     if (!this.coqViewUri) await this.createBuffer();
 
     this.initialState = state;
@@ -210,11 +179,11 @@ export class HtmlCoqView implements view.CoqView {
     if (this.panel !== null) this.panel.webview.postMessage(message);
   }
 
-  private async updateClient(state: proto.CommandResult) {
+  private async updateClient(state: CommandResult) {
     await this.sendMessage({ command: "goal-update", goal: state });
   }
 
-  public update(state: proto.CommandResult) {
+  public update(state: CommandResult) {
     this.updateClient(state);
   }
 

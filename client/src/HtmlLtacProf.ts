@@ -1,7 +1,7 @@
 'use strict';
 import * as vscode from 'vscode'
 
-import * as proto from './protocol'
+import * as proto from '@lib/protocol';
 import * as WebSocket from 'ws';
 import * as http from 'http';
 import { extensionContext } from './extension'

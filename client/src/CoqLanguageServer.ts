@@ -2,7 +2,7 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
-import * as proto from './protocol';
+import * as proto from '@lib/protocol';
 
 import { workspace, ExtensionContext } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
@@ -240,7 +240,7 @@ export class CoqLanguageServer implements vscode.Disposable {
     return this.server.sendRequest(proto.GetSentencePrefixTextRequest.type, { uri: uri, position: pos }, token || this.cancelRequest.token);
   }
 
-  public async query(uri: string, query: "locate"|"check"|"print"|"search"|"about"|"searchAbout", term: string, routeId:Number): Promise<void> {
+  public async query(uri: string, query: "locate"|"check"|"print"|"search"|"about"|"searchAbout", term: string, routeId:number): Promise<void> {
     await this.server.onReady();
     const params : proto.CoqTopQueryParams =
       {
@@ -396,7 +396,7 @@ export class CoqDocumentLanguageServer implements vscode.Disposable {
     return this.server.ltacProfGetResults(this.uri, offset);
   }
 
-  public query(query: proto.QueryFunction, term: string, routeId: Number): Thenable<void> {
+  public query(query: proto.QueryFunction, term: string, routeId: number): Thenable<void> {
     return this.server.query(this.uri, query, term, routeId);
   }
 

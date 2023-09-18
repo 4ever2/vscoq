@@ -1,13 +1,13 @@
 import {CoqDocument, DocumentCallbacks, TextDocumentItem} from './document';
-import {Settings, DocumentSelector} from './protocol';
 import * as vscode from 'vscode-languageserver';
 import * as path from 'path';
 import * as fs from 'fs';
 import {PrettifySymbolsMode} from './util/PrettifySymbols';
-import * as nodeAsync from './util/nodejs-async';
+import * as nodeAsync from '@lib/nodejs-async';
 import {CoqTop} from './coqtop/CoqTop';
 import {CoqTop as CoqTop8} from './coqtop/CoqTop8';
 import stringArgv from 'string-argv';
+import { DocumentSelector, Settings } from "@lib/settings";
 
 
 const coqProjectFileName = '_CoqProject';

@@ -23,6 +23,7 @@ module.exports =
           // * enable sources maps for end-to-end source maps
           loader: 'ts-loader',
           options: {
+            projectReferences: true,
             compilerOptions: {
               "sourceMap": true,
             }
@@ -32,13 +33,16 @@ module.exports =
     },
     resolve: {
       mainFields: ['module', 'main'],
-      extensions: ['.ts', '.js'] // support ts-files and js-files
+      extensions: ['.ts', '.js'], // support ts-files and js-files
+      alias: {
+        "@lib": path.resolve(__dirname, 'lib/src/')
+      }
     }, 
     output: {
       filename: '[name].js',
       path: path.resolve(__dirname, "out"),
       libraryTarget: "commonjs",
-      clean: true
+      clean: false
     },
     externals: {
       'vscode': 'commonjs vscode', // ignored because it doesn't exist

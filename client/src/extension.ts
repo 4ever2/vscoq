@@ -1,7 +1,7 @@
 'use strict';
 import * as vscode from 'vscode';
 import { TextEditor, TextEditorEdit, ExtensionContext } from 'vscode';
-import * as proto from './protocol';
+import * as proto from '@lib/protocol';
 import { CoqProject, CoqDocument } from './CoqProject';
 import { initializeDecorations } from './Decorations';
 import * as editorAssist from './EditorAssist';

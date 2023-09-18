@@ -3,12 +3,12 @@ import * as assert from 'assert';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
-import * as text from '../src/util/AnnotatedText';
 import * as perr from '../src/parsing/error-parsing';
+import { AnnotatedText } from '../../lib/src/protocol';
 
 // Defines a Mocha test suite to group tests of similar kind together
 describe("error-parsing", () => {
-  function parse(err: text.AnnotatedText) {
+  function parse(err: AnnotatedText) {
     return {err: err, perr: perr.parseError(err)}
   }
 

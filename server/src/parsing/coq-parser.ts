@@ -1,7 +1,7 @@
 'use strict';
 // import * as peg from 'pegjs'
 import * as util from 'util'
-import * as textUtil from './../util/text-util'
+import * as textUtil from '@lib/text-util'
 import {Range} from 'vscode-languageserver'
 import * as server from './../server'
 import * as peg from 'pegjs'
