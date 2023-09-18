@@ -1,77 +1,76 @@
-import {CoqDocument, DocumentCallbacks, TextDocumentItem} from './document';
+import { CoqDocument, DocumentCallbacks, TextDocumentItem } from './document';
 import * as vscode from 'vscode-languageserver';
 import * as path from 'path';
 import * as fs from 'fs';
-import {PrettifySymbolsMode} from './util/PrettifySymbols';
+import { PrettifySymbolsMode } from './util/PrettifySymbols';
 import * as nodeAsync from '@lib/nodejs-async';
-import {CoqTop} from './coqtop/CoqTop';
-import {CoqTop as CoqTop8} from './coqtop/CoqTop8';
+import { CoqTop } from './coqtop/CoqTop';
+import { CoqTop as CoqTop8 } from './coqtop/CoqTop8';
 import stringArgv from 'string-argv';
 import { DocumentSelector, Settings } from "@lib/settings";
 
 
 const coqProjectFileName = '_CoqProject';
 
-
 export class CoqProject {
-  private coqInstances = new Map<string,CoqDocument>();
-  private currentSettings : Settings;
+  private coqInstances = new Map<string, CoqDocument>();
+  private currentSettings: Settings;
   private coqProjectRoot: string;
   private coqProjectWatcher: fs.FSWatcher = null;
   private loadingCoqProjectInProcess = false;
-  private ready = {event: Promise.resolve<{}>({}), signal: ()=>{} };
+  private ready = { event: Promise.resolve<{}>({}), signal: () => { } };
   private psm = new PrettifySymbolsMode([]);
 
   // we independently track the settings contributed by the vscode project settings and _CoqProject
   // so they can be modified seperately
   private settingsCoqTopArgs: string[] = [];
   private coqProjectArgs: string[] = [];
-  
+
   constructor(workspaceRoot: string, private readonly connection: vscode.IConnection) {
-    if(workspaceRoot)
+    if (workspaceRoot)
       connection.console.log("Loaded project at " + workspaceRoot)
     else
       connection.console.log("Loading project with no root directory")
     this.coqProjectRoot = workspaceRoot; //default is the workspace root
   }
 
-  public get console() : vscode.RemoteConsole {
+  public get console(): vscode.RemoteConsole {
     return this.connection.console;
   }
 
-  public getCoqProjectRoot() : string {
+  public getCoqProjectRoot(): string {
     return this.coqProjectRoot;
   }
-  
-  public lookup(uri: string) : CoqDocument {
+
+  public lookup(uri: string): CoqDocument {
     var doc = this.coqInstances.get(uri);
-    if(!doc)
+    if (!doc)
       throw 'unknown document: ' + uri;
     return doc;
   }
-  
-  public createCoqTopInstance(scriptUri: string) : CoqTop {
+
+  public createCoqTopInstance(scriptUri: string): CoqTop {
     return new CoqTop8(this.settings.coqtop, scriptUri, this.getCoqProjectRoot(), this.console);
   }
 
   /** reset the ready promise */
   private notReady() {
-     this.ready.event = new Promise<{}>((resolve) => {
-       this.ready.signal = () => {
-         this.ready = {event: Promise.resolve<{}>({}), signal: ()=>{} };
-         resolve({});
-        };
-     });
+    this.ready.event = new Promise<{}>((resolve) => {
+      this.ready.signal = () => {
+        this.ready = { event: Promise.resolve<{}>({}), signal: () => { } };
+        resolve({});
+      };
+    });
   }
 
-  public getPrettifySymbols() : PrettifySymbolsMode {
+  public getPrettifySymbols(): PrettifySymbolsMode {
     return this.psm;
   }
-  
-  private matchesCoq(selector: DocumentSelector) : boolean {
-    if(typeof selector === 'string')
+
+  private matchesCoq(selector: DocumentSelector): boolean {
+    if (typeof selector === 'string')
       return selector === 'coq';
-    else if(selector instanceof Array)
+    else if (selector instanceof Array)
       return selector.some((s) => this.matchesCoq(s));
     else
       return selector.language === 'coq';
@@ -82,18 +81,18 @@ export class CoqProject {
     this.settingsCoqTopArgs = newSettings.coqtop.args;
     this.currentSettings = newSettings;
 
-    if(newSettings.coq.coqProjectRoot ){
+    if (newSettings.coq.coqProjectRoot) {
       this.coqProjectRoot = newSettings.coq.coqProjectRoot;
       this.console.log("Updated project root to " + this.getCoqProjectRoot());
     }
-    if(newSettings.coq.loadCoqProject ) {
+    if (newSettings.coq.loadCoqProject) {
       this.watchCoqProject();
       await this.loadCoqProject();
     }
 
-    if(newSettings.prettifySymbolsMode && newSettings.prettifySymbolsMode.substitutions) {
-      for(let entry of newSettings.prettifySymbolsMode.substitutions) {
-        if(entry.language && entry.substitutions && this.matchesCoq(entry.language)) {
+    if (newSettings.prettifySymbolsMode && newSettings.prettifySymbolsMode.substitutions) {
+      for (let entry of newSettings.prettifySymbolsMode.substitutions) {
+        if (entry.language && entry.substitutions && this.matchesCoq(entry.language)) {
           this.psm = new PrettifySymbolsMode(entry.substitutions);
           break;
         }
@@ -102,25 +101,25 @@ export class CoqProject {
       this.psm = new PrettifySymbolsMode([]);
     this.ready.signal();
   }
-  
+
   public async open(textDocument: TextDocumentItem, callbacks: DocumentCallbacks): Promise<CoqDocument> {
     await this.ready.event;
     const doc = new CoqDocument(this, textDocument, this.console, callbacks);
     this.coqInstances.set(doc.uri, doc);
     return doc;
   }
-  
+
   public close(uri: string) {
     var doc = this.coqInstances.get(uri);
     this.coqInstances.delete(uri);
-    if(doc) {
+    if (doc) {
       doc.dispose();
     }
   }
-  
+
   private coqProjectFile() {
-    if(this.coqProjectRoot)
-      return path.join(this.coqProjectRoot, coqProjectFileName );
+    if (this.coqProjectRoot)
+      return path.join(this.coqProjectRoot, coqProjectFileName);
     else
       return undefined;
   }
@@ -131,14 +130,14 @@ export class CoqProject {
   }
 
   private watchCoqProject() {
-    if(this.coqProjectWatcher != null)
+    if (this.coqProjectWatcher != null)
       this.coqProjectWatcher.close();
-    if(!this.coqProjectRoot)
+    if (!this.coqProjectRoot)
       return;
     this.coqProjectWatcher = fs.watch(this.coqProjectRoot, async (event, filename) => {
-      switch(event) {
+      switch (event) {
         case 'change':
-          if((filename && filename==coqProjectFileName)) {
+          if ((filename && filename == coqProjectFileName)) {
             this.console.log(coqProjectFileName + ' changed');
             await this.loadCoqProject();
           }
@@ -146,28 +145,28 @@ export class CoqProject {
     });
   }
 
-  private static parseCoqProject(text: string) : string[] {
-    const args : string[] = [];
-    const projectArgs : string[] = stringArgv(text);
-    for(let idx = 0; idx < projectArgs.length; ++idx) {
+  private static parseCoqProject(text: string): string[] {
+    const args: string[] = [];
+    const projectArgs: string[] = stringArgv(text);
+    for (let idx = 0; idx < projectArgs.length; ++idx) {
       const opt = projectArgs[idx]
-      if(opt === '-R')
+      if (opt === '-R')
         args.push('-R', projectArgs[++idx], projectArgs[++idx])
-      else if(opt === '-I')
+      else if (opt === '-I')
         args.push('-I', projectArgs[++idx])
-      else if(opt === '-Q')
+      else if (opt === '-Q')
         args.push('-Q', projectArgs[++idx], projectArgs[++idx])
-      else if(opt === '-arg')
+      else if (opt === '-arg')
         args.push(...stringArgv(projectArgs[++idx]))
     }
     return args;
   }
 
-  private async loadCoqProject() : Promise<void> {
-    if(!this.getCoqProjectRoot)
+  private async loadCoqProject(): Promise<void> {
+    if (!this.getCoqProjectRoot)
       return;
 
-    if(this.loadingCoqProjectInProcess)
+    if (this.loadingCoqProjectInProcess)
       return;
     this.loadingCoqProjectInProcess = true;
 
@@ -179,13 +178,12 @@ export class CoqProject {
     } catch (err) {
       this.console.log("Could not load _CoqProject");
     } finally {
-      this.loadingCoqProjectInProcess = false;      
+      this.loadingCoqProjectInProcess = false;
     }
   }
-  
+
   public get settings() {
     return this.currentSettings;
   }
-  
-}
 
+}

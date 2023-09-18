@@ -1,6 +1,6 @@
 // const logger = console;
 const logger = {
-  log: (x:string) => {}
+  log: (x: string) => { }
 }
 
 export class Mutex {
@@ -20,18 +20,18 @@ export class Mutex {
   public constructor() {
   }
 
-  public isLocked() : boolean {
+  public isLocked(): boolean {
     return this.locked;
   }
 
-  private wrapCancellationToken(cancellationToken?: number | Thenable<void>) : Thenable<()=>void> {
-    return new Promise<()=>void>((resolve,reject) => {
-      if(typeof cancellationToken === "number")
+  private wrapCancellationToken(cancellationToken?: number | Thenable<void>): Thenable<() => void> {
+    return new Promise<() => void>((resolve, reject) => {
+      if (typeof cancellationToken === "number")
         setTimeout(() => reject(Mutex.reasonTimout), <number>cancellationToken);
       else {
-        cancellationToken.then(() => {});
+        cancellationToken.then(() => { });
         cancellationToken.then(() => reject(Mutex.reasonCancelled))
-    }
+      }
     });
   }
 
@@ -42,7 +42,7 @@ export class Mutex {
   /**
    * @returns a function that unlocks this mutex
    */
-  public lock(cancellationToken?: number | Thenable<void>) : Promise<()=>void> {
+  public lock(cancellationToken?: number | Thenable<void>): Promise<() => void> {
     logger.log('Mutex.lock(...)');
     this.locked = true;
     const self = this;
@@ -51,14 +51,14 @@ export class Mutex {
 
     let isCancelled = false;
 
-    let unlockNext : () => void;
+    let unlockNext: () => void;
     // The next caller in line will lock against this promise.
     // When they do so, they effectively tell us who to call
     // when we are unlocked by registering themselves as unlockNext
-    const willLock = new Promise<(()=>Promise<void>)>((resolve, reject) => {
+    const willLock = new Promise<(() => Promise<void>)>((resolve, reject) => {
       unlockNext = () => {
         // in case the mutex was cancelled before we unlock, resolve() will do nothing, so we cannot rely on it to unlock this mutex
-        if(self.waitingCount === 0)
+        if (self.waitingCount === 0)
           self.locked = false;
         logger.log(`unlocking ${self.toString()}`);
         return resolve(() => Promise.resolve());
@@ -67,7 +67,7 @@ export class Mutex {
 
     willLock
       .then(() => {
-        if(self.waitingCount === 0)
+        if (self.waitingCount === 0)
           self.locked = false;
         logger.log(`unlocked (willLock) ${self.toString()}`);
       }, (reason) => {
@@ -78,17 +78,17 @@ export class Mutex {
     const currentLocking = this.locking;
 
     // A promise to unlock the next thread in line
-    let willUnlock : Promise<()=>void>;
-    if(cancellationToken !== undefined)
-      willUnlock = Promise.race<()=>void>(
-        [ currentLocking.then(() => {
-            self.locked = true;
-            if(!isCancelled)// avoid double decrement
-              --this.waitingCount;
-            logger.log(`acquired lock ${myId} ${self.toString()}`);
-            return unlockNext;
-          })
-        , this.wrapCancellationToken(cancellationToken)
+    let willUnlock: Promise<() => void>;
+    if (cancellationToken !== undefined)
+      willUnlock = Promise.race<() => void>(
+        [currentLocking.then(() => {
+          self.locked = true;
+          if (!isCancelled)// avoid double decrement
+            --this.waitingCount;
+          logger.log(`acquired lock ${myId} ${self.toString()}`);
+          return unlockNext;
+        })
+          , this.wrapCancellationToken(cancellationToken)
         ])
         .catch((reason) => {
           --this.waitingCount;
@@ -99,7 +99,7 @@ export class Mutex {
     else
       willUnlock = currentLocking.then(() => {
         self.locked = true;
-        if(!isCancelled)// avoid double decrement
+        if (!isCancelled)// avoid double decrement
           --this.waitingCount;
         logger.log(`acquired lock ${myId} ${self.toString()}`);
         return unlockNext;
@@ -115,15 +115,14 @@ export class Mutex {
     this.locking = currentLocking
       .then(() => {
         logger.log(`locking acquired ${myId} ${self.toString()}`);
-        if(isCancelled)
+        if (isCancelled)
           unlockNext();
         return willLock;
       }, (reason) => {
         logger.log(`locking cancelled (next)`);
         return Promise.reject(reason);
-      } );
+      });
 
     return willUnlock;
   }
 }
-

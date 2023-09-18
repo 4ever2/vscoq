@@ -85,9 +85,9 @@ export class HtmlCoqView implements view.CoqView {
       );
       console.log(
         "Goals: " +
-          decodeURIComponent(
-            this.coqViewUri.with({ scheme: "file" }).toString()
-          )
+        decodeURIComponent(
+          this.coqViewUri.with({ scheme: "file" }).toString()
+        )
       );
     } catch (err) {
       vscode.window.showErrorMessage(err.toString());
@@ -190,9 +190,8 @@ export class HtmlCoqView implements view.CoqView {
     this.currentSettings.fontFamily = vscode.workspace
       .getConfiguration("editor")
       .get("fontFamily") as string;
-    this.currentSettings.fontSize = `${
-      vscode.workspace.getConfiguration("editor").get("fontSize") as number
-    }pt`;
+    this.currentSettings.fontSize = `${vscode.workspace.getConfiguration("editor").get("fontSize") as number
+      }pt`;
     this.currentSettings.fontWeight = vscode.workspace
       .getConfiguration("editor")
       .get("fontWeight") as string;

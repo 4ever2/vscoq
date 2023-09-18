@@ -30,7 +30,7 @@ export function searchRefman(version: SemVer, query: string): void {
     vscode.window.showInformationMessage("Searching reference manual only works for Coq >= v8.8.0");
     return
   }
-  
+
   const url = getRefmanUrl(version);
   openUrl(`${url}search.html?q=${query}&check_keywords=yes&area=default`);
 }

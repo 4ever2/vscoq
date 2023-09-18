@@ -21,4 +21,3 @@ interface SettingsUpdate extends SettingsState {
 }
 
 export type ProofViewProtocol = GoalUpdate | SettingsUpdate;
-

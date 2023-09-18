@@ -6,7 +6,7 @@ export enum DisplayState {
 }
 
 export function getDisplayState(state: CommandResult) {
-  switch(state.type) {
+  switch (state.type) {
     case 'failure':
       return DisplayState.Error;
     case 'proof-view':
@@ -20,15 +20,15 @@ export function getDisplayState(state: CommandResult) {
   }
 }
 
-function countUnfocusedGoalStack(u: UnfocusedGoalStack|undefined) : number {
-  if(u)
+function countUnfocusedGoalStack(u: UnfocusedGoalStack | undefined): number {
+  if (u)
     return u.before.length + u.after.length + countUnfocusedGoalStack(u.next);
   else
     return 0;
 }
 
 export function countAllGoals(state: CommandResult): number {
-  if(state.type === 'proof-view') {
+  if (state.type === 'proof-view') {
     const result =
       state.goals.length
       + countUnfocusedGoalStack(state.backgroundGoals)
@@ -39,21 +39,21 @@ export function countAllGoals(state: CommandResult): number {
     return 0;
 }
 
-export function adjacentPane(pane: vscode.ViewColumn) : vscode.ViewColumn {
+export function adjacentPane(pane: vscode.ViewColumn): vscode.ViewColumn {
   switch (pane) {
-  case vscode.ViewColumn.One: return vscode.ViewColumn.Two
-  case vscode.ViewColumn.Two: return vscode.ViewColumn.Three;
-  default: return vscode.ViewColumn.One;
+    case vscode.ViewColumn.One: return vscode.ViewColumn.Two
+    case vscode.ViewColumn.Two: return vscode.ViewColumn.Three;
+    default: return vscode.ViewColumn.One;
   }
 }
 
 export interface CoqView extends vscode.Disposable {
 
-  update(state: CommandResult) : void;
-  readonly resize : vscode.Event<number>;
+  update(state: CommandResult): void;
+  readonly resize: vscode.Event<number>;
 
-  show(pane: vscode.ViewColumn, state?: CommandResult) : Promise<void>;
+  show(pane: vscode.ViewColumn, state?: CommandResult): Promise<void>;
 
-  isVisible() : boolean;
+  isVisible(): boolean;
 
 }

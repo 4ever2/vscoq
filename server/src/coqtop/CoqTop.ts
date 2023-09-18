@@ -1,15 +1,14 @@
 import * as coqProto from './coq-proto';
-import {spawn} from 'child_process';
+import { spawn } from 'child_process';
 import * as semver from 'semver';
-import {AnnotatedText, normalizeText, textToDisplayString} from '../util/AnnotatedText';
+import { AnnotatedText, normalizeText, textToDisplayString } from '../util/AnnotatedText';
 
-export type CoqtopError = Interrupted|CoqtopSpawnError|CallFailure;
+export type CoqtopError = Interrupted | CoqtopSpawnError | CallFailure;
 
 /** Coqtop was interrupted; call cancelled */
 export class Interrupted {
   constructor(
-    public stateId: number)
-  {}
+    public stateId: number) { }
   public toString() {
     return 'Coqtop Interrupted';
   }
@@ -17,15 +16,14 @@ export class Interrupted {
 
 /** A fatal error of coqtop */
 export class CoqtopSpawnError {
-  constructor(private path: string, private message: string)
-  {}
+  constructor(private path: string, private message: string) { }
 
-  public get binPath() : string {
+  public get binPath(): string {
     return this.path;
   }
 
   public toString() {
-    return "Could not start coqtop: " + this.path + (this.message? "\n" + this.message : "");
+    return "Could not start coqtop: " + this.path + (this.message ? "\n" + this.message : "");
   }
 }
 /** A call did not succeed; a nonfatal error */
@@ -33,17 +31,16 @@ export class CallFailure {
   constructor(
     public message: AnnotatedText,
     public stateId?: number,
-    public range?: coqProto.Location)
-  {
+    public range?: coqProto.Location) {
     this.message = normalizeText(this.message);
   }
   public toString() {
     return textToDisplayString(this.message) +
       (this.range || this.stateId
         ? "  (" +
-          (this.range ? `offsets ${this.range.start}-${this.range.stop}` : (this.stateId ? " " : "")) +
-          (this.stateId ? ` of stateId ${this.stateId}` : "")
-          + ")"
+        (this.range ? `offsets ${this.range.start}-${this.range.stop}` : (this.stateId ? " " : "")) +
+        (this.stateId ? ` of stateId ${this.stateId}` : "")
+        + ")"
         : "")
   }
 }
@@ -71,33 +68,27 @@ export interface ProofView {
   abandonedGoals: coqProto.Subgoal[];
 }
 
-
-
-export type NoProofTag = {mode: 'no-proof'}
-export type ProofModeTag = {mode: 'proof'}
+export type NoProofTag = { mode: 'no-proof' }
+export type ProofModeTag = { mode: 'proof' }
 export type NoProofResult = NoProofTag & {}
 export type ProofModeResult = ProofModeTag & ProofView
 export type GoalResult = NoProofResult | ProofModeResult
 
-
-
-
-
 export interface EventCallbacks {
-  onFeedback? : (feedback: coqProto.StateFeedback) => void;
-  onMessage? : (msg: coqProto.Message, routeId: coqProto.RouteId, stateId?: coqProto.StateId) => void;
+  onFeedback?: (feedback: coqProto.StateFeedback) => void;
+  onMessage?: (msg: coqProto.Message, routeId: coqProto.RouteId, stateId?: coqProto.StateId) => void;
   onClosed?: (isError: boolean, message?: string) => void;
 }
 
-export function detectVersion(coqtopModule: string, cwd: string, console?: {log: (string: string)=>void, warn: (string: string)=>void}) : Promise<string|null> {
-  if(console)
+export function detectVersion(coqtopModule: string, cwd: string, console?: { log: (string: string) => void, warn: (string: string) => void }): Promise<string | null> {
+  if (console)
     console.log('exec: ' + coqtopModule + ' -v');
-  return new Promise<string>((resolve,reject) => {
+  return new Promise<string>((resolve, reject) => {
     try {
-      const coqtop = spawn(coqtopModule, ['-v'], {detached: false, cwd: cwd});
+      const coqtop = spawn(coqtopModule, ['-v'], { detached: false, cwd: cwd });
       let result = "";
 
-      coqtop.stdout.on('data', (data:string) => {
+      coqtop.stdout.on('data', (data: string) => {
         result += data
       });
 
@@ -105,49 +96,46 @@ export function detectVersion(coqtopModule: string, cwd: string, console?: {log:
         const ver = /^\s*The Coq Proof Assistant, version (.+?)\s/.exec(result);
         resolve(!ver ? undefined : ver[1]);
       });
-      coqtop.on('error', (code:number) => {
+      coqtop.on('error', (code: number) => {
         reject(new CoqtopSpawnError(coqtopModule, `error code: ${code}`));
       });
-    } catch(err) {
+    } catch (err) {
       reject(new CoqtopSpawnError(coqtopModule, err));
     }
   })
 }
 
 export abstract class IdeSlave {
-  protected callbacks : EventCallbacks = {};
-  public onFeedback(handler: (feedback: coqProto.StateFeedback) => void) : {dispose: ()=>void}
-  {
+  protected callbacks: EventCallbacks = {};
+  public onFeedback(handler: (feedback: coqProto.StateFeedback) => void): { dispose: () => void } {
     this.callbacks.onFeedback = handler;
     return { dispose: () => { this.callbacks.onFeedback = undefined; } }
   }
 
-  public onMessage(handler: (msg: coqProto.Message, routeId: coqProto.RouteId, stateId: coqProto.StateId) => void)
-  {
+  public onMessage(handler: (msg: coqProto.Message, routeId: coqProto.RouteId, stateId: coqProto.StateId) => void) {
     this.callbacks.onMessage = handler;
     return { dispose: () => { this.callbacks.onMessage = undefined; } }
   }
 
-  public onClosed(handler: (isError: boolean, message?: string) => void)
-  {
+  public onClosed(handler: (isError: boolean, message?: string) => void) {
     this.callbacks.onClosed = handler;
     return { dispose: () => { this.callbacks.onClosed = undefined; } }
   }
 
-  public abstract dispose() : void;
-  public abstract isConnected() : boolean;
-  public abstract coqInterrupt() : Promise<boolean>;
-  public abstract coqInit() : Promise<InitResult>;
-  public abstract coqQuit() : Promise<void>;
-  public abstract coqGoal() : Promise<GoalResult>;
-  public abstract getStatus(force: boolean) : Promise<coqProto.CoqStatus>;
-  public abstract coqAddCommand(command: string, editId: number, stateId: number, verbose?: boolean) : Promise<AddResult>;
-  public abstract coqEditAt(stateId: number) : Promise<EditAtResult>;
-  public abstract coqLtacProfilingResults(stateId?: number, routeId?: number) : Promise<void>;
-  public abstract coqResizeWindow(columns: number) : Promise<void>;
-  public abstract coqQuery(query: string, stateId?: number, routeId?: number) : Promise<void>;
-  public abstract coqGetOptions(options: CoqOptions) : Promise<void>;
-  public abstract coqSetOptions(options: CoqOptions) : Promise<void>;
+  public abstract dispose(): void;
+  public abstract isConnected(): boolean;
+  public abstract coqInterrupt(): Promise<boolean>;
+  public abstract coqInit(): Promise<InitResult>;
+  public abstract coqQuit(): Promise<void>;
+  public abstract coqGoal(): Promise<GoalResult>;
+  public abstract getStatus(force: boolean): Promise<coqProto.CoqStatus>;
+  public abstract coqAddCommand(command: string, editId: number, stateId: number, verbose?: boolean): Promise<AddResult>;
+  public abstract coqEditAt(stateId: number): Promise<EditAtResult>;
+  public abstract coqLtacProfilingResults(stateId?: number, routeId?: number): Promise<void>;
+  public abstract coqResizeWindow(columns: number): Promise<void>;
+  public abstract coqQuery(query: string, stateId?: number, routeId?: number): Promise<void>;
+  public abstract coqGetOptions(options: CoqOptions): Promise<void>;
+  public abstract coqSetOptions(options: CoqOptions): Promise<void>;
 }
 
 export class CommunicationError extends Error {
@@ -155,22 +143,22 @@ export class CommunicationError extends Error {
 
 export abstract class CoqTop extends IdeSlave {
   public abstract dispose(): void;
-  public abstract isRunning() : boolean;
-  public abstract getVersion() : semver.SemVer;
-  public abstract startCoq() : Promise<InitResult>;
-  public abstract isConnected() : boolean;
-  public abstract coqInterrupt() : Promise<boolean>;
-  public abstract coqInit() : Promise<InitResult>;
-  public abstract coqQuit() : Promise<void>;
-  public abstract coqGoal() : Promise<GoalResult>;
-  public abstract getStatus(force: boolean) : Promise<coqProto.CoqStatus>;
-  public abstract coqAddCommand(command: string, editId: number, stateId: number, verbose?: boolean) : Promise<AddResult>;
-  public abstract coqEditAt(stateId: number) : Promise<EditAtResult>;
-  public abstract coqLtacProfilingResults(stateId?: number, routeId?: number) : Promise<void>;
-  public abstract coqResizeWindow(columns: number) : Promise<void>;
-  public abstract coqQuery(query: string, stateId?: number, routeId?: number) : Promise<void>;
-  public abstract coqGetOptions(options: CoqOptions) : Promise<void>;
-  public abstract coqSetOptions(options: CoqOptions) : Promise<void>;
+  public abstract isRunning(): boolean;
+  public abstract getVersion(): semver.SemVer;
+  public abstract startCoq(): Promise<InitResult>;
+  public abstract isConnected(): boolean;
+  public abstract coqInterrupt(): Promise<boolean>;
+  public abstract coqInit(): Promise<InitResult>;
+  public abstract coqQuit(): Promise<void>;
+  public abstract coqGoal(): Promise<GoalResult>;
+  public abstract getStatus(force: boolean): Promise<coqProto.CoqStatus>;
+  public abstract coqAddCommand(command: string, editId: number, stateId: number, verbose?: boolean): Promise<AddResult>;
+  public abstract coqEditAt(stateId: number): Promise<EditAtResult>;
+  public abstract coqLtacProfilingResults(stateId?: number, routeId?: number): Promise<void>;
+  public abstract coqResizeWindow(columns: number): Promise<void>;
+  public abstract coqQuery(query: string, stateId?: number, routeId?: number): Promise<void>;
+  public abstract coqGetOptions(options: CoqOptions): Promise<void>;
+  public abstract coqSetOptions(options: CoqOptions): Promise<void>;
 }
 
 export interface CoqOptions {

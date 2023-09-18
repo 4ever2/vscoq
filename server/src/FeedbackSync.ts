@@ -1,29 +1,29 @@
-import {Position, Diagnostic} from 'vscode-languageserver';
-import {Highlights} from '@lib/protocol';
+import { Position, Diagnostic } from 'vscode-languageserver';
+import { Highlights } from '@lib/protocol';
 
 export interface DocumentFeedbackCallbacks {
-  sendHighlightUpdates(highlights: Highlights) : void;
-  sendDiagnostics(diagnostics: Diagnostic[]) : void;
-  sendStmFocus(focus: Position) : void;
+  sendHighlightUpdates(highlights: Highlights): void;
+  sendDiagnostics(diagnostics: Diagnostic[]): void;
+  sendStmFocus(focus: Position): void;
 }
 
 export class FeedbackSync {
-  private focus: Position|null = null;
-  private diagnostics: (() => Diagnostic[])|null = null;
-  private highlights: (() => Highlights)|null = null;
-  private feedbackTimeout: NodeJS.Timer|null = null;
+  private focus: Position | null = null;
+  private diagnostics: (() => Diagnostic[]) | null = null;
+  private highlights: (() => Highlights) | null = null;
+  private feedbackTimeout: NodeJS.Timer | null = null;
 
   public constructor(
     private callbacks: DocumentFeedbackCallbacks,
     private delayMS: number = 500
-    ) { }
+  ) { }
 
   private sendFeedbackNow() {
-    if(this.focus!==null)
+    if (this.focus !== null)
       this.callbacks.sendStmFocus(this.focus);
-    if(this.diagnostics)
+    if (this.diagnostics)
       this.callbacks.sendDiagnostics(this.diagnostics());
-    if(this.highlights)
+    if (this.highlights)
       this.callbacks.sendHighlightUpdates(this.highlights());
     this.focus = null;
     this.diagnostics = null;
@@ -31,7 +31,7 @@ export class FeedbackSync {
   }
 
   private sendFeedbackLazily() {
-    if(this.feedbackTimeout !== null)
+    if (this.feedbackTimeout !== null)
       return;
     this.feedbackTimeout = setTimeout(() => {
       this.feedbackTimeout = null;
@@ -40,8 +40,8 @@ export class FeedbackSync {
   }
 
   public cancelSync() {
-    if(this.feedbackTimeout !== null)
-      clearTimeout(this.feedbackTimeout);  
+    if (this.feedbackTimeout !== null)
+      clearTimeout(this.feedbackTimeout);
   }
 
   public syncNow() {
@@ -51,26 +51,26 @@ export class FeedbackSync {
 
   public updateFocus(focus: Position, now = true) {
     this.focus = focus;
-    if(now)
+    if (now)
       this.sendFeedbackNow();
     else
       this.sendFeedbackLazily();
   }
 
-  public updateHighlights(highlights: ()=>Highlights, now = true) {
+  public updateHighlights(highlights: () => Highlights, now = true) {
     this.highlights = highlights;
-    if(now)
+    if (now)
       this.sendFeedbackNow();
     else
       this.sendFeedbackLazily();
   }
 
-  public updateDiagnostics(diagnostics: ()=>Diagnostic[], now = true) {
+  public updateDiagnostics(diagnostics: () => Diagnostic[], now = true) {
     this.diagnostics = diagnostics;
-    if(now)
+    if (now)
       this.sendFeedbackNow();
     else
       this.sendFeedbackLazily();
   }
-  
+
 }

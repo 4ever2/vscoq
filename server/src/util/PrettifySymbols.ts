@@ -1,35 +1,31 @@
-import {combineAnnotationText, Annotation, mapAnnotation, AnnotatedText, TextAnnotation} from './AnnotatedText';
+import { combineAnnotationText, Annotation, mapAnnotation, AnnotatedText, TextAnnotation } from './AnnotatedText';
 import * as server from '../server';
 import { Substitution } from '@lib/settings';
 
 
-
-
 function regexpOptionalGroup(re: string) {
-  if(re)
+  if (re)
     return `(?:${re})`;
   else
     return "";
 }
 
-
-
 export class PrettifySymbolsMode {
-  private regex: RegExp|null;
+  private regex: RegExp | null;
   private substs: string[];
-  
+
   public constructor(substitutions: Substitution[]) {
-    if(!substitutions || substitutions.length===0) {
+    if (!substitutions || substitutions.length === 0) {
       this.regex = null;
       return;
     }
 
     const uglyAllStrings = [];
-    for(let prettySubst of substitutions) {
+    for (let prettySubst of substitutions) {
       const uglyStr = regexpOptionalGroup(prettySubst.pre) + "(" + prettySubst.ugly + ")" + regexpOptionalGroup(prettySubst.post);
       try {
         uglyAllStrings.push(`(?:${uglyStr})`);
-      } catch(e) {
+      } catch (e) {
         server.connection.console.warn(`Could not add rule "${uglyStr}" --> "${prettySubst.pretty}"; invalid regular expression`)
       }
     }
@@ -37,14 +33,13 @@ export class PrettifySymbolsMode {
     this.substs = substitutions.map((s) => s.pretty);
   }
 
-
-  private getMatchSubst(match: RegExpExecArray, text: string) : {start:number, pretty:string, ugly:string}|undefined {
+  private getMatchSubst(match: RegExpExecArray, text: string): { start: number, pretty: string, ugly: string } | undefined {
     const matches = match
-      .map((value,idx) => ({index:idx,match:value}))
+      .map((value, idx) => ({ index: idx, match: value }))
       .filter((value) => value.match !== undefined);
-    if(matches.length <= 1)
+    if (matches.length <= 1)
       return undefined;
-    const matchIdx = matches[matches.length-1].index;
+    const matchIdx = matches[matches.length - 1].index;
     const matchStr = match[matchIdx];
     const start = match.index + match[0].indexOf(matchStr);
     const end = start + matchStr.length;
@@ -52,41 +47,40 @@ export class PrettifySymbolsMode {
     // continue the search at the end of the ugly bit; not the whole match
     this.regex.lastIndex = end;
 
-    return {start: start, pretty: this.substs[matchIdx-1], ugly: matchStr}
+    return { start: start, pretty: this.substs[matchIdx - 1], ugly: matchStr }
   }
 
-  private prettifyString(text: string, baseAnn: Annotation) : AnnotatedText {
-    let newText : (string|TextAnnotation)[] = [];
+  private prettifyString(text: string, baseAnn: Annotation): AnnotatedText {
+    let newText: (string | TextAnnotation)[] = [];
     this.regex.lastIndex = 0;
     let currentIdx = 0;
-    let match : RegExpExecArray;    
-    while(match = this.regex.exec(text)) {
-      if(match[0].length === 0)
+    let match: RegExpExecArray;
+    while (match = this.regex.exec(text)) {
+      if (match[0].length === 0)
         return text;
       try {
         const subst = this.getMatchSubst(match, text);
-        if(subst && currentIdx===subst.start)
-          newText.push(combineAnnotationText({substitution: subst.pretty, text: subst.ugly},baseAnn));
-        else if(subst)
-          newText.push(combineAnnotationText(text.substring(currentIdx, subst.start),baseAnn), combineAnnotationText({substitution: subst.pretty, text: subst.ugly},baseAnn));
+        if (subst && currentIdx === subst.start)
+          newText.push(combineAnnotationText({ substitution: subst.pretty, text: subst.ugly }, baseAnn));
+        else if (subst)
+          newText.push(combineAnnotationText(text.substring(currentIdx, subst.start), baseAnn), combineAnnotationText({ substitution: subst.pretty, text: subst.ugly }, baseAnn));
         else
-          newText.push(combineAnnotationText(match[0],baseAnn));
-      } catch(e) {
-        newText.push(combineAnnotationText(match[0],baseAnn));
+          newText.push(combineAnnotationText(match[0], baseAnn));
+      } catch (e) {
+        newText.push(combineAnnotationText(match[0], baseAnn));
       }
       currentIdx = this.regex.lastIndex;
     }
     // add the rest of the text (no substitutions found)
-    if(currentIdx < text.length)
+    if (currentIdx < text.length)
       newText.push(combineAnnotationText(text.substring(currentIdx), baseAnn));
     return newText;
   }
 
-
-  public prettify(text: AnnotatedText) : AnnotatedText {
-    if(!this.regex)
+  public prettify(text: AnnotatedText): AnnotatedText {
+    if (!this.regex)
       return text;
-    return mapAnnotation(text, (plainText,ann,start,displayStart) => {
+    return mapAnnotation(text, (plainText, ann, start, displayStart) => {
       return this.prettifyString(plainText, ann);
     });
   }

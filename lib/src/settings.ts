@@ -6,17 +6,17 @@ export interface DocumentFilter {
 export type DocumentSelector = string | DocumentFilter | (string | DocumentFilter)[];
 
 export interface Substitution {
-	ugly: string;        // regular expression describing the text to replace
-	pretty: string;      // plain-text symbol to show instead
-	pre?: string;        // regular expression guard on text before "ugly"
-	post?: string;       // regular expression guard on text after "ugly"
-	style?: any;         // stylings to apply to the "pretty" text, if specified, or else the ugly text
+  ugly: string;        // regular expression describing the text to replace
+  pretty: string;      // plain-text symbol to show instead
+  pre?: string;        // regular expression guard on text before "ugly"
+  post?: string;       // regular expression guard on text after "ugly"
+  style?: any;         // stylings to apply to the "pretty" text, if specified, or else the ugly text
 }
 
 /** The substitution settings for a language (or group of languages) */
 export interface LanguageEntry {
   /** language(s) to apply these substitutions on */
-  language:  DocumentSelector;
+  language: DocumentSelector;
   /** substitution rules */
   substitutions: Substitution[];
 }
@@ -27,8 +27,8 @@ export interface PrettifySymbolsModeSettings {
 
 export interface ProofViewDiffSettings {
   enabled: string,
-  addedTextIsItalic : boolean,
-  removedTextIsStrikedthrough : boolean,
+  addedTextIsItalic: boolean,
+  removedTextIsStrikedthrough: boolean,
 }
 
 export interface AutoFormattingSettings {
@@ -57,7 +57,7 @@ export interface CoqSettings {
   /** The path of the coq project relative to the workspace root. Also determines where to look for the `_CoqProject` file. */
   coqProjectRoot: string,
   /** Move the editor's cursor position as Coq interactively steps forward/backward a command. @default `true` */
-  moveCursorToFocus : boolean,
+  moveCursorToFocus: boolean,
   /** Interpret to end of sentence */
   interpretToEndOfSentence: boolean,
   /** Auto-reveal proof-state at cursor */

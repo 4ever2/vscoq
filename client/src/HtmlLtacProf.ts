@@ -38,7 +38,6 @@ export class HtmlLtacProf {
   private coqViewUri: vscode.Uri;
   private docRegistration: { dispose(): any };
 
-
   constructor(private results: proto.LtacProfResults) {
     if (coqViewProvider === null) {
       coqViewProvider = new IFrameDocumentProvider();
