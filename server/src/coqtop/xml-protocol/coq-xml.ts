@@ -57,7 +57,7 @@ export class XmlStream extends events.EventEmitter {
         this.on('error', (x: any) => callbacks.onError(x));
     }
 
-    let options: sax.SAXOptions | { strictEntities: boolean } = {
+    const options: sax.SAXOptions | { strictEntities: boolean } = {
       lowercase: true,
       trim: false,
       normalize: false,
@@ -67,7 +67,7 @@ export class XmlStream extends events.EventEmitter {
       noscript: true
     };
 
-    let saxStream = sax.createStream(false, options as sax.SAXOptions);
+    const saxStream = sax.createStream(false, options as sax.SAXOptions);
     saxStream.on('error', (err: any) => this.onError(err));
     saxStream.on('opentag', (node: sax.Tag) => this.onOpenTag(node));
     saxStream.on('closetag', (tagName: string) => this.onCloseTag(tagName));
@@ -89,14 +89,14 @@ export class XmlStream extends events.EventEmitter {
       return;
 
     if (this.annotateTextMode) {
-      let txt: text.ScopedText = { scope: node.name, attributes: node.attributes, text: [] };
+      const txt: text.ScopedText = { scope: node.name, attributes: node.attributes, text: [] };
       this.textStack.push(txt);
     } else if (node.name === 'richpp') {
-      let txt: text.ScopedText = { scope: "", attributes: node.attributes, text: [] };
+      const txt: text.ScopedText = { scope: "", attributes: node.attributes, text: [] };
       this.annotateTextMode = true;
       this.textStack = [txt];
     } else {
-      let topNode = {
+      const topNode = {
         $name: node.name,
         $: node.attributes,
         $children: <any[]>[]
@@ -121,7 +121,7 @@ export class XmlStream extends events.EventEmitter {
           top.text = [top.text, current]
         return;
       } else {
-        let newTop = this.stack[this.stack.length - 1];
+        const newTop = this.stack[this.stack.length - 1];
         newTop.$children.push(current);
         newTop['richpp'] = current;
         this.annotateTextMode = false;
@@ -130,12 +130,12 @@ export class XmlStream extends events.EventEmitter {
     } else if (this.stack.length === 0)
       return;
     else {
-      let currentTop = this.stack.pop();
-      let tagName = currentTop.$name;
-      let value = this.deserializer.deserialize(currentTop);
+      const currentTop = this.stack.pop();
+      const tagName = currentTop.$name;
+      const value = this.deserializer.deserialize(currentTop);
 
       if (this.stack.length > 0) {
-        let newTop = this.stack[this.stack.length - 1];
+        const newTop = this.stack[this.stack.length - 1];
         newTop.$children.push(value);
         newTop[tagName] = value;
         if (closingTagName === 'richpp') {

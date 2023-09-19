@@ -201,7 +201,7 @@ function costOfDifference(d: diff.Change[]): number {
 
 export function parseError(txt: AnnotatedText): AnnotatedText {
   const str = text.textToString(txt);
-  df: for (let df of diffMessages) {
+  df: for (const df of diffMessages) {
     const preMatch = df.pre.exec(str);
     const postMatch = preMatch ? df.post.exec(str) : undefined;
     if (preMatch && postMatch) {
@@ -214,7 +214,7 @@ export function parseError(txt: AnnotatedText): AnnotatedText {
         diff: diff.Change[];
         cost: number;
       }[] = [];
-      for (let mid of indicesOf(str, df.mid, preLen, str.length - postLen)) {
+      for (const mid of indicesOf(str, df.mid, preLen, str.length - postLen)) {
         const x = str.substring(preLen, mid[0]);
         const y = str.substring(mid[1], str.length - postLen);
         const xy = diff.diffWordsWithSpace(x, y);

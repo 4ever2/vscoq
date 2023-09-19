@@ -79,11 +79,9 @@ function createHypothesis(hyp: Hypothesis): HTMLElement {
   element.classList.add("hypothesis", "breakText");
 
   element.addEventListener("dblclick", function () {
-    const target = this;
-
-    if (target.classList.contains("hypothesis")) {
-      target.classList.toggle("breakText");
-      target.classList.toggle("noBreakText");
+    if (this.classList.contains("hypothesis")) {
+      this.classList.toggle("breakText");
+      this.classList.toggle("noBreakText");
     }
   });
 

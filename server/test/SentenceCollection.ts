@@ -47,7 +47,7 @@ describe("SentenceCollection", function () {
   describe('applyChangesToDocumentText', function () {
     it('1', function () {
       const doc = newDoc("Goal True.\npose True.\n");
-      let sc = new SentenceCollection(doc);
+      const sc = new SentenceCollection(doc);
       assert.equal(sc.getText(), "Goal True.\npose True.\n");
       (sc as any as SentenceCollection_PRIVATE).applyChangesToDocumentText([makeChange("Goal True.\npose True.\n", 0, 10, 1, 10, ""), makeChange("Goal True.\n", 0, 0, 0, 0, "pose True.\n")])
       assert.equal(sc.getText(), "pose True.\nGoal True.\n");

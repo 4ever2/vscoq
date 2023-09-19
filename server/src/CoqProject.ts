@@ -43,7 +43,7 @@ export class CoqProject {
   }
 
   public lookup(uri: string): CoqDocument {
-    var doc = this.coqInstances.get(uri);
+    const doc = this.coqInstances.get(uri);
     if (!doc)
       throw 'unknown document: ' + uri;
     return doc;
@@ -91,7 +91,7 @@ export class CoqProject {
     }
 
     if (newSettings.prettifySymbolsMode && newSettings.prettifySymbolsMode.substitutions) {
-      for (let entry of newSettings.prettifySymbolsMode.substitutions) {
+      for (const entry of newSettings.prettifySymbolsMode.substitutions) {
         if (entry.language && entry.substitutions && this.matchesCoq(entry.language)) {
           this.psm = new PrettifySymbolsMode(entry.substitutions);
           break;
@@ -110,7 +110,7 @@ export class CoqProject {
   }
 
   public close(uri: string) {
-    var doc = this.coqInstances.get(uri);
+    const doc = this.coqInstances.get(uri);
     this.coqInstances.delete(uri);
     if (doc) {
       doc.dispose();

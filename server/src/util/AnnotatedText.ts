@@ -131,7 +131,7 @@ function mapAnnotationInternal(text: AnnotatedText, map: (text: string, annotati
     return { text: result, endOffset: currentOffset + textLength(result), endDisplayOffset: currentDisplayOffset + textDisplayLength(result) };
   } else if (text instanceof Array) {
     const results: (string | TextAnnotation | ScopedText)[] = [];
-    for (let txt of text) {
+    for (const txt of text) {
       const newText = mapAnnotationInternal(txt, map, currentOffset, currentDisplayOffset);
       currentOffset = newText.endOffset;
       currentDisplayOffset = newText.endDisplayOffset;
@@ -202,11 +202,11 @@ export function normalizeTextAnnotationOrString(text: TextAnnotation | string): 
     return text;
   } else {// TextAnnotation
     let count = 0;
-    for (let key in text) {
+    for (const key in text) {
       if (text.hasOwnProperty(key) && text[key] !== undefined)
         ++count;
     }
-    for (let key in text) {
+    for (const key in text) {
       if (text.hasOwnProperty(key) && text[key] === undefined)
         delete text[key];
     }
@@ -236,7 +236,7 @@ export function normalizeText(text: AnnotatedText): AnnotatedText {
       if (norm instanceof Array) {
         if (norm.length === 0)
           continue;
-        let first = norm.shift();
+        const first = norm.shift();
         const merge = tryCombineText(results[results.length - 1], first);
         if (merge)
           results[results.length - 1] = merge;
@@ -265,7 +265,7 @@ export function normalizeText(text: AnnotatedText): AnnotatedText {
       return { scope: text.scope, text: norm };
   } else {// TextAnnotation
     let count = 0;
-    for (let key in text) {
+    for (const key in text) {
       if (text.hasOwnProperty(key) && text[key] !== undefined)
         ++count;
       else if (text.hasOwnProperty(key) && text[key] === undefined)
@@ -384,7 +384,7 @@ export function annotateDiffAdded(text: AnnotatedText, differences: diff.Change[
 
 export function append(...texts: AnnotatedText[]): AnnotatedText {
   const results: (string | TextAnnotation | ScopedText)[] = [];
-  for (let txt of texts) {
+  for (const txt of texts) {
     if (txt instanceof Array)
       results.push(...txt);
     else

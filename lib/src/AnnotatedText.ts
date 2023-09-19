@@ -13,7 +13,7 @@ export interface ScopedText {
   /** A scope identifier */
   scope: string,
   /** Extra stuff */
-  attributes?: any,
+  attributes?: object,
   /** the underlying text, possibly with more annotations */
   text: AnnotatedText,
 }
@@ -25,7 +25,7 @@ export function isScopedText(text: AnnotatedText): text is ScopedText {
 }
 
 export function isTextAnnotation(text: AnnotatedText): text is TextAnnotation {
-  return text && typeof (text as any).text === 'string' && !text.hasOwnProperty('scope')
+  return text && typeof (text as TextAnnotation | ScopedText).text === 'string' && !text.hasOwnProperty('scope')
 }
 
 export function textToString(text: AnnotatedText): string {

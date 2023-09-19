@@ -14,7 +14,7 @@ export function reload(): vscode.Disposable {
   unload();
   const matchNothing = /a^/;
 
-  const settings = vscode.workspace.getConfiguration("coq") as any as CoqSettings;
+  const settings = vscode.workspace.getConfiguration("coq") as unknown as CoqSettings;
 
   const increaseIndentPatternParts: string[] = [];
   if (settings.format.indentAfterBullet === "indent")
@@ -62,7 +62,7 @@ export function reload(): vscode.Disposable {
     if (editProviders.length > 0)
       subscriptions.push(vscode.languages.registerOnTypeFormattingEditProvider("coq", {
         provideOnTypeFormattingEdits: (document, position, ch, options, token): vscode.TextEdit[] | Thenable<vscode.TextEdit[]> => {
-          for (let ep of editProviders) {
+          for (const ep of editProviders) {
             const editors = ep.fun(document, position, ch, options, token);
             if (editors)
               return editors;

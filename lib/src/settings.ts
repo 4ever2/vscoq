@@ -1,3 +1,5 @@
+import { ThemeColor } from "vscode";
+
 export interface DocumentFilter {
   language?: string,
   pattern?: string,
@@ -5,12 +7,25 @@ export interface DocumentFilter {
 }
 export type DocumentSelector = string | DocumentFilter | (string | DocumentFilter)[];
 
+interface SubstitutionStyleProperties {
+  border?: string;
+  textDecoration?: string;
+  color?: string | ThemeColor;
+  backgroundColor?: string | ThemeColor;
+  hackCSS?: string;
+}
+
+interface SubstitutionStyle {
+  dark?: SubstitutionStyleProperties;
+  light?: SubstitutionStyleProperties;
+}
+
 export interface Substitution {
   ugly: string;        // regular expression describing the text to replace
   pretty: string;      // plain-text symbol to show instead
   pre?: string;        // regular expression guard on text before "ugly"
   post?: string;       // regular expression guard on text after "ugly"
-  style?: any;         // stylings to apply to the "pretty" text, if specified, or else the ugly text
+  style?: SubstitutionStyle;         // stylings to apply to the "pretty" text, if specified, or else the ugly text
 }
 
 /** The substitution settings for a language (or group of languages) */

@@ -77,7 +77,7 @@ export class CoqDocument implements TextDocument {
 
   public async applyTextEdits(changes: TextDocumentContentChangeEvent[], newVersion: number) {
     // sort the edits such that later edits are processed first
-    let sortedChanges =
+    const sortedChanges =
       changes.slice().sort((change1, change2) =>
         textUtil.positionIsAfter(
           textUtil.getChangeEventRange(change1).start,
@@ -158,7 +158,7 @@ export class CoqDocument implements TextDocument {
       { ranges: [[], [], [], [], [], []] };
     if (!this.isStmRunning())
       return highlights;
-    for (let sent of this.stm.getSentences()) {
+    for (const sent of this.stm.getSentences()) {
       const ranges = highlights.ranges[this.sentenceToHighlightType(sent.status)];
       if (ranges.length > 0 && textUtil.positionIsEqual(ranges[ranges.length - 1].end, sent.range.start))
         ranges[ranges.length - 1].end = sent.range.end;
@@ -250,7 +250,7 @@ export class CoqDocument implements TextDocument {
       const commandLength = coqParser.parseSentenceLength(documentText.substr(currentOffset, endOffset))
       const nextOffset = currentOffset + commandLength;
       if (commandLength > 0 || nextOffset > endOffset) {
-        let result =
+        const result =
         {
           text: documentText.substring(currentOffset, nextOffset)
           , range: Range.create(this.positionAt(currentOffset), this.positionAt(nextOffset))
@@ -300,8 +300,8 @@ export class CoqDocument implements TextDocument {
 
     this.feedback.updateDiagnostics(() => {
       const diagnostics: Diagnostic[] = [];
-      for (let d of this.stm.getDiagnostics()) {
-        var range: Range = d.sentence;
+      for (const d of this.stm.getDiagnostics()) {
+        let range: Range = d.sentence;
         if (d.range) {
           range = d.range;
         }

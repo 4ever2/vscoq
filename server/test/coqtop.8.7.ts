@@ -47,7 +47,7 @@ describe("Coqtop 8.6", function () {
     startOn: "open-script",
   }
 
-  let dummyConsole: RemoteConsole = {
+  const dummyConsole: RemoteConsole = {
     log: () => { },
     info: () => { },
     warn: () => { },

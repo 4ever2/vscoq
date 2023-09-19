@@ -155,7 +155,7 @@ export class IdeSlave extends coqtop.IdeSlave {
     if (value.message === 'User interrupt.')
       throw new Interrupted(value.stateId);
     else {
-      let error = new CallFailure(value.message, value.stateId)
+      const error = new CallFailure(value.message, value.stateId)
       if (value.location)
         error.range = value.location;
       throw error;
@@ -279,7 +279,7 @@ export class IdeSlave extends coqtop.IdeSlave {
     const verboseStr = verbose === false ? "false" : "true";
     this.console.log('--------------------------------');
     this.console.log(`Call Add("${command.trim().substr(0, 20) + (command.trim().length > 20 ? "..." : "")}", editId: ${editId}, stateId: ${stateId}, verbose: ${verboseStr})`);
-    let compat_8_15 = semver.satisfies(this.version, ">= 8.15");
+    const compat_8_15 = semver.satisfies(this.version, ">= 8.15");
     this.writeMain(`<call val="Add"><pair><pair>`
       + (compat_8_15 ? `<pair><pair>` : ``)
       + `<string>${coqXml.escapeXml(command)}</string><int>${editId}</int></pair><pair><state_id val="${stateId}"/><bool val="${verboseStr}"/>`
@@ -287,7 +287,7 @@ export class IdeSlave extends coqtop.IdeSlave {
       + `</pair></pair></call>`);
 
     const value = coqProto.GetValue('Add', await coqResult);
-    let result: AddResult = {
+    const result: AddResult = {
       stateId: value.assignedState,
       message: value.message,
       unfocusedStateId: value.nextFocusState,
@@ -376,8 +376,8 @@ export class IdeSlave extends coqtop.IdeSlave {
 
   public async coqSetOptions(options: coqtop.CoqOptions): Promise<void> {
     this.checkState();
-    let xmlOptions: xmlTypes.ProtocolSimpleType[] = [];
-    for (let optionKey in options) {
+    const xmlOptions: xmlTypes.ProtocolSimpleType[] = [];
+    for (const optionKey in options) {
       const rawOptionsName = CoqOptionsMapping[optionKey];
       const rawOptionsValue = options[optionKey];
       if (rawOptionsValue !== undefined && typeof rawOptionsName === 'string') {

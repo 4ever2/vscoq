@@ -217,10 +217,11 @@ export class State {
       const change = changes[idx];
       const delta = deltas[idx];
       const changeRange = textUtil.getChangeEventRange(change);
+      const translate = this.translateDiagnostic;
       switch (parser.sentenceRangeContainment(newRange, changeRange)) {
         case parser.SentenceRangeContainment.Before:
           newRange = textUtil.rangeDeltaTranslate(newRange, delta);
-          var translate = this.translateDiagnostic;
+
           this.diagnostics.forEach(function (d) { translate(d, delta); });
           continue change;
         case parser.SentenceRangeContainment.After:
@@ -240,7 +241,6 @@ export class State {
             + newText.substring(beginOffset + textUtil.getCHangeEventRangeLength(change));
           newRange.end = textUtil.positionRangeDeltaTranslateEnd(newRange.end, delta);
 
-          var translate = this.translateDiagnostic;
           this.diagnostics.forEach(function (d) { translate(d, delta); });
       } // switch
     } // change: for
@@ -276,7 +276,7 @@ export class State {
 
   /** Removes descendents until (and not including) state end */
   public *removeDescendentsUntil(end: State): Iterable<State> {
-    for (let state of this.descendantsUntil(end.stateId))
+    for (const state of this.descendantsUntil(end.stateId))
       yield state;
     // unlink the traversed sentences
     this.next = end;
@@ -329,7 +329,7 @@ export class State {
    * @param location: optional offset range within the sentence where the error occurred
    */
   public pushDiagnostic(message: AnnotatedText, severity: DiagnosticSeverity, location?: coqProto.Location): Range | null {
-    var d: CoqDiagnosticInternal = { message, severity };
+    const d: CoqDiagnosticInternal = { message, severity };
     if (location && location.start !== location.stop) {
       if (severity == DiagnosticSeverity.Error) {
         this.status |= StateStatusFlags.Error;

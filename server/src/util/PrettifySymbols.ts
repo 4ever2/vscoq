@@ -21,7 +21,7 @@ export class PrettifySymbolsMode {
     }
 
     const uglyAllStrings = [];
-    for (let prettySubst of substitutions) {
+    for (const prettySubst of substitutions) {
       const uglyStr = regexpOptionalGroup(prettySubst.pre) + "(" + prettySubst.ugly + ")" + regexpOptionalGroup(prettySubst.post);
       try {
         uglyAllStrings.push(`(?:${uglyStr})`);
@@ -51,7 +51,7 @@ export class PrettifySymbolsMode {
   }
 
   private prettifyString(text: string, baseAnn: Annotation): AnnotatedText {
-    let newText: (string | TextAnnotation)[] = [];
+    const newText: (string | TextAnnotation)[] = [];
     this.regex.lastIndex = 0;
     let currentIdx = 0;
     let match: RegExpExecArray;

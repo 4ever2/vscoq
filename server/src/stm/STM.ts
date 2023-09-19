@@ -202,7 +202,7 @@ export class CoqStateMachine {
     if (!this.isRunning())
       return "";
     const texts: string[] = [];
-    for (let sent of this.root.descendants())
+    for (const sent of this.root.descendants())
       texts.push(sent.getText())
     return texts.join('');
   }
@@ -230,7 +230,7 @@ export class CoqStateMachine {
         }
       }
 
-      for (let sent of this.lastSentence.backwards()) {
+      for (const sent of this.lastSentence.backwards()) {
         // apply the changes
         const preserved = sent.applyTextChanges(sortedChanges, deltas, updatedDocumentText);
         if (!preserved) {
@@ -251,7 +251,7 @@ export class CoqStateMachine {
    */
   private async cancelInvalidatedSentences(invalidatedSentences: State[]): Promise<void> {
     // Unlink and delete the invalidated sentences before any async operations
-    for (let sent of invalidatedSentences) {
+    for (const sent of invalidatedSentences) {
       sent.unlink();
       this.deleteSentence(sent);
     }
@@ -270,7 +270,7 @@ export class CoqStateMachine {
       // // in which case, the remaining cancellations will become NOOPs
       // for(let idx = invalidatedSentences.length - 1; idx >= 0; --idx) {
       //   const sent = invalidatedSentences[idx];
-      for (let sent of invalidatedSentences) {
+      for (const sent of invalidatedSentences) {
         await this.cancelSentence(sent);
       }
       // The focus should be at the topmost cancelled sentences
@@ -424,7 +424,7 @@ export class CoqStateMachine {
 
   private getPrecedingStateAt(pos: vscode.Position): State | null {
     let preceding = this.root;
-    for (let s of this.sentences.values()) {
+    for (const s of this.sentences.values()) {
       if (textUtil.positionIsBeforeOrEqual(s.getRange().end, pos) && textUtil.positionIsAfter(s.getRange().start, preceding.getRange().start))
         preceding = s;
       if (s.contains(pos))
@@ -434,7 +434,7 @@ export class CoqStateMachine {
   }
 
   private getStateAt(pos: vscode.Position): State | null {
-    for (let s of this.sentences.values()) {
+    for (const s of this.sentences.values()) {
       if (s.contains(pos))
         return s;
     }
@@ -568,7 +568,7 @@ export class CoqStateMachine {
         case proto.SetDisplayOption.Toggle: return !old;
       }
     }
-    for (let option of options) {
+    for (const option of options) {
       switch (option.item) {
         case proto.DisplayOption.AllLowLevelContents: {
           // for toggle: on-->off iff all are on; off->on iff any are off
@@ -606,14 +606,14 @@ export class CoqStateMachine {
   public *getSentences(): IterableIterator<{ range: Range, status: StateStatus }> {
     if (!this.isRunning())
       return;
-    for (let sent of this.root.descendants())
+    for (const sent of this.root.descendants())
       yield { range: sent.getRange(), status: sent.getStatus() }
   }
 
   public *getSentenceDiagnostics(): IterableIterator<CoqDiagnostic> {
     if (!this.isRunning())
       return;
-    for (let sent of this.root.descendants()) {
+    for (const sent of this.root.descendants()) {
       yield* sent.getDiagnostics();
     }
   }
@@ -627,7 +627,7 @@ export class CoqStateMachine {
   }
 
   private getParentSentence(position: Position): State {
-    for (let sentence of this.root.descendants()) {
+    for (const sentence of this.root.descendants()) {
       if (!sentence.isBefore(position))
         return sentence.getParent();
     }
@@ -636,7 +636,7 @@ export class CoqStateMachine {
   }
 
   private getSentence(position: Position): State {
-    for (let sentence of this.root.descendants()) {
+    for (const sentence of this.root.descendants()) {
       if (sentence.contains(position))
         return sentence;
     }
@@ -677,7 +677,7 @@ export class CoqStateMachine {
     else if (initialize) {
       if (!this.coqtop)
         this.startFreshCoqtop();
-      let value = await this.coqtop.startCoq();
+      const value = await this.coqtop.startCoq();
       this.initialize(value.stateId);
       return true;
     } else
@@ -804,7 +804,7 @@ export class CoqStateMachine {
       id: goal.id,
       goal: server.project.getPrettifySymbols().prettify(goal.goal),
       hypotheses: goal.hypotheses.map((hyp) => {
-        let h = text.textSplit(hyp, /(:=|:)([^]*)/, 2);
+        const h = text.textSplit(hyp, /(:=|:)([^]*)/, 2);
         const result =
         {
           identifier: text.textToString(h.splits[0]).trim()
@@ -856,7 +856,7 @@ export class CoqStateMachine {
     }
   }
 
-  private handleInconsistentState(error: any) {
+  private handleInconsistentState(error: Error) {
     this.callbacks.coqDied(proto.CoqtopStopReason.InternalError, "Inconsistent state: " + error.toString());
     this.dispose();
   }
@@ -904,13 +904,13 @@ export class CoqStateMachine {
 
   /** Removes sentences from range (start,end), exclusive; assumes coqtop has already cancelled the sentences  */
   private rewindRange(start: State, end: State) {
-    for (let sent of start.removeDescendentsUntil(end))
+    for (const sent of start.removeDescendentsUntil(end))
       this.deleteSentence(sent);
   }
 
   /** Rewind the entire document to this sentence, range (newLast, ..]; assumes coqtop has already cancelled the sentences  */
   private rewindTo(newLast: State) {
-    for (let sent of newLast.descendants())
+    for (const sent of newLast.descendants())
       this.deleteSentence(sent);
     newLast.truncate();
     this.lastSentence = newLast;
@@ -948,7 +948,7 @@ export class CoqStateMachine {
     if (msg.level === coqProto.MessageLevel.Error && stateId !== undefined) {
       const sent = this.sentences.get(stateId);
       if (sent) {
-        var range: Range = sent.pushDiagnostic(prettyMessage, DiagnosticSeverity.Error, msg.location);
+        const range: Range = sent.pushDiagnostic(prettyMessage, DiagnosticSeverity.Error, msg.location);
         this.callbacks.error(sent.getRange(), range, prettyMessage);
       } else {
         this.console.warn(`Error for unknown stateId: ${stateId}; message: ${msg.message}`);
@@ -956,7 +956,7 @@ export class CoqStateMachine {
     } else if (msg.level === coqProto.MessageLevel.Warning && stateId !== undefined) {
       const sent = this.sentences.get(stateId);
       if (sent) {
-        var range: Range = sent.pushDiagnostic(prettyMessage, DiagnosticSeverity.Warning, msg.location);
+        sent.pushDiagnostic(prettyMessage, DiagnosticSeverity.Warning, msg.location);
       } else {
         this.console.warn(`Warning for unknown stateId: ${stateId}; message: ${msg.message}`);
       }
@@ -1063,7 +1063,7 @@ export class CoqStateMachine {
       end = <State>params.end;
 
     const results: DSentence[] = [];
-    for (let sent of begin.descendantsUntil(end.getNext())) {
+    for (const sent of begin.descendantsUntil(end.getNext())) {
       results.push(createDebuggingSentence(sent));
     }
     Object.defineProperty(this, '__proto__', { enumerable: false });
@@ -1071,7 +1071,7 @@ export class CoqStateMachine {
   }
 
   private async refreshOptions(): Promise<void> {
-    let options: coqtop.CoqOptions = {};
+    const options: coqtop.CoqOptions = {};
     options.printingWidth = this.currentCoqOptions.printingWidth;
     options.printingCoercions = this.currentCoqOptions.printingCoercions;
     options.printingMatching = this.currentCoqOptions.printingMatching;
@@ -1092,7 +1092,7 @@ export class CoqStateMachine {
    * @returns true if everything is seems okay
   */
   public assertSentenceConsistency(): boolean {
-    var success = true;
+    let success = true;
     const error = (message: string) => {
       this.console.warn(message);
       success = false;
@@ -1126,7 +1126,7 @@ export class CoqStateMachine {
     if (ids.size !== stateIds.length)
       error('Reachable states have duplicate IDs')
 
-    for (let id of this.sentences.keys()) {
+    for (const id of this.sentences.keys()) {
       if (!ids.has(id))
         error(`State is mapped but unreachable: id=${id}`)
     }
@@ -1143,7 +1143,7 @@ export class CoqStateMachine {
 }
 
 function abbrString(s: string) {
-  var s2 = coqParser.normalizeText(s);
+  const s2 = coqParser.normalizeText(s);
   if (s2.length > 80)
     return s2.substr(0, 80 - 3) + '...';
   else return s2;

@@ -109,7 +109,7 @@ export class SentenceCollection implements vscode.TextDocument {
   }
 
   public positionAt(offset: number): Position {
-    for (let sent of this.sentences) {
+    for (const sent of this.sentences) {
       const sentOffset = sent.getDocumentOffset();
       const sentEndOffset = sent.getDocumentEndOffset();
       if (sentOffset <= offset && offset < sentEndOffset) {
@@ -158,7 +158,7 @@ export class SentenceCollection implements vscode.TextDocument {
     this.currentError = null;
 
     // sort the edits such that later edits are processed first
-    let sortedChanges =
+    const sortedChanges =
       changes.slice().sort((change1, change2) =>
         textUtil.positionIsAfter(
           textUtil.getChangeEventRange(change1).start,
@@ -168,7 +168,7 @@ export class SentenceCollection implements vscode.TextDocument {
 
     const invalidatedSentences: number[] = [];
 
-    for (let change of changes) {
+    for (const change of changes) {
       if (textUtil.positionIsAfterOrEqual(textUtil.getChangeEventRange(change).end, this.getLastPosition())) {
         invalidatedSentences.push(this.sentences.length);
         break;
@@ -352,7 +352,7 @@ export class SentenceCollection implements vscode.TextDocument {
     }
 
     try {
-      var oldSentenceCandidate: number = start;
+      let oldSentenceCandidate: number = start;
       for (let idx = 0; /**/; ++idx) {
         const parseText = this.documentText.substring(currentOffset);
         const sent = parser.parseSentence(parseText);
@@ -369,7 +369,7 @@ export class SentenceCollection implements vscode.TextDocument {
           return { removed: removed, added: reparsed, endOfSentences: true };
         }
 
-        var fixByLocalGlueing: undefined | number = undefined;
+        let fixByLocalGlueing: undefined | number = undefined;
 
         while (oldSentenceCandidate < this.sentences.length && currentOffset + sent.text.length > this.sentences[oldSentenceCandidate].getDocumentEndOffset())
           ++oldSentenceCandidate;

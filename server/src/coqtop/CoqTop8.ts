@@ -89,7 +89,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     if (coqtopVersion)
       this.console.log(`Detected coqtop version ${coqtopVersion}`)
     else {
-      let fallbackVersion = "8.10"; //no changed behaviour in vscoq since this version
+      const fallbackVersion = "8.10"; //no changed behaviour in vscoq since this version
       this.console.warn(`Could not detect coqtop version, defaulting to >= ${fallbackVersion}.`);
       coqtopVersion = fallbackVersion;
     }
@@ -141,12 +141,12 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   private async setupCoqTopReadAndWritePorts(): Promise<void> {
     await Promise.all(this.readyToListen);
 
-    var mainAddr = this.mainChannelServer.address() as AddressInfo;
-    var mainPortW = (this.mainChannelServer2.address() as AddressInfo).port;
-    var controlAddr = this.controlChannelServer.address() as AddressInfo;
-    var controlPortW = (this.controlChannelServer2.address() as AddressInfo).port;
-    var mainAddressArg = mainAddr.address + ':' + mainAddr.port + ':' + mainPortW;
-    var controlAddressArg = controlAddr.address + ':' + controlAddr.port + ':' + controlPortW;
+    const mainAddr = this.mainChannelServer.address() as AddressInfo;
+    const mainPortW = (this.mainChannelServer2.address() as AddressInfo).port;
+    const controlAddr = this.controlChannelServer.address() as AddressInfo;
+    const controlPortW = (this.controlChannelServer2.address() as AddressInfo).port;
+    const mainAddressArg = mainAddr.address + ':' + mainAddr.port + ':' + mainPortW;
+    const controlAddressArg = controlAddr.address + ':' + controlAddr.port + ':' + controlPortW;
 
     try {
       this.startCoqTop(this.spawnCoqTop(mainAddressArg, controlAddressArg));
@@ -155,7 +155,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
       throw new CoqtopSpawnError(this.coqtopBin, error);
     }
 
-    let channels = await Promise.all([
+    const channels = await Promise.all([
       this.acceptConnection(this.mainChannelServer, 'main channel R'), //, 'main channel R', (data) => this.onMainChannelR(data)),
       this.acceptConnection(this.mainChannelServer2, 'main channel W'),
       this.acceptConnection(this.controlChannelServer, 'control channel R'),
@@ -205,7 +205,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   }
 
   private get scriptPath() {
-    let uri = URI.parse(this.scriptUri);
+    const uri = URI.parse(this.scriptUri);
     if (uri.scheme == "file")
       return uri.fsPath;
     else
@@ -213,8 +213,8 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   }
 
   private spawnCoqTop(mainAddr: string, controlAddr: string) {
-    var topfile: string[] = [];
-    var scriptPath = this.scriptPath;
+    let topfile: string[] = [];
+    const scriptPath = this.scriptPath;
     if (semver.satisfies(this.coqtopVersion, ">= 8.10") && scriptPath !== undefined) {
       topfile = ['-topfile', scriptPath];
     }

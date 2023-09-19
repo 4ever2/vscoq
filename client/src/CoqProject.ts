@@ -52,7 +52,7 @@ export class CoqProject implements vscode.Disposable {
   }
 
   private loadConfiguration() {
-    let conf = vscode.workspace.getConfiguration("coq") as vscode.WorkspaceConfiguration & CoqSettings;
+    const conf = vscode.workspace.getConfiguration("coq") as vscode.WorkspaceConfiguration & CoqSettings;
     if (conf.moveCursorToFocus === undefined)
       conf.moveCursorToFocus = true;
     this.currentSettings = conf;
@@ -199,7 +199,7 @@ export class CoqProject implements vscode.Disposable {
     }
 
     if (doc) {
-      let doc_ = doc; // TypeScript bug: does not realize the doc is not null in the next line, but this seems to work
+      const doc_ = doc; // TypeScript bug: does not realize the doc is not null in the next line, but this seems to work
       if (makeVisible && !vscode.window.visibleTextEditors.some((d) => d.document === doc_.getDocument()))
         await vscode.window.showTextDocument(doc.getDocument(), undefined, true);
 

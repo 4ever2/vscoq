@@ -160,13 +160,13 @@ export class SyntaxError extends Error {
       server.connection.console.log(util.inspect(error, false, undefined));
     const range = locationRangeToRange(loc);
 
-    let result = new SyntaxError(error.name, error.message, range, loc.start.offset, loc.end.offset, error.found, error.expected, error.stack);
+    const result = new SyntaxError(error.name, error.message, range, loc.start.offset, loc.end.offset, error.found, error.expected, error.stack);
     return result;
   }
 
   public static unknown(parseStr: string) {
     const range = Range.create(textUtil.positionAt(parseStr, 0), textUtil.positionAt(parseStr, parseStr.length));
-    let result = new SyntaxError("unknown", "Unexpected parse error", range, 0, parseStr.length);
+    const result = new SyntaxError("unknown", "Unexpected parse error", range, 0, parseStr.length);
     return result;
   }
 }

@@ -283,14 +283,14 @@ export function GetValue(x: string, value: ValueReturn): ReturnValue {
     throw "Cannot get value of failed command";
   switch (x) {
     case 'Add': {
-      let v = value.result as Add_rty;
+      const v = value.result as Add_rty;
       if ("tag" in v[1]) {
         return { assignedState: v[0], nextFocusState: undefined, message: undefined }
       } else {
         return { assignedState: v[0], nextFocusState: v[1][0].tag === 'inr' ? v[1][0].value : undefined, message: v[1][1] }
       };
     } case 'Edit_at': {
-      let v = value.result as EditAt_rty;
+      const v = value.result as EditAt_rty;
       if (v.tag === 'inl')
         return null
       else

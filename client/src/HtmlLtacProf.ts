@@ -24,7 +24,7 @@ class IFrameDocumentProvider implements vscode.TextDocumentContentProvider {
   }
 }
 
-var coqViewProvider: IFrameDocumentProvider | null = null;
+let coqViewProvider: IFrameDocumentProvider | null = null;
 
 /**
  * Displays a Markdown-HTML file which contains javascript to connect to this view
@@ -36,7 +36,7 @@ export class HtmlLtacProf {
   private serverReady: Promise<void>;
   private bufferReady: Promise<void>;
   private coqViewUri: vscode.Uri;
-  private docRegistration: { dispose(): any };
+  private docRegistration: vscode.Disposable;
 
   constructor(private results: proto.LtacProfResults) {
     if (coqViewProvider === null) {

@@ -506,8 +506,8 @@ export abstract class Deserialize {
     let result: coqProto.FeedbackContent;
     switch (value.$kind) {
       case 'workerstatus': {
-        let statusStr = value.$children[0][1];
-        let reSearch = /^(?:proof:[ ]*)(.*)/.exec(statusStr);
+        const statusStr = value.$children[0][1];
+        const reSearch = /^(?:proof:[ ]*)(.*)/.exec(statusStr);
         if (reSearch)
           result = {
             feedbackKind: "worker-status",
@@ -523,8 +523,8 @@ export abstract class Deserialize {
           };
         return result;
       } case 'filedependency': {
-        let file = value.$children[0] || "";
-        let dependency = value.$children[1];
+        const file = value.$children[0] || "";
+        const dependency = value.$children[1];
         result = {
           feedbackKind: "file-dependency",
           source: file,

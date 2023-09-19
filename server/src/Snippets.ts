@@ -382,8 +382,8 @@ function buildTriggerRegexp(version: SemVer): RegExp {
   return RegExp(`\\s*(?:${snippets.map((v) => "(" + escapeRegExp(v.insertText) + ")").join('|')})\\s*$`);
 }
 
-let triggerRegexp = new Map<SemVer, RegExp>();
-let triggerSnippets = new Map<SemVer, TriggerSnippet[]>();
+const triggerRegexp = new Map<SemVer, RegExp>();
+const triggerSnippets = new Map<SemVer, TriggerSnippet[]>();
 
 function getTriggerSnippet(str: string, version: SemVer): TriggerSnippet | null {
   const match = triggerRegexp.get(version).exec(str);
@@ -730,7 +730,7 @@ const tacticSnippets: TriggerSnippet[] = [
   { label: "zify_saturate" }
 ];
 
-let tacticCompletions = new Map<SemVer, CompletionItem[]>();
+const tacticCompletions = new Map<SemVer, CompletionItem[]>();
 
 function buildTacticSnippets(version: SemVer): CompletionItem[] {
   return tacticSnippets

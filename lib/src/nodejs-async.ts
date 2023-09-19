@@ -3,7 +3,7 @@ import * as nfs from 'fs'
 export namespace fs {
   export function open(path: string | Buffer, flags: string | number): Promise<number> {
     return new Promise<number>((resolve, reject) => {
-      nfs.open(path, flags, (err: any, fd: number) => {
+      nfs.open(path, flags, (err: NodeJS.ErrnoException | null, fd: number) => {
         if (err)
           reject(err)
         else
@@ -12,10 +12,10 @@ export namespace fs {
     })
   }
 
-  export function writeFile(filename: string, data: any): Promise<void>;
-  export function writeFile(filename: string, data: any, options: { encoding?: string; mode?: number; flag?: string; }): Promise<void>;
-  export function writeFile(filename: string, data: any, options: { encoding?: string; mode?: string; flag?: string; }): Promise<void>;
-  export function writeFile(filename: string, data: any, options?: any): Promise<void> {
+  export function writeFile(filename: string, data: string | NodeJS.ArrayBufferView): Promise<void>;
+  export function writeFile(filename: string, data: string | NodeJS.ArrayBufferView, options: { encoding?: string; mode?: number; flag?: string; }): Promise<void>;
+  export function writeFile(filename: string, data: string | NodeJS.ArrayBufferView, options: { encoding?: string; mode?: string; flag?: string; }): Promise<void>;
+  export function writeFile(filename: string, data: string | NodeJS.ArrayBufferView, options?: unknown): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       nfs.writeFile(filename, data, options, (err: NodeJS.ErrnoException) => {
         if (err)
@@ -42,7 +42,7 @@ export namespace fs {
   }
 
   export function exists(path: string | Buffer): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>((resolve) => {
       nfs.exists(path, (ex) => resolve(ex));
     });
   }
@@ -59,7 +59,7 @@ export namespace fs {
         let called = false;
         const s = nfs.createReadStream(src);
         const d = nfs.createWriteStream(dest);
-        function done(err: any) {
+        function done(err: Error) {
           s.destroy();
           d.end();
           if (called)

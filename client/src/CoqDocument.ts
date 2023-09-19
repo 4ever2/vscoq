@@ -69,13 +69,13 @@ export class CoqDocument implements vscode.Disposable {
     try {
       this.langServer = new CoqDocumentLanguageServer(document.uri.toString());
     } catch (err) {
-      var x = this.langServer;
-      x = x;
+      //let x = this.langServer;
+      //x = x;
     }
 
     this.view = new HtmlCoqView(document.uri, extensionContext);
     if (this.project.settings.showProofViewOn === "open-script") {
-      let viewCol = this.currentViewColumn();
+      const viewCol = this.currentViewColumn();
       if (viewCol)
         this.view.show(adjacentPane(viewCol))
       else
@@ -151,7 +151,7 @@ export class CoqDocument implements vscode.Disposable {
 
   private rememberCursors() {
     this.cursorUnmovedSinceCommandInitiated.clear();
-    for (let editor of this.allEditors()) {
+    for (const editor of this.allEditors()) {
       this.cursorUnmovedSinceCommandInitiated.add(editor);
     }
   }
@@ -232,7 +232,7 @@ export class CoqDocument implements vscode.Disposable {
   }
 
   private currentViewColumn() {
-    let editor = this.findEditor();
+    const editor = this.findEditor();
     if (editor)
       return editor.viewColumn;
     else
@@ -267,14 +267,14 @@ export class CoqDocument implements vscode.Disposable {
       this.focus = new vscode.Position(focus.line, focus.character);
       if (moveCursor) {
         // adjust the cursor position
-        for (let editor of this.cursorUnmovedSinceCommandInitiated)
+        for (const editor of this.cursorUnmovedSinceCommandInitiated)
           this.setCursorToPosition(this.focus, editor, editor === vscode.window.activeTextEditor);
       }
 
       // update the focus decoration
       this.showFocusDecorations();
     } else {
-      for (let editor of this.allEditors())
+      for (const editor of this.allEditors())
         editor.setDecorations(decorations.focus, []);
     }
   }
@@ -331,7 +331,7 @@ export class CoqDocument implements vscode.Disposable {
     else if (value.type === 'failure' && value.range) {
       this.updateFocus(value.focus, false);
       if (this.project.settings.moveCursorToFocus) {
-        for (let editor of this.cursorUnmovedSinceCommandInitiated)
+        for (const editor of this.cursorUnmovedSinceCommandInitiated)
           this.setCursorToPosition(new vscode.Position(value.range.start.line, value.range.start.character), editor, editor === vscode.window.activeTextEditor);
       }
     } else if (value.type === 'not-running') {
@@ -359,7 +359,7 @@ export class CoqDocument implements vscode.Disposable {
 
   private updateView(state: proto.CommandResult, interactive = false) {
     if (interactive && !this.view.isVisible() && this.project.settings.showProofViewOn === "first-interaction") {
-      let viewCol = this.currentViewColumn();
+      const viewCol = this.currentViewColumn();
       if (viewCol)
         this.view.show(adjacentPane(viewCol), state)
       else
@@ -376,23 +376,23 @@ export class CoqDocument implements vscode.Disposable {
       return;
     const focusRange = new vscode.Range(this.focus.line, 0, this.focus.line, 1);
     if (this.focus.line === 0 && this.focus.character === 0) {
-      for (let editor of this.allEditors()) {
+      for (const editor of this.allEditors()) {
         editor.setDecorations(decorations.focusBefore, [focusRange]);
         editor.setDecorations(decorations.focus, []);
       }
     } else {
-      for (let editor of this.allEditors()) {
+      for (const editor of this.allEditors()) {
         editor.setDecorations(decorations.focusBefore, []);
         editor.setDecorations(decorations.focus, [focusRange]);
       }
     }
     if (this.stateViewFocus && this.stateViewFocus.line !== this.focus.line) {
       const focusRange = new vscode.Range(this.stateViewFocus.line, 0, this.stateViewFocus.line, 1);
-      for (let editor of this.allEditors()) {
+      for (const editor of this.allEditors()) {
         editor.setDecorations(decorations.proofViewFocus, [focusRange]);
       }
     } else {
-      for (let editor of this.allEditors()) {
+      for (const editor of this.allEditors()) {
         editor.setDecorations(decorations.proofViewFocus, []);
       }
     }

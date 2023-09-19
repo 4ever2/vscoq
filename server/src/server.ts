@@ -16,7 +16,7 @@ import { setDefaultResultOrder } from 'dns';
 
 // Create a connection for the server. The connection uses
 // stdin / stdout for message passing
-export let connection: IConnection = createConnection();
+export const connection: IConnection = createConnection();
 
 export let project: CoqProject = null;
 
@@ -54,7 +54,7 @@ connection.onShutdown(() => {
 // The settings have changed. Is send on server activation
 // as well.
 connection.onDidChangeConfiguration((change) => {
-  let settings = change.settings as Settings;
+  const settings = change.settings as Settings;
   project.updateSettings(settings);
   connection.console.log('Coqtop binPath is: ' + project.settings.coqtop.binPath);
 });

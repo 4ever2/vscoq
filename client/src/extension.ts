@@ -144,7 +144,7 @@ async function queryStringFromPlaceholder(prompt: string, editor: TextEditor) {
 }
 
 async function queryStringFromPosition(prompt: string, editor: TextEditor) {
-  let query = coqIdOrNotationFromPosition(editor);
+  const query = coqIdOrNotationFromPosition(editor);
   if (query.trim() === "")
     return await vscode.window.showInputBox({
       prompt: prompt,

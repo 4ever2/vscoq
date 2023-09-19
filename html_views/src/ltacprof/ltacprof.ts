@@ -29,7 +29,7 @@ function ltacProfLoad() {
 
 function loadResultsTable(results: LtacProfResults, tbody: JQuery) {
   let currentId = 0;
-  let totalTime = results.total_time;
+  const totalTime = results.total_time;
 
   function buildTime(time: number, total: number, name: string) {
     if (time == 0)
@@ -65,13 +65,13 @@ function loadResultsTable(results: LtacProfResults, tbody: JQuery) {
   }
 
   function* buildTacticsResults(parentId: number, tactics: LtacProfTactic[]): IterableIterator<JQuery> {
-    for (let tactic of tactics) {
+    for (const tactic of tactics) {
       yield* buildTacticResultRow(parentId, tactic);
     }
   }
 
   console.time('load');
-  for (let entry of buildTacticsResults(0, results.tactics))
+  for (const entry of buildTacticsResults(0, results.tactics))
     tbody.append(entry);
   console.timeEnd('load');
 }

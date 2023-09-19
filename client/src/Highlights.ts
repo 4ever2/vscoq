@@ -39,7 +39,7 @@ export class Highlights {
   }
 
   private applyCurrent(editors: Iterable<TextEditor>) {
-    for (let editor of editors) {
+    for (const editor of editors) {
       editor.setDecorations(decorations.stateError, this.current.ranges[proto.HighlightType.StateError]);
       editor.setDecorations(decorations.parsing, this.current.ranges[proto.HighlightType.Parsing]);
       editor.setDecorations(decorations.processing, this.current.ranges[proto.HighlightType.Processing]);
