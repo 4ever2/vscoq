@@ -7,4 +7,4 @@ const html_views = require('./webpack.html_views.config.js');
 const server = require('./webpack.server.config.js');
 
 
-module.exports = [client,html_views,server];
+module.exports = [client, html_views, server];

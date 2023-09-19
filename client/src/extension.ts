@@ -15,7 +15,6 @@ console.log(`Coq Extension: process.version: ${process.version}, process.arch: $
 
 let project: CoqProject;
 
-
 export var extensionContext: ExtensionContext;
 
 export function activate(context: ExtensionContext) {
@@ -122,7 +121,6 @@ export function activate(context: ExtensionContext) {
   }));
 }
 
-
 async function withDocAsync<T>(editor: TextEditor, callback: (doc: CoqDocument) => Promise<T>): Promise<void> {
   const doc = editor ? project.getOrCurrent(editor.document.uri.toString()) || null : null;
   if (doc)
@@ -130,7 +128,7 @@ async function withDocAsync<T>(editor: TextEditor, callback: (doc: CoqDocument) 
 }
 
 function coqIdOrNotationFromPosition(editor: TextEditor) {
-  let range : vscode.Range | undefined = editor.selection;
+  let range: vscode.Range | undefined = editor.selection;
   if (range.isEmpty)
     range = editor.document.getWordRangeAtPosition(editor.selection.active);
   if (range == undefined)
@@ -146,7 +144,7 @@ async function queryStringFromPlaceholder(prompt: string, editor: TextEditor) {
 }
 
 async function queryStringFromPosition(prompt: string, editor: TextEditor) {
-  let query = coqIdOrNotationFromPosition(editor);
+  const query = coqIdOrNotationFromPosition(editor);
   if (query.trim() === "")
     return await vscode.window.showInputBox({
       prompt: prompt,

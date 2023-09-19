@@ -1,48 +1,48 @@
 import { Goal, ProofView, UnfocusedGoalStack } from '@lib/protocol';
 
-export type GoalId  = string;
+export type GoalId = string;
 
 interface UnfocusedGoalStackReference {
   before: GoalId[];
-  next: UnfocusedGoalStackReference|null
+  next: UnfocusedGoalStackReference | null
   after: GoalId[];
 }
 
 export interface ProofViewReference {
   goals: GoalId[],
-  backgroundGoals: UnfocusedGoalStackReference|null,
+  backgroundGoals: UnfocusedGoalStackReference | null,
   shelvedGoals: GoalId[],
   abandonedGoals: GoalId[],
 }
 
 type ProofViewNoFocus = {
-    goals: Goal[];
-    backgroundGoals?: UnfocusedGoalStack,
-    shelvedGoals: Goal[],
-    abandonedGoals: Goal[],
-  };
+  goals: Goal[];
+  backgroundGoals?: UnfocusedGoalStack,
+  shelvedGoals: Goal[],
+  abandonedGoals: Goal[],
+};
 
 /**
  * Caches goals, which can be shared between many STM states.
- * 
+ *
  * TODO: use reference counting to deallocate goals when all of their states are rewound
  */
 export class GoalsCache {
   private goalsCache = new Map<GoalId, Goal>();
 
-  public constructor() {}
+  public constructor() { }
 
-  private cacheUnfocusedGoals(goals: UnfocusedGoalStack|null) {
-    if(!goals)
+  private cacheUnfocusedGoals(goals: UnfocusedGoalStack | null) {
+    if (!goals)
       return;
-    goals.before.forEach(g => this.goalsCache.set(g.id,g));
-    goals.after.forEach(g => this.goalsCache.set(g.id,g));
+    goals.before.forEach(g => this.goalsCache.set(g.id, g));
+    goals.after.forEach(g => this.goalsCache.set(g.id, g));
     this.cacheUnfocusedGoals(goals.next);
   }
 
-  public cacheProofView(pv: ProofView) : ProofViewReference {
-    function getUnfocusedIds(goals: UnfocusedGoalStack|null) : UnfocusedGoalStackReference|null {
-      if(!goals)
+  public cacheProofView(pv: ProofView): ProofViewReference {
+    function getUnfocusedIds(goals: UnfocusedGoalStack | null): UnfocusedGoalStackReference | null {
+      if (!goals)
         return null;
       return {
         before: goals.before.map(g => g.id),
@@ -51,9 +51,9 @@ export class GoalsCache {
       }
     }
 
-    pv.goals.forEach(g => this.goalsCache.set(g.id,g));
-    pv.abandonedGoals.forEach(g => this.goalsCache.set(g.id,g));
-    pv.shelvedGoals.forEach(g => this.goalsCache.set(g.id,g));
+    pv.goals.forEach(g => this.goalsCache.set(g.id, g));
+    pv.abandonedGoals.forEach(g => this.goalsCache.set(g.id, g));
+    pv.shelvedGoals.forEach(g => this.goalsCache.set(g.id, g));
     this.cacheUnfocusedGoals(pv.backgroundGoals);
 
     return {
@@ -61,11 +61,11 @@ export class GoalsCache {
       abandonedGoals: pv.abandonedGoals.map(g => g.id),
       shelvedGoals: pv.shelvedGoals.map(g => g.id),
       backgroundGoals: getUnfocusedIds(pv.backgroundGoals),
-    } 
+    }
   }
 
-  private getBackgroundGoals(state: UnfocusedGoalStackReference|null) : UnfocusedGoalStack|null {
-    if(!state)
+  private getBackgroundGoals(state: UnfocusedGoalStackReference | null): UnfocusedGoalStack | null {
+    if (!state)
       return null;
     else
       return {
@@ -75,7 +75,7 @@ export class GoalsCache {
       }
   }
 
-  public getProofView(state: ProofViewReference) : ProofViewNoFocus {
+  public getProofView(state: ProofViewReference): ProofViewNoFocus {
     return {
       goals: state.goals.map(id => this.goalsCache.get(id)),
       abandonedGoals: state.abandonedGoals.map(id => this.goalsCache.get(id)),

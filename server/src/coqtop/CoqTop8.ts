@@ -2,17 +2,19 @@ import * as net from 'net';
 import * as path from 'path';
 import * as vscode from 'vscode-languageserver';
 import * as semver from 'semver';
-import {URI} from 'vscode-uri'
+import { URI } from 'vscode-uri'
 
-import {ChildProcess, spawn} from 'child_process';
-import {CoqTopSettings} from '@lib/settings';
+import { ChildProcess, spawn } from 'child_process';
+import { CoqTopSettings } from '@lib/settings';
 
 import * as coqtop from './CoqTop';
-export {Interrupted, CoqtopSpawnError, CallFailure,
+export {
+  Interrupted, CoqtopSpawnError, CallFailure,
   InitResult, AddResult, EditAtFocusResult, EditAtResult, ProofView,
-  NoProofTag, ProofModeTag, NoProofResult, ProofModeResult, GoalResult} from './CoqTop';
-import {CoqtopSpawnError, InitResult} from './CoqTop';
-import {IdeSlave as IdeSlave8, IdeSlaveState} from './IdeSlave8';
+  NoProofTag, ProofModeTag, NoProofResult, ProofModeResult, GoalResult
+} from './CoqTop';
+import { CoqtopSpawnError, InitResult } from './CoqTop';
+import { IdeSlave as IdeSlave8, IdeSlaveState } from './IdeSlave8';
 import { AddressInfo } from 'net';
 
 export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
@@ -20,15 +22,15 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   private mainChannelServer2: net.Server;
   private controlChannelServer: net.Server;
   private controlChannelServer2: net.Server;
-  private coqtopProc : ChildProcess = null;
+  private coqtopProc: ChildProcess = null;
   private readyToListen: Thenable<void>[];
-  private settings : CoqTopSettings;
-  private scriptUri : string;
+  private settings: CoqTopSettings;
+  private scriptUri: string;
   private projectRoot: string;
-  private coqtopVersion : semver.SemVer;
-  private sockets : net.Socket[] = [];
+  private coqtopVersion: semver.SemVer;
+  private sockets: net.Socket[] = [];
 
-  constructor(settings : CoqTopSettings, scriptUri: string, projectRoot: string, console: vscode.RemoteConsole) {
+  constructor(settings: CoqTopSettings, scriptUri: string, projectRoot: string, console: vscode.RemoteConsole) {
     super(console);
     this.settings = settings;
     this.scriptUri = scriptUri;
@@ -51,8 +53,8 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
 
   }
 
-  public /* override */ dispose() {
-    if(this.isRunning() && this.callbacks.onClosed) {
+  public dispose() {
+    if (this.isRunning() && this.callbacks.onClosed) {
       this.callbacks.onClosed(false);
     }
 
@@ -61,33 +63,33 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     this.sockets.forEach(s => s.destroy());
     this.sockets = [];
 
-    if(this.coqtopProc) {
+    if (this.coqtopProc) {
       try {
         this.coqtopProc.kill();
-        if(this.coqtopProc.connected)
+        if (this.coqtopProc.connected)
           this.coqtopProc.disconnect();
-      } catch(e) {}
+      } catch (e) { }
       this.coqtopProc = null;
     }
     this.coqtopProc = null;
   }
 
-  public isRunning() : boolean {
+  public isRunning(): boolean {
     return this.coqtopProc != null;
   }
 
-  public async startCoq() : Promise<InitResult> {
-    if(this.state !== IdeSlaveState.Disconnected)
+  public async startCoq(): Promise<InitResult> {
+    if (this.state !== IdeSlaveState.Disconnected)
       throw new CoqtopSpawnError(this.coqtopBin, "coqtop is already started");
 
     this.console.log('starting coqtop');
 
     let coqtopVersion = await coqtop.detectVersion(this.coqtopBin, this.projectRoot, this.console);
 
-    if(coqtopVersion)
+    if (coqtopVersion)
       this.console.log(`Detected coqtop version ${coqtopVersion}`)
     else {
-      let fallbackVersion = "8.10"; //no changed behaviour in vscoq since this version
+      const fallbackVersion = "8.10"; //no changed behaviour in vscoq since this version
       this.console.warn(`Could not detect coqtop version, defaulting to >= ${fallbackVersion}.`);
       coqtopVersion = fallbackVersion;
     }
@@ -100,19 +102,18 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     return await this.coqInit();
   }
 
-
-  protected async /* override */ checkState() : Promise<void> {
-    if(this.coqtopProc === null)
+  protected async checkState(): Promise<void> {
+    if (this.coqtopProc === null)
       this.startCoq();
     super.checkState();
   }
 
-  private startListening(server: net.Server) : Promise<void> {
+  private startListening(server: net.Server): Promise<void> {
     const port = 0;
     const host = 'localhost';
-    return new Promise<void>((resolve,reject) => {
+    return new Promise<void>((resolve, reject) => {
       server.on('error', (err) => reject(err));
-      server.listen({port: port, host: host}, () => {
+      server.listen({ port: port, host: host }, () => {
         const serverAddress = server.address() as AddressInfo;
         this.console.log(`Listening at ${serverAddress.address}:${serverAddress.port}`);
         resolve();
@@ -120,15 +121,11 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     });
   }
 
-  private acceptConnection(server: net.Server, name:string) : Promise<net.Socket> {
+  private acceptConnection(server: net.Server, name: string): Promise<net.Socket> {
     return new Promise<net.Socket>((resolve) => {
-      server.once('connection', (socket:net.Socket) => {
+      server.once('connection', (socket: net.Socket) => {
         this.sockets.push(socket);
         this.console.log(`Client connected on ${name} (port ${socket.localPort})`);
-        // socket.setEncoding('utf8');
-        // // if (dataHandler)
-        //   socket.on('data', (data:string) => dataHandler(data));
-        // socket.on('error', (err:any) => this.onCoqTopError(err.toString() + ` (${name})`));
         resolve(socket);
       });
     });
@@ -138,66 +135,64 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     return this.coqtopVersion;
   }
 
-
   /** Start coqtop.
    * Use two ports: one for reading & one for writing; i.e. HOST:READPORT:WRITEPORT
    */
-  private async setupCoqTopReadAndWritePorts() : Promise<void> {
+  private async setupCoqTopReadAndWritePorts(): Promise<void> {
     await Promise.all(this.readyToListen);
 
-    var mainAddr = this.mainChannelServer.address() as AddressInfo;
-    var mainPortW = (this.mainChannelServer2.address() as AddressInfo).port;
-    var controlAddr = this.controlChannelServer.address() as AddressInfo;
-    var controlPortW = (this.controlChannelServer2.address() as AddressInfo).port;
-    var mainAddressArg = mainAddr.address + ':' + mainAddr.port + ':' + mainPortW;
-    var controlAddressArg = controlAddr.address + ':' + controlAddr.port + ':' + controlPortW;
+    const mainAddr = this.mainChannelServer.address() as AddressInfo;
+    const mainPortW = (this.mainChannelServer2.address() as AddressInfo).port;
+    const controlAddr = this.controlChannelServer.address() as AddressInfo;
+    const controlPortW = (this.controlChannelServer2.address() as AddressInfo).port;
+    const mainAddressArg = mainAddr.address + ':' + mainAddr.port + ':' + mainPortW;
+    const controlAddressArg = controlAddr.address + ':' + controlAddr.port + ':' + controlPortW;
 
     try {
       this.startCoqTop(this.spawnCoqTop(mainAddressArg, controlAddressArg));
-    } catch(error) {
+    } catch (error) {
       this.console.error('Could not spawn coqtop: ' + error);
       throw new CoqtopSpawnError(this.coqtopBin, error);
     }
 
-    let channels = await Promise.all([
-        this.acceptConnection(this.mainChannelServer, 'main channel R'), //, 'main channel R', (data) => this.onMainChannelR(data)),
-        this.acceptConnection(this.mainChannelServer2, 'main channel W'),
-        this.acceptConnection(this.controlChannelServer, 'control channel R'),
-        this.acceptConnection(this.controlChannelServer2, 'control channel W'),
-      ]);
+    const channels = await Promise.all([
+      this.acceptConnection(this.mainChannelServer, 'main channel R'), //, 'main channel R', (data) => this.onMainChannelR(data)),
+      this.acceptConnection(this.mainChannelServer2, 'main channel W'),
+      this.acceptConnection(this.controlChannelServer, 'control channel R'),
+      this.acceptConnection(this.controlChannelServer2, 'control channel W'),
+    ]);
 
     this.connect(this.coqtopVersion, channels[0], channels[1], channels[2], channels[3])
   }
 
-  private startCoqTop(process : ChildProcess) {
+  private startCoqTop(process: ChildProcess) {
     this.coqtopProc = process;
     this.console.log(`coqtop started with pid ${this.coqtopProc.pid}`);
-    this.coqtopProc.stdout.on('data', (data:string) => this.coqtopOut(data))
-    this.coqtopProc.on('exit', (code:number) => {
+    this.coqtopProc.stdout.on('data', (data: string) => this.coqtopOut(data))
+    this.coqtopProc.on('exit', (code: number) => {
       this.console.log('coqtop exited with code: ' + code);
-      if(this.isRunning() && this.callbacks.onClosed)
+      if (this.isRunning() && this.callbacks.onClosed)
         this.callbacks.onClosed(false, 'coqtop closed with code: ' + code);
       this.dispose();
     });
-    this.coqtopProc.stderr.on('data', (data:string) => {
+    this.coqtopProc.stderr.on('data', (data: string) => {
       this.console.log('coqtop-stderr: ' + data);
     });
-    this.coqtopProc.on('close', (code:number) => {
+    this.coqtopProc.on('close', (code: number) => {
       this.console.log('coqtop closed with code: ' + code);
-      if(this.isRunning() && this.callbacks.onClosed)
+      if (this.isRunning() && this.callbacks.onClosed)
         this.callbacks.onClosed(false, 'coqtop closed with code: ' + code);
       this.dispose();
     });
-    this.coqtopProc.on('error', (code:number) => {
+    this.coqtopProc.on('error', (code: number) => {
       this.console.log('coqtop could not be started: ' + code);
-      if(this.isRunning() && this.callbacks.onClosed)
+      if (this.isRunning() && this.callbacks.onClosed)
         this.callbacks.onClosed(true, 'coqtop closed with code: ' + code);
       this.dispose();
     });
-    // this.coqtopProc.stdin.write('\n');
   }
 
-  private coqtopOut(data:string) {
+  private coqtopOut(data: string) {
     this.console.log('coqtop-stdout:' + data);
   }
 
@@ -210,24 +205,22 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
   }
 
   private get scriptPath() {
-    let uri = URI.parse(this.scriptUri);
+    const uri = URI.parse(this.scriptUri);
     if (uri.scheme == "file")
       return uri.fsPath;
     else
       return undefined
   }
 
-  private spawnCoqTop(mainAddr : string, controlAddr: string) {
-    var topfile : string[] = [];
-    var scriptPath = this.scriptPath;
+  private spawnCoqTop(mainAddr: string, controlAddr: string) {
+    let topfile: string[] = [];
+    const scriptPath = this.scriptPath;
     if (semver.satisfies(this.coqtopVersion, ">= 8.10") && scriptPath !== undefined) {
       topfile = ['-topfile', scriptPath];
     }
     if (semver.satisfies(this.coqtopVersion, ">= 8.9")) {
       var coqtopModule = this.coqidetopBin;
-      // var coqtopModule = 'cmd';
       var args = [
-        // '/D /C', this.coqPath + '/coqtop.exe',
         '-main-channel', mainAddr,
         '-control-channel', controlAddr,
         '-async-proofs', 'on',
@@ -236,9 +229,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
       ];
     } else {
       var coqtopModule = this.coqtopBin;
-      // var coqtopModule = 'cmd';
       var args = [
-        // '/D /C', this.coqPath + '/coqtop.exe',
         '-main-channel', mainAddr,
         '-control-channel', controlAddr,
         '-ideslave',
@@ -247,11 +238,11 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
       ];
     }
     this.console.log('exec: ' + coqtopModule + ' ' + args.join(' '));
-    return spawn(coqtopModule, args, {detached: false, cwd: this.projectRoot});
+    return spawn(coqtopModule, args, { detached: false, cwd: this.projectRoot });
   }
 
-  public /* override */ async coqInterrupt() : Promise<boolean> {
-    if(!this.coqtopProc)
+  public async coqInterrupt(): Promise<boolean> {
+    if (!this.coqtopProc)
       return false;
     else {
       this.console.log('--------------------------------');

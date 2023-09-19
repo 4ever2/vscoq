@@ -9,7 +9,7 @@ import * as psm from "./prettify-symbols-mode";
 import mustache = require("mustache");
 import { ProofViewDiffSettings, SettingsState } from "@lib/settings";
 import { CommandResult } from "@lib/protocol";
-import { ControllerEvent, ProofViewProtocol, ResizeEvent } from '../../lib/src/coqview';
+import { ControllerEvent, ProofViewProtocol, ResizeEvent } from '@lib/coqview';
 
 
 const VIEW_PATH = "html_views";
@@ -85,9 +85,9 @@ export class HtmlCoqView implements view.CoqView {
       );
       console.log(
         "Goals: " +
-          decodeURIComponent(
-            this.coqViewUri.with({ scheme: "file" }).toString()
-          )
+        decodeURIComponent(
+          this.coqViewUri.with({ scheme: "file" }).toString()
+        )
       );
     } catch (err) {
       vscode.window.showErrorMessage(err.toString());
@@ -190,9 +190,8 @@ export class HtmlCoqView implements view.CoqView {
     this.currentSettings.fontFamily = vscode.workspace
       .getConfiguration("editor")
       .get("fontFamily") as string;
-    this.currentSettings.fontSize = `${
-      vscode.workspace.getConfiguration("editor").get("fontSize") as number
-    }pt`;
+    this.currentSettings.fontSize = `${vscode.workspace.getConfiguration("editor").get("fontSize") as number
+      }pt`;
     this.currentSettings.fontWeight = vscode.workspace
       .getConfiguration("editor")
       .get("fontWeight") as string;

@@ -1,5 +1,5 @@
 import * as peg from 'pegjs'
-export {ExpectedItem, LocationRange} from 'pegjs';
+export { ExpectedItem, LocationRange } from 'pegjs';
 
 export interface SentenceBase {
   text: string,
@@ -28,9 +28,9 @@ export interface Bullet extends SentenceBase {
 
 export interface SRequire extends SentenceBase {
   type: "require",
-  intro: "Import"|"Export"|null,
+  intro: "Import" | "Export" | null,
   modules: QualifiedIdentifier[],
-  dirPath: string|null,
+  dirPath: string | null,
 }
 
 export interface SDefinition extends SentenceBase {
@@ -54,12 +54,12 @@ export interface SEnd extends SentenceBase {
 export interface ModuleWithModule {
   type: "module",
   qualid: QualifiedIdentifier,
-  binding: QualifiedIdentifier,  
+  binding: QualifiedIdentifier,
 }
 export interface ModuleWithDefinition {
   type: "definition",
   qualid: QualifiedIdentifier,
-  expr: string,  
+  expr: string,
 }
 
 export interface ModuleType {
@@ -92,29 +92,29 @@ export interface SModuleTypeBind extends SentenceBase {
   type: "module-type-bind",
   ident: Identifier,
   bindings: ModuleBinding[],
-  expr:ModuleType,
-  moduleTypes:ModuleType[]
+  expr: ModuleType,
+  moduleTypes: ModuleType[]
 }
 
 export interface SModule extends SentenceBase {
   type: "module",
   intro: "Export" | "Import" | null,
-  ident:Identifier,
-  bindings:ModuleBinding[],
-  moduleTypes:ModuleType[]
+  ident: Identifier,
+  bindings: ModuleBinding[],
+  moduleTypes: ModuleType[]
 }
 
 export interface SModuleBind extends SentenceBase {
   type: "module-bind",
-  ident:Identifier,
-  bindings:ModuleBinding[],
-  expr:ModuleExpression,
-  moduleTypes:ModuleType[],
+  ident: Identifier,
+  bindings: ModuleBinding[],
+  expr: ModuleExpression,
+  moduleTypes: ModuleType[],
 }
 
 export interface SInclude extends SentenceBase {
   type: "include",
-  qualids: QualifiedIdentifier[] & {[0]: QualifiedIdentifier}
+  qualids: QualifiedIdentifier[] & { [0]: QualifiedIdentifier }
 }
 
 export interface SSection extends SentenceBase {
@@ -133,7 +133,7 @@ export type Type = string;
 export type Name = string;
 
 export interface Binder {
-  binderType: "name"|"name-term"|"name-list"
+  binderType: "name" | "name-term" | "name-list"
   name: Name,
 }
 export interface NameBinder extends Binder {
@@ -160,9 +160,9 @@ export interface Constructor {
 
 export interface InductiveBody {
   ident: Identifier,
-  termType: string|null,
+  termType: string | null,
   constructors: Constructor[],
-  binders: Binder[],  
+  binders: Binder[],
 }
 
 export interface SAssumptions extends SentenceBase {
@@ -179,4 +179,3 @@ export type Sentence
   | SDefinition | SInductive | SAssumptions
   | SLtacDef
   | SAny;
-

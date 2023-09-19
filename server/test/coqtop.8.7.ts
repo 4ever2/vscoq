@@ -9,7 +9,7 @@ import * as fs from 'fs';
 // as well as import your extension to test it
 import * as text from '../src/util/AnnotatedText';
 import * as coqProto from '../src/coqtop/coq-proto';
-import {CoqTop as CoqTop8} from '../src/coqtop/CoqTop8';
+import { CoqTop as CoqTop8 } from '../src/coqtop/CoqTop8';
 import * as coqtop from '../src/coqtop/CoqTop';
 import { RemoteConsole } from 'vscode-languageserver';
 import { CoqTopSettings } from '../../lib/src/settings';
@@ -21,25 +21,25 @@ function coqtopBin() {
 }
 
 // Defines a Mocha test suite to group tests of similar kind together
-describe("Coqtop 8.6", function() {
-  before("check if coqtop exists", function() {
-    if(!fs.existsSync(path.join(COQBIN_8_6, '/coqtop')) && (os.platform()!=='win32' || !fs.existsSync(path.join(COQBIN_8_6, '/coqtop.exe')))) {
+describe("Coqtop 8.6", function () {
+  before("check if coqtop exists", function () {
+    if (!fs.existsSync(path.join(COQBIN_8_6, '/coqtop')) && (os.platform() !== 'win32' || !fs.existsSync(path.join(COQBIN_8_6, '/coqtop.exe')))) {
       console.warn("Cannot find coqtop: " + coqtopBin());
       console.warn("Please make sure you have set env-var COQBIN_8_6 to point to the binaries directory of Coq 8.6.");
       this.skip();
     }
   })
 
-  it("version", async function() {
+  it("version", async function () {
     const version = await coqtop.detectVersion(coqtopBin(), "./", dummyConsole);
     assert(version.startsWith("8.6"), "Coqtop does not appear to be version 8.5.\nPlease make sure you have set env-var COQBIN_8_5 to point to the binaries directory of Coq 8.5.")
     const knownVersions = ["8.6.0"];
     const isKnownVersion = knownVersions.some((v) => v === version);
-    if(!isKnownVersion)
+    if (!isKnownVersion)
       console.warn("Detected version of coqtop is not one of: " + knownVersions.join(', '));
   })
 
-  const settings : CoqTopSettings = {
+  const settings: CoqTopSettings = {
     binPath: COQBIN_8_6,
     coqtopExe: "coqtop",
     coqidetopExe: "coqidetop.opt",
@@ -47,20 +47,20 @@ describe("Coqtop 8.6", function() {
     startOn: "open-script",
   }
 
-  let dummyConsole: RemoteConsole = {
-    log: () => {},
-    info: () => {},
-    warn: () => {},
-    error: () => {},
+  const dummyConsole: RemoteConsole = {
+    log: () => { },
+    info: () => { },
+    warn: () => { },
+    error: () => { },
     connection: undefined,
   };
   let coq: coqtop.CoqTop;
   let feedback: coqProto.StateFeedback[];
   let messages: coqProto.Message[];
 
-  describe("Initialization", function() {
+  describe("Initialization", function () {
     this.timeout(5000);
-    beforeEach("setup coqtop", function() {
+    beforeEach("setup coqtop", function () {
       feedback = [];
       messages = [];
       coq = new CoqTop8(settings, "test.v", "./", dummyConsole);
@@ -68,7 +68,7 @@ describe("Coqtop 8.6", function() {
       coq.onMessage((x1) => messages.push(x1));
     })
 
-    it("Init & Quit", async function() {
+    it("Init & Quit", async function () {
       const result = await coq.startCoq();
       assert.equal(result.stateId, 1);
       await coq.coqQuit();
@@ -76,10 +76,10 @@ describe("Coqtop 8.6", function() {
 
   })
 
-  describe("Commands", function() {
-    let rootState : number;
+  describe("Commands", function () {
+    let rootState: number;
 
-    beforeEach("setup coqtop", async function() {
+    beforeEach("setup coqtop", async function () {
       feedback = [];
       messages = [];
       coq = new CoqTop8(settings, "test.v", "./", dummyConsole);
@@ -88,18 +88,18 @@ describe("Coqtop 8.6", function() {
       rootState = (await coq.startCoq()).stateId;
     })
 
-    afterEach("quit coqtop", async function() {
+    afterEach("quit coqtop", async function () {
       await coq.coqQuit();
     })
 
-    it("Add", async function() {
+    it("Add", async function () {
       let currentState = rootState;
       const result = await coq.coqAddCommand("Check nat.", 1, currentState, true);
       currentState = result.stateId;
       assert.equal(currentState, 2);
     })
 
-    it("Add 'Check', Goal", async function() {
+    it("Add 'Check', Goal", async function () {
       let currentState = rootState;
       const result = await coq.coqAddCommand("Check nat.", 1, currentState, true);
       currentState = result.stateId;
@@ -111,11 +111,9 @@ describe("Coqtop 8.6", function() {
       assert.deepStrictEqual(notice, {
         level: coqProto.MessageLevel.Notice,
         location: null,
-        message: {scope: "_", text:[{scope: "constr.reference", text: 'nat'}, '\n     : ', {scope: "constr.type", text: 'Set'}]},
+        message: { scope: "_", text: [{ scope: "constr.reference", text: 'nat' }, '\n     : ', { scope: "constr.type", text: 'Set' }] },
       })
     })
 
   })
-
-
 });

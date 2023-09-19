@@ -79,11 +79,9 @@ function createHypothesis(hyp: Hypothesis): HTMLElement {
   element.classList.add("hypothesis", "breakText");
 
   element.addEventListener("dblclick", function () {
-    const target = this;
-
-    if (target.classList.contains("hypothesis")) {
-      target.classList.toggle("breakText");
-      target.classList.toggle("noBreakText");
+    if (this.classList.contains("hypothesis")) {
+      this.classList.toggle("breakText");
+      this.classList.toggle("noBreakText");
     }
   });
 
@@ -115,12 +113,12 @@ function createFocusedGoals(goals: Goal[]): HTMLElement {
 
 function createDiff(enabled: string) {
   if (enabled === "on" || enabled === "removed") {
-    $('.start-diff\\.added\\.bg').each(function(){
+    $('.start-diff\\.added\\.bg').each(function () {
       $(this).nextUntil('.end-diff\\.added\\.bg').addBack()
         .next('.end-diff\\.added\\.bg').addBack()
         .wrapAll('<span class="diff-added-bg"/>')
     });
-    $('.start-diff\\.added').each(function(){
+    $('.start-diff\\.added').each(function () {
       $(this).nextUntil('.end-diff\\.added').addBack()
         .next('.end-diff\\.added').addBack()
         .wrapAll('<span class="diff-added"/>')
@@ -128,12 +126,12 @@ function createDiff(enabled: string) {
   }
 
   if (enabled === "removed") {
-    $('.start-diff\\.removed\\.bg').each(function(){
+    $('.start-diff\\.removed\\.bg').each(function () {
       $(this).nextUntil('.end-diff\\.removed\\.bg').addBack()
         .next('.end-diff\\.removed\\.bg').addBack()
         .wrapAll('<span class="diff-removed-bg"/>')
     });
-    $('.start-diff\\.removed').each(function(){
+    $('.start-diff\\.removed').each(function () {
       $(this).nextUntil('.end-diff\\.removed').addBack()
         .next('.end-diff\\.removed').addBack()
         .wrapAll('<span class="diff-removed"/>')
@@ -290,7 +288,7 @@ export const Infoview = () => {
 
   const updateSettings = (settings: ProofViewDiffSettings) => {
     diffsEnabled = settings.enabled;
-  } 
+  }
 
   return { element, updateState, unmount, updateSettings };
 };

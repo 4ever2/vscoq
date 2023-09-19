@@ -1,14 +1,14 @@
 import * as vscode from 'vscode'
 import * as proto from '@lib/protocol';
-import {CoqDocument} from './CoqDocument'
-export {CoqDocument} from './CoqDocument'
-import {CoqLanguageServer} from './CoqLanguageServer'
+import { CoqDocument } from './CoqDocument'
+export { CoqDocument } from './CoqDocument'
+import { CoqLanguageServer } from './CoqLanguageServer'
 import * as editorAssist from './EditorAssist'
 import { CoqSettings } from '@lib/settings';
 
-export function getProject() : CoqProject {
+export function getProject(): CoqProject {
   const coq = CoqProject.getInstance();
-  if(!coq)
+  if (!coq)
     throw "CoqProject not yet loaded";
   else
     return coq;
@@ -16,13 +16,13 @@ export function getProject() : CoqProject {
 
 export class CoqProject implements vscode.Disposable {
   private documents = new Map<string, CoqDocument>();
-  private activeEditor : vscode.TextEditor|undefined = undefined;
+  private activeEditor: vscode.TextEditor | undefined = undefined;
   /** the coq-doc that is either active, was the last to be active, or is associated with a helper view (proof-view) */
-  private activeDoc : CoqDocument|null = null;
-  private static instance : CoqProject|null = null;
-  private langServer : CoqLanguageServer;
+  private activeDoc: CoqDocument | null = null;
+  private static instance: CoqProject | null = null;
+  private langServer: CoqLanguageServer;
   private currentSettings: CoqSettings;
-  private subscriptions : vscode.Disposable[] = [];
+  private subscriptions: vscode.Disposable[] = [];
 
   // lazily created output windows
   private infoOutput: vscode.OutputChannel = vscode.window.createOutputChannel('Info', 'coq');
@@ -41,7 +41,6 @@ export class CoqProject implements vscode.Disposable {
       this.loadConfiguration();
     }));
 
-
     vscode.workspace.onDidChangeTextDocument((params) => this.onDidChangeTextDocument(params));
     vscode.workspace.onDidOpenTextDocument((params) => this.onDidOpenTextDocument(params));
     vscode.workspace.onDidCloseTextDocument((params) => this.onDidCloseTextDocument(params));
@@ -53,14 +52,14 @@ export class CoqProject implements vscode.Disposable {
   }
 
   private loadConfiguration() {
-    let conf = vscode.workspace.getConfiguration("coq") as vscode.WorkspaceConfiguration & CoqSettings;
-    if(conf.moveCursorToFocus === undefined)
+    const conf = vscode.workspace.getConfiguration("coq") as vscode.WorkspaceConfiguration & CoqSettings;
+    if (conf.moveCursorToFocus === undefined)
       conf.moveCursorToFocus = true;
     this.currentSettings = conf;
   }
 
   public static create(context: vscode.ExtensionContext) {
-    if(!CoqProject.instance)
+    if (!CoqProject.instance)
       CoqProject.instance = new CoqProject(context);
     return CoqProject.instance;
   }
@@ -93,44 +92,42 @@ export class CoqProject implements vscode.Disposable {
     this.documents.clear();
   }
 
-  public get(uri: string): CoqDocument|null {
+  public get(uri: string): CoqDocument | null {
     return this.documents.get(uri) || null;
   }
 
-  public getOrCurrent(uri: string): CoqDocument|null {
+  public getOrCurrent(uri: string): CoqDocument | null {
     return this.documents.get(uri) || this.activeDoc;
   }
 
-  public getLanguageServer() : CoqLanguageServer {
+  public getLanguageServer(): CoqLanguageServer {
     return this.langServer;
   }
 
-  public get settings() : CoqSettings {
+  public get settings(): CoqSettings {
     return this.currentSettings;
   }
 
   private tryLoadDocument(textDoc: vscode.TextDocument) {
-    if(textDoc.languageId !== 'coq')
+    if (textDoc.languageId !== 'coq')
       return;
     const uri = textDoc.uri.toString();
-    if(!this.documents.has(uri)) {
+    if (!this.documents.has(uri)) {
       this.documents.set(uri, new CoqDocument(textDoc, this));
     }
 
     // refresh this in case the loaded document has focus and it was not in our registry
     if (vscode.window.activeTextEditor)
-      if(this.documents.has(vscode.window.activeTextEditor.document.uri.toString()))
+      if (this.documents.has(vscode.window.activeTextEditor.document.uri.toString()))
         this.activeDoc = this.documents.get(vscode.window.activeTextEditor.document.uri.toString()) || null;
   }
 
   private onDidChangeTextDocument(params: vscode.TextDocumentChangeEvent) {
     const uri = params.document.uri.toString();
     const doc = this.documents.get(uri);
-    if(!doc)
+    if (!doc)
       return;
     doc.onDidChangeTextDocument(params);
-// FOR DEBUGGING ONLY!!!
-// doc.highlights.refresh(doc.allEditors());
   }
 
   private onDidOpenTextDocument(doc: vscode.TextDocument) {
@@ -141,44 +138,44 @@ export class CoqProject implements vscode.Disposable {
     const uri = doc.uri.toString();
     const coqDoc = this.documents.get(uri);
     this.documents.delete(uri);
-    if(!coqDoc)
+    if (!coqDoc)
       return;
     coqDoc.dispose();
   }
 
-  public getActiveDoc() : CoqDocument|null {
+  public getActiveDoc(): CoqDocument | null {
     return this.activeDoc;
   }
 
-  public setActiveDoc(doc: vscode.Uri|string) : void {
+  public setActiveDoc(doc: vscode.Uri | string): void {
     this.activeDoc = this.documents.get(doc.toString()) || null;
   }
 
   private onDidChangeActiveTextEditor(editor: vscode.TextEditor | undefined) {
-    if(!this.activeEditor)
+    if (!this.activeEditor)
       return;
-    let oldUri : string|null;
+    let oldUri: string | null;
     try {
       oldUri = this.activeEditor.document.uri.toString();
-    } catch(err) {
+    } catch (err) {
       oldUri = null;
     }
     const oldDoc = oldUri ? this.documents.get(oldUri) : null;
 
-    if(!editor) {
-      if(oldDoc)
+    if (!editor) {
+      if (oldDoc)
         oldDoc.doOnLostFocus();
       return;
     }
 
-    if(oldDoc)
+    if (oldDoc)
       oldDoc.doOnLostFocus();
 
     // newly active editor
     const uri = editor.document ? editor.document.uri.toString() : null;
-    if(uri) {
+    if (uri) {
       const doc = this.documents.get(uri) || this.tryLoadDocument(editor.document);
-      if(doc) {
+      if (doc) {
         this.activeDoc = doc;
         doc.doOnFocus(editor);
       }
@@ -187,35 +184,35 @@ export class CoqProject implements vscode.Disposable {
     this.activeEditor = editor;
   }
 
-  private async tryDocumentCommand(command: (editor: vscode.TextEditor) => Promise<void>, useActive=true, makeVisible = true, ...args: any[]) {
-    let editor : vscode.TextEditor|undefined = vscode.window.activeTextEditor;
-    let doc : CoqDocument | null;
+  private async tryDocumentCommand(command: (editor: vscode.TextEditor) => Promise<void>, useActive = true, makeVisible = true, ...args: any[]) {
+    let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+    let doc: CoqDocument | null;
     try {
       doc = editor ? this.documents.get(editor.document.uri.toString()) || null : null;
-    } catch(err) {
+    } catch (err) {
       return;
     }
 
-    if(!doc && useActive) {
+    if (!doc && useActive) {
       doc = this.activeDoc;
       editor = this.activeEditor;
     }
 
-    if(doc) {
-      let doc_ = doc; // TypeScript bug: does not realize the doc is not null in the next line, but this seems to work
-      if(makeVisible && !vscode.window.visibleTextEditors.some((d) => d.document===doc_.getDocument()))
+    if (doc) {
+      const doc_ = doc; // TypeScript bug: does not realize the doc is not null in the next line, but this seems to work
+      if (makeVisible && !vscode.window.visibleTextEditors.some((d) => d.document === doc_.getDocument()))
         await vscode.window.showTextDocument(doc.getDocument(), undefined, true);
 
-      await command.call(doc,editor, ...args);
+      await command.call(doc, editor, ...args);
     }
   }
 
   public quitCoq() {
-    return this.tryDocumentCommand(CoqDocument.prototype.quitCoq,false,false);
+    return this.tryDocumentCommand(CoqDocument.prototype.quitCoq, false, false);
   }
 
   public resetCoq() {
-    return this.tryDocumentCommand(CoqDocument.prototype.resetCoq,false,false);
+    return this.tryDocumentCommand(CoqDocument.prototype.resetCoq, false, false);
   }
 
   public stepForward() {
@@ -226,12 +223,12 @@ export class CoqProject implements vscode.Disposable {
     return this.tryDocumentCommand(CoqDocument.prototype.stepBackward);
   }
 
-  public interpretToPoint(options : {synchronous?: boolean} = {}) {
-    return this.tryDocumentCommand(CoqDocument.prototype.interpretToCursorPosition,false,false,options.synchronous);
+  public interpretToPoint(options: { synchronous?: boolean } = {}) {
+    return this.tryDocumentCommand(CoqDocument.prototype.interpretToCursorPosition, false, false, options.synchronous);
   }
 
-  public interpretToEnd(options : {synchronous?: boolean} = {}) {
-    return this.tryDocumentCommand(CoqDocument.prototype.interpretToEnd,false,false,options.synchronous);
+  public interpretToEnd(options: { synchronous?: boolean } = {}) {
+    return this.tryDocumentCommand(CoqDocument.prototype.interpretToEnd, false, false, options.synchronous);
   }
 
   public interruptCoq() {
@@ -248,15 +245,15 @@ export class CoqProject implements vscode.Disposable {
 
   public setCursorToFocus() {
     function helper(this: CoqDocument, editor: vscode.TextEditor) {
-      return Promise.resolve(this.setCursorToPosition(this.getCurrentFocus(), editor,true,true));
+      return Promise.resolve(this.setCursorToPosition(this.getCurrentFocus(), editor, true, true));
     }
-    return this.tryDocumentCommand(helper,false,false);
+    return this.tryDocumentCommand(helper, false, false);
   }
 
   public setDisplayOption(item?: proto.DisplayOption, value?: proto.SetDisplayOption) {
     function setDisplayOption(this: CoqDocument, editor: vscode.TextEditor) {
       return Promise.resolve(this.setDisplayOption(item, value));
     }
-    return this.tryDocumentCommand(setDisplayOption,true,false);
+    return this.tryDocumentCommand(setDisplayOption, true, false);
   }
 }

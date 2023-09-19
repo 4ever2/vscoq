@@ -136,46 +136,5 @@ suite("Mutex", () => {
     await unlock1();
     assert(!m.isLocked());
   }));
-
-//   test("cancelAll: two lockers", asyncTest (async () => {
-//     const m = new Mutex();
-//     const unlock1 = await m.lock();
-//     const waitLock = m.lock();
-//     const waitCancelling = m.cancelAll();
-//     try {
-//       await waitLock;
-//       assert(false, 'Should not be able to acquire the cancelled lock');
-//     } catch(reason) {
-//        assert.equal(reason,Mutex.reasonAllCancelled,`lock() for the wrong reason`);
-//     }
-//     await waitCancelling;
-//     assert(m.isLocked()); // cancelling does not affect the current owner
-//     await unlock1();
-//     assert(!m.isLocked());
-//   }));
-// 
-//   test("cancelAll: three lockers", asyncTest (async () => {
-//     const m = new Mutex();
-//     const unlock1 = await m.lock();
-//     const waitLock2 = m.lock();
-//     const waitLock3 = m.lock();
-//     const waitCancelling = m.cancelAll();
-//     try {
-//       await waitLock2;
-//       assert(false, 'Should not be able to acquire the cancelled lock');
-//     } catch(reason) {
-//        assert.equal(reason,Mutex.reasonAllCancelled,`lock() for the wrong reason`);
-//     }
-//     try {
-//       await waitLock3;
-//       assert(false, 'Should not be able to acquire the cancelled lock');
-//     } catch(reason) {
-//        assert.equal(reason,Mutex.reasonAllCancelled,`lock() for the wrong reason`);
-//     }
-//     await waitCancelling;
-//     assert(m.isLocked()); // cancelling does not affect the current owner
-//     await unlock1();
-//     assert(!m.isLocked());
-//   }));
   
 });

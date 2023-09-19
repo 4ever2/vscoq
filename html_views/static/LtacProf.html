@@ -2,7 +2,6 @@
 <head>
   <title>Coq</title>
   <style>
-    /*html {background-color: black;}*/
     html, body {
       width:100%;
       height:100%;
@@ -32,10 +31,6 @@
       display: none;
     }
 
-    /*.treegrid-indent {width:16px; height: 16px; display: inline-block; position: relative; }
-    .treegrid-expander {width:16px; height: 16px; display: inline-block; position: relative; cursor: pointer; flex-wrap: nowrap}
-    .treegrid-expander-expanded{background-image: url('jquery/img/collapse.png'); }
-    .treegrid-expander-collapsed{background-image: url('jquery/img/expand.png');}*/
     .tbltree-indent {width:16px; height: 16px; display: inline-block; position: relative;}
     .tbltree-expander {width:16px; height: 16px; display: inline-block; position: relative; cursor: pointer;}
     .tbltree-expander-expanded{background-image: url(../jquery/img/collapse.png); }
@@ -51,7 +46,6 @@
     .result-odd { background-color: rgba(150,150,150,0.1)}
 
     table.results {width:100%; border-collapse: collapse }
-    /*#results tbody td { border-bottom-width: 1px; border-bottom-color: rgb(50,50,50); border-bottom-style: dotted}*/
     table.results td, th {
       border-width: 0px 1px 0px 1px;
       border-color: gray;
@@ -61,7 +55,6 @@
       text-overflow: ellipsis!important;
       white-space: nowrap;
     }
-    /*table.results thead tr { background-color: black; }*/
     table.results thead th { border-bottom-width: 3px; border-color: gray; border-style: solid}
     #results thead { font-weight: bold}
     #results td:first-child {
@@ -74,38 +67,6 @@
       background-color: rgba(0,0,150,0.4);
       
     }
-    /*#results thead, tbody {
-      display: block;
-      width: 100%
-    }
-    #results table tbody {
-      overflow-y: auto;
-      overflow-x: hidden;
-      height: 100%
-    }*/
-    /*#results tbody tr:not([style="display: none"]):nth-child(odd) {
-      background-color: rgba(100,100,100,1);
-    }*/
-
-/*
-.rc-handle-container {
-  position: relative;
-}
-.rc-handle {
-  position: absolute;
-  width: 7px;
-  cursor: ew-resize;
-  margin-left: -3px;
-  z-index: 2;
-}
-table.rc-table-resizing {
-  cursor: ew-resize;
-}
-table.rc-table-resizing thead,
-table.rc-table-resizing thead > th,
-table.rc-table-resizing thead > th > a {
-  cursor: ew-resize;
-}*/
 
     #local-unit, #total-unit {
       -moz-appearance: none;
@@ -170,24 +131,12 @@ table.rc-table-resizing thead > th > a {
   </style>
   <script type="text/javascript" src="../jquery/jquery-2.2.4.min.js"></script>
   <script type="text/javascript" src="../jquery/jquery-ui.min.js"></script>
-  <!--<script type="text/javascript" src="jquery/jquery.event.drag-1.4.js"></script>
-  <script type="text/javascript" src="jquery/jquery.kiketable.colsizable-1.1.js"></script>-->
-  <!--<script type="text/javascript" src="jquery/jquery.treegrid.js"></script>-->
-  <!--<script type="text/javascript" src="jquery/jquery.floatThead.min.js"></script>-->
-  <!--<script type="text/javascript" src="jquery/stickyheader.jquery.js"></script>-->
   <script type="text/javascript" src="../jquery/jquery.sticky.js"></script>
   <script type="text/javascript" src="../jquery/jquery.tbltree.js"></script>
-  <!--<script type="text/javascript" src="jquery/jquery.resizableColumns.min.js"></script>-->
   <script type="text/javascript" src="../jquery/colResizable-1.6.min.js"></script>
-  <!--<link rel="stylesheet" href="jquery/jquery.treegrid.css">-->
   <script src="ltacprof.js"></script>
 </head>
 <body onload="ltacProfLoad()">
-  <!--<table id="sticky-results-header">
-    <thead>
-    <tr><th>tactic</th><th>total (s)</th><th>local (s)</th><th>#calls</th><th>max total (s)</th></tr>
-    </thead>
-  </table>-->
   <table id="results" class="results">
     <thead>
     <tr>

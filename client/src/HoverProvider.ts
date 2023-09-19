@@ -52,16 +52,13 @@ function formatCheck(response: string) {
   // § Strip output of anything but the type
   const array = response.split("\nwhere\n");
   let type = array[0];
-  // let where = array[1];
   type = type.replace(/^.*?\n\t : /, ""); // remove identifier
   type = type.replace(/^ {7}/gm, ""); // remove indent
 
   if (type === "") return;
   type = compactify(type);
 
-  let hover = [md_code_block("coq", type)];
-  // if (where)
-  //  hover.push(md_code_block("coq", where));
+  const hover = [md_code_block("coq", type)];
   return new vscode.Hover(hover);
 }
 
@@ -96,7 +93,7 @@ function formatLocate(response: string) {
   const matches = response.matchAll(notationRegex);
   if (!matches) return;
 
-  let hover = [];
+  const hover = [];
   for (const match of matches) {
     if (match.index === undefined) continue;
     const notation = match[2];
@@ -162,7 +159,7 @@ function formatAbout(response: string) {
 
   if (response.startsWith("Notation")) {
     const array = response.split(/\n(?!\s)/gms); // split on newline NOT followed by space
-    let hover: vscode.MarkdownString[] = []
+    const hover: vscode.MarkdownString[] = []
     const match = array[0].match(/Notation\s+(.*?)\s+:=\s*/);
     if (match !== null) {
       const notation = match[1].trim();
@@ -191,11 +188,11 @@ function formatAbout(response: string) {
   let type = array[0];
   type = compactify(type.replace(/^.*?:/, "")); // remove identifier (everything before first ":")
   if (type === "") return;
-  let hover = [md_code_block("coq", type)];
+  const hover = [md_code_block("coq", type)];
 
   // re-join all remaining sections of the array,
   // then split on newline NOT followed by space
-  let details = array.slice(1).join("\n\n").split(/\n(?!\s)/gms);
+  const details = array.slice(1).join("\n\n").split(/\n(?!\s)/gms);
   for (const detail of details) {
     if (detail.startsWith("Arguments ")) {
       const md = new vscode.MarkdownString("**Args:** `");
@@ -237,7 +234,7 @@ function filterOld(query: query_result) {
 export const regExpCoqNotation = /[^\p{Z}\p{C}"]+/u;
 
 export function coqIdOrNotationFromRange(document: vscode.TextDocument, range: vscode.Range | undefined) {
-  let text = document.getText(range);
+  const text = document.getText(range);
   if (new RegExp("\^" + regExpCoqNotation.source + "\$", regExpCoqNotation.flags).test(text)
     && !new RegExp("\^" + editorAssist.regExpQualifiedCoqIdent.source + "\$", regExpCoqNotation.flags).test(text))
     return "\"" + text + "\"";

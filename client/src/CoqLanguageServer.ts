@@ -7,18 +7,6 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } f
 import * as vscodeClient from 'vscode-languageclient';
 import { SemVer } from 'semver';
 
-// function createServerProcess(serverModule: string, debugOptions: string[]): ServerOptions {
-//   let nodejsPath = workspace.getConfiguration('nodejs')['path'] || '';
-//   let nodejsCmd = path.join(nodejsPath, 'node');
-
-//   // If the extension is launch in debug mode the debug server options are use
-//   // Otherwise the run options are used
-//   var args = debugOptions.concat([serverModule]);
-//   return {
-//     run: { command: nodejsCmd, args: [serverModule] },
-//     debug: { command: nodejsCmd, args: debugOptions.concat([serverModule]) }
-//   }
-// }
 
 function createServerLocalExtension(serverModule: string, debugOptions: string[]): ServerOptions {
   const options: { run: vscodeClient.NodeModule; debug: vscodeClient.NodeModule } = {
@@ -28,25 +16,24 @@ function createServerLocalExtension(serverModule: string, debugOptions: string[]
   return options;
 }
 
-
 export class CoqLanguageServer implements vscode.Disposable {
   private static instance: CoqLanguageServer;
   private subscriptions: vscode.Disposable[] = [];
   private server: LanguageClient;
   private cancelRequest = new vscode.CancellationTokenSource();
-  private documentCallbacks = new Map<string,DocumentCallbacks>();
+  private documentCallbacks = new Map<string, DocumentCallbacks>();
 
   private constructor(context: ExtensionContext) {
     // The server is implemented in node
-    let serverModule = context.asAbsolutePath(path.join('server', 'out', 'server.js'));
+    const serverModule = context.asAbsolutePath(path.join('server', 'out', 'server.js'));
     // The debug options for the server
-    let debugOptions = ["--nolazy", "--inspect=6009"];
+    const debugOptions = ["--nolazy", "--inspect=6009"];
 
     // let serverOptions = createServerProcess(serverModule, debugOptions);
-    let serverOptions = createServerLocalExtension(serverModule, debugOptions);
+    const serverOptions = createServerLocalExtension(serverModule, debugOptions);
 
     // Options to control the language client
-    let clientOptions: LanguageClientOptions = {
+    const clientOptions: LanguageClientOptions = {
       // Register the server for Coq scripts
       documentSelector: ['coq'],
       synchronize: {
@@ -63,42 +50,37 @@ export class CoqLanguageServer implements vscode.Disposable {
       .then(() => {
         this.server.onNotification(proto.UpdateHighlightsNotification.type, (p) => {
           const doc = this.documentCallbacks.get(p.uri);
-          if(doc)
+          if (doc)
             doc.onUpdateHighlights.forEach(l => l(p));
-          // this.onUpdateHighlightsHandlers.forEach((h) => h(p))
         });
         this.server.onNotification(proto.CoqMessageNotification.type, (p) => {
           const doc = this.documentCallbacks.get(p.uri);
-          if(doc)
+          if (doc)
             doc.onMessage.forEach(l => l(p));
-          // this.onMessageHandlers.forEach((h) => h(p))
         });
         this.server.onNotification(proto.CoqResetNotification.type, (p) => {
           const doc = this.documentCallbacks.get(p.uri);
-          if(doc)
+          if (doc)
             doc.onReset.forEach(l => l(p));
-          // this.onResetHandlers.forEach((h) => h(p))
         });
         this.server.onNotification(proto.CoqStmFocusNotification.type, (p) => {
           const doc = this.documentCallbacks.get(p.uri);
-          if(doc)
+          if (doc)
             doc.onUpdateCoqStmFocus.forEach(l => l(p));
-          // this.onUpdateCoqStmFocusHandlers.forEach((h) => h(p))
         });
         this.server.onNotification(proto.CoqLtacProfResultsNotification.type, (p) => {
           const doc = this.documentCallbacks.get(p.uri);
-          if(doc)
+          if (doc)
             doc.onLtacProfResults.forEach(l => l(p.results));
-          // this.onLtacProfResultsHandlers.forEach((h) => h(p))
         });
         this.server.onNotification(proto.CoqtopStartNotification.type, (p) => {
           const doc = this.documentCallbacks.get(p.uri);
-          if(doc)
+          if (doc)
             doc.onCoqtopStart.forEach(l => l(p));
         });
         this.server.onNotification(proto.CoqtopStopNotification.type, (p) => {
           const doc = this.documentCallbacks.get(p.uri);
-          if(doc)
+          if (doc)
             doc.onCoqtopStop.forEach(l => l(p));
         });
         console.log("Coq language server ready")
@@ -127,7 +109,7 @@ export class CoqLanguageServer implements vscode.Disposable {
   }
 
   public registerDocument(uri: string, doc: DocumentCallbacks) {
-    if(this.documentCallbacks.has(uri))
+    if (this.documentCallbacks.has(uri))
       throw "Duplicate Coq document being registered.";
     this.documentCallbacks.set(uri, doc);
   }
@@ -135,36 +117,6 @@ export class CoqLanguageServer implements vscode.Disposable {
   public unregisterDocument(uri: string) {
     this.documentCallbacks.delete(uri);
   }
-
-  // private onUpdateHighlightsHandlers = new Set<(params: proto.NotifyHighlightParams) => void>();
-  // public onUpdateHighlights(listener: (params: proto.NotifyHighlightParams) => void) : vscode.Disposable {
-  //   this.onUpdateHighlightsHandlers.add(listener);
-  //   return { dispose: () => this.onUpdateHighlightsHandlers.delete(listener) }
-  // }
-
-  // private onMessageHandlers = new Set<(params: proto.NotifyMessageParams) => void>();
-  // public onMessage(listener: (params: proto.NotifyMessageParams) => void) {
-  //   this.onMessageHandlers.add(listener);
-  //   return { dispose: () => this.onMessageHandlers.delete(listener) }
-  // }
-
-  // private onResetHandlers = new Set<(params: proto.NotificationParams) => void>();
-  // public onReset(listener: (params: proto.NotificationParams) => void) {
-  //   this.onResetHandlers.add(listener);
-  //   return { dispose: () => this.onResetHandlers.delete(listener) }
-  // }
-
-  // private onUpdateCoqStmFocusHandlers = new Set<(params: proto.DocumentPositionParams) => void>();
-  // public onUpdateCoqStmFocus(listener: (params: proto.DocumentPositionParams) => void) {
-  //   this.onUpdateCoqStmFocusHandlers.add(listener);
-  //   return { dispose: () => this.onUpdateCoqStmFocusHandlers.delete(listener) }
-  // }
-
-  // private onLtacProfResultsHandlers = new Set<(params: proto.NotifyLtacProfResultsParams) => void>();
-  // public onLtacProfResults(listener: (params: proto.NotifyLtacProfResultsParams) => void) {
-  //   this.onLtacProfResultsHandlers.add(listener);
-  //   return { dispose: () => this.onLtacProfResultsHandlers.delete(listener) }
-  // }
 
   public async interruptCoq(uri: string) {
     await this.server.onReady();
@@ -188,7 +140,7 @@ export class CoqLanguageServer implements vscode.Disposable {
     return await this.server.sendRequest(proto.GoalRequest.type, { uri: uri }, this.cancelRequest.token);
   }
 
-  public async getCachedGoal(uri: string, pos: vscode.Position, direction: "preceding"|"subsequent"): Promise<proto.CommandResult> {
+  public async getCachedGoal(uri: string, pos: vscode.Position, direction: "preceding" | "subsequent"): Promise<proto.CommandResult> {
     await this.server.onReady();
     return await this.server.sendRequest(proto.CachedGoalRequest.type, { uri: uri, position: pos, direction: direction }, this.cancelRequest.token);
   }
@@ -208,9 +160,9 @@ export class CoqLanguageServer implements vscode.Disposable {
     return this.server.sendRequest(proto.StepBackwardRequest.type, { uri: uri }, this.cancelRequest.token);
   }
 
-  public async interpretToPoint(uri: string, location: number|vscode.Position, synchronous?: boolean): Promise<proto.CommandResult> {
+  public async interpretToPoint(uri: string, location: number | vscode.Position, synchronous?: boolean): Promise<proto.CommandResult> {
     await this.server.onReady();
-    const params : proto.CoqTopInterpretToPointParams = {
+    const params: proto.CoqTopInterpretToPointParams = {
       uri: uri,
       location: location,
       synchronous: synchronous,
@@ -238,16 +190,16 @@ export class CoqLanguageServer implements vscode.Disposable {
     return this.server.sendRequest(proto.GetSentencePrefixTextRequest.type, { uri: uri, position: pos }, token || this.cancelRequest.token);
   }
 
-  public async query(uri: string, query: "locate"|"check"|"print"|"search"|"about"|"searchAbout", term: string, routeId:number): Promise<void> {
+  public async query(uri: string, query: "locate" | "check" | "print" | "search" | "about" | "searchAbout", term: string, routeId: number): Promise<void> {
     await this.server.onReady();
-    const params : proto.CoqTopQueryParams =
-      {
+    const params: proto.CoqTopQueryParams =
+    {
       uri: uri,
       queryFunction: query,
       query: term,
       routeId
-      };
-    return this.server.sendRequest(proto.QueryRequest.type, params , this.cancelRequest.token);
+    };
+    return this.server.sendRequest(proto.QueryRequest.type, params, this.cancelRequest.token);
   }
 
   public async setDisplayOptions(uri: string, options: { item: proto.DisplayOption, value: proto.SetDisplayOption }[]): Promise<void> {
@@ -258,12 +210,11 @@ export class CoqLanguageServer implements vscode.Disposable {
     }, this.cancelRequest.token);
   }
 
-  public async getCoqVersion(uri : string): Promise<SemVer> {
+  public async getCoqVersion(uri: string): Promise<SemVer> {
     await this.server.onReady();
     return this.server.sendRequest(proto.GetCoqVersion.type, { uri: uri });
   }
 }
-
 
 interface DocumentCallbacks {
   onUpdateHighlights: ((params: proto.Highlights) => void)[],
@@ -276,19 +227,19 @@ interface DocumentCallbacks {
 }
 
 function removeFromArray<T>(arr: T[], item: T) {
-  const idx = arr.findIndex(x => x===item);
-  if(idx >= 0)
-    arr.splice(idx,1);
+  const idx = arr.findIndex(x => x === item);
+  if (idx >= 0)
+    arr.splice(idx, 1);
 }
 
-function registerCallback<T>(arr: T[], listener: T) : vscode.Disposable {
+function registerCallback<T>(arr: T[], listener: T): vscode.Disposable {
   arr.push(listener);
   return { dispose: () => removeFromArray(arr, listener) };
 }
 
 export class CoqDocumentLanguageServer implements vscode.Disposable {
   private server = CoqLanguageServer.getInstance();
-  private callbacks : DocumentCallbacks = {
+  private callbacks: DocumentCallbacks = {
     onUpdateHighlights: [],
     onMessage: [],
     onReset: [],
@@ -317,8 +268,7 @@ export class CoqDocumentLanguageServer implements vscode.Disposable {
     this.server.unregisterDocument(this.uri);
   }
 
-
-  public onUpdateHighlights(listener: (params: proto.Highlights) => void) : vscode.Disposable {
+  public onUpdateHighlights(listener: (params: proto.Highlights) => void): vscode.Disposable {
     return registerCallback(this.callbacks.onUpdateHighlights, listener);
   }
 
@@ -362,7 +312,7 @@ export class CoqDocumentLanguageServer implements vscode.Disposable {
     return this.server.getGoal(this.uri);
   }
 
-  public getCachedGoal(pos: vscode.Position, direction: "preceding"|"subsequent"): Thenable<proto.CommandResult> {
+  public getCachedGoal(pos: vscode.Position, direction: "preceding" | "subsequent"): Thenable<proto.CommandResult> {
     return this.server.getCachedGoal(this.uri, pos, direction);
   }
 
@@ -378,7 +328,7 @@ export class CoqDocumentLanguageServer implements vscode.Disposable {
     return this.server.stepBackward(this.uri);
   }
 
-  public interpretToPoint(offset: number|vscode.Position, synchronous: boolean): Thenable<proto.CommandResult> {
+  public interpretToPoint(offset: number | vscode.Position, synchronous: boolean): Thenable<proto.CommandResult> {
     return this.server.interpretToPoint(this.uri, offset, synchronous);
   }
 
