@@ -233,7 +233,7 @@ connection.onDidChangeTextDocument((params) => {
 });
 
 connection.onDidCloseTextDocument((params) => {
-  // A text document got closed in VSCode.
+  // A text document got closed in VS Code.
   // params.uri uniquely identifies the document.
   project.close(params.textDocument.uri);
 });

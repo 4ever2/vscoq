@@ -59,7 +59,7 @@ The recommended way to install VsCoq is via the [Visual Studio Marketplace](http
 5. select "enable" on the extension
 
 ## Basic usage
-* if you use `_CoqProject` - start vscode via `code my/project/root` (or `code .` from the root folder of your project), or else select File|Open Folder... from vscode's menu.
+* if you use `_CoqProject` - start VS Code via `code my/project/root` (or `code .` from the root folder of your project), or else select File|Open Folder... from VS Code's menu.
 * step forward: `alt+down` (MacOS: `Control+Option+down`)
 * step backward: `alt+up` (MacOS: `Control+Option+up`)
 * interpret to point: `alt+right` (MacOS: `Control+Option+right`)

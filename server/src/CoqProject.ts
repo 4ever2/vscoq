@@ -21,7 +21,7 @@ export class CoqProject {
   private ready = { event: Promise.resolve<{}>({}), signal: () => { } };
   private psm = new PrettifySymbolsMode([]);
 
-  // we independently track the settings contributed by the vscode project settings and _CoqProject
+  // we independently track the settings contributed by the VS Code project settings and _CoqProject
   // so they can be modified seperately
   private settingsCoqTopArgs: string[] = [];
   private coqProjectArgs: string[] = [];

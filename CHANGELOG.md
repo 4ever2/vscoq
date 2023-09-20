@@ -21,7 +21,7 @@
 * better documentation for coqtop.args option (#224, by @fakusb)
 
 ## 0.3.5
-* compatibility with vscode 1.57.0 (#238, by @swils)
+* compatibility with VS Code 1.57.0 (#238, by @swils)
 * fixed compatibility with snap (#223, by @gares and @fakusb)
 * add shields to readme (#218, by @fakusb)
 * typo readme (#217, by @artagnon)
@@ -45,7 +45,7 @@
 * fixed wrong assumption on Coq-xml protocol (#191, by @fakusb)
 * clean up makefile (#178, by @artagnon)
 * added build and install instructions from source to README (#145, by @thery)
-* fixed debugger integration for language server (#180, by @fakusb) 
+* fixed debugger integration for language server (#180, by @fakusb)
 * reduced npm dependencies (#171, by @fakusb)
 * deleted outdated TODO.md (#149, by @Blaisorblade)
 * cleaned up readme file (#196, by @Blaisorblade)
@@ -73,7 +73,7 @@
 * development moved to Coq Community
 * support for Coq >= 8.7.0
 * drop support for Coq < 8.7.0
-* update to VSCode >= 1.23.0
+* update to VS Code >= 1.23.0
 * simplify build system
 * update dependencies to avoid vulnerabilities
 * do not reset Coq when going back past the beginning of document (#29)
@@ -108,7 +108,7 @@ Note: PR and issue numbers below refer to the previous VsCoq repository
 * fix #105 (bad parsing of bullets, introduced by 0.2.6)
 
 ## 0.2.6
-* partial resolution to #100 - allow specifying where user-settings should go. Note: this setting may be removed in the future when vscode supports this functionality.
+* partial resolution to #100 - allow specifying where user-settings should go. Note: this setting may be removed in the future when VS Code supports this functionality.
     * setting: `coq.hacks.userSettingsLocation`
 * fixes #101 #102 #103 #104 (UI & parsing)
 
@@ -123,7 +123,7 @@ Note: PR and issue numbers below refer to the previous VsCoq repository
 * customize proof-view theme (#91)
     * command: "Customize proof-view styling" --> `extension.coq.proofView.customizeProofViewStyle`
 * better auto-indenting (#87 #88)
-    * settings: `coq.editor.indentAfterBullet` 
+    * settings: `coq.editor.indentAfterBullet`
 * support custom command to externally view proof-state (#95)
     * settings: `coq.externalViewUrlCommand`
 * feature: reveal cached proof state at cursor (#66)
@@ -154,7 +154,7 @@ Note: PR and issue numbers below refer to the previous VsCoq repository
 * more snippets
 * parser fixes (better Unicode handling)
 
-## 0.1.3 
+## 0.1.3
 * fixed prettify-symbols-mode in proof-view
 * somewhat better error handling around pegjs parser errors
 * redirect console to connection.console (3rd party libs were breaking the jsonrpc protoocl over console)

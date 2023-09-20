@@ -11,7 +11,7 @@ interface PrettifySymbolsMode {
    */
   onDidEnabledChange: (handler: (enabled: boolean) => void) => vscode.Disposable,
   /** Query whether PSM is "enabled" - this refers to the user's ability to
-   * temporarily enable/disable the mode for an instance of vscode."
+   * temporarily enable/disable the mode for an instance of VS Code."
    * @returns `true` iff PSM is currently enabled
    */
   isEnabled: () => boolean,

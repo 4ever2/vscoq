@@ -220,7 +220,7 @@ async function query(query: "check" | "locate" | "about", text: string, project:
   return;
 }
 
-// VSCode calls HoverProvider repeatedly
+// VS Code calls HoverProvider repeatedly
 // So we memoize recent results to avoid having to requery
 type query_result = { input: string, time: number, output: vscode.Hover };
 
