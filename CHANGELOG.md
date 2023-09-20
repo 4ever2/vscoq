@@ -1,19 +1,19 @@
 ## 0.4.0
-* release of a seperate vscoq1 extension
+* release of a separate vscoq1 extension
 ## 0.3.9
 * pass correct `-topfile` argument(#617 by @Blaisorblade and @4ever2)
 * Enable search in proofview (#616 by @4ever2)
-* Fix ip issues with VS Code 1.82.0 (#614 by @4ever2)
+* Fix IP issues with VS Code 1.82.0 (#614 by @4ever2)
 ## 0.3.8
 * client and server are webpacked (#411 by @4ever2 and @fakusb)
 * fix completion on last line (#409 by @4ever2)
 * preserve printing width on undo (#405 by @4ever2)
 * fix error location for Windows (#363 by @4ever2 and @thery)
-* fix for snippet (#358  #338 by @4ever2)
+* fix for snippet (#358 #338 by @4ever2)
 * add color to more keywords (#336 by @dlesbre)
 ## 0.3.7
 * add an option to disable "Proof View Diff" (#321 by @Blaisorblade)
-* add logo as icon to coq file (#302 by @dlesbre)
+* add logo as icon to Coq file (#302 by @dlesbre)
 * add hover provider (#300 by @dlesbre)
 * add color to more keywords (#299 by @dlesbre)
 * various improvements and consolidations (by @Huỳnh Trần Khanh)
@@ -29,8 +29,8 @@
 ## 0.3.5
 * compatibility with VS Code 1.57.0 (#238, by @swils)
 * fixed compatibility with snap (#223, by @gares and @fakusb)
-* add shields to readme (#218, by @fakusb)
-* typo readme (#217, by @artagnon)
+* add shields to README (#218, by @fakusb)
+* typo README (#217, by @artagnon)
 * bumped dependencies to avoid vulnerabilities (#222, by @dependabot)
 
 ## 0.3.4
@@ -39,8 +39,8 @@
 ## 0.3.3
 
 * fix very narrow proof view (#170 and #173, by @fakusb)
-* files can now be reentered by coq after closing (#169, by @fakusb)
-* recognise more keywords (#159, #168 and #209, by @artagnon)
+* files can now be reentered by Coq after closing (#169, by @fakusb)
+* recognize more keywords (#159, #168 and #209, by @artagnon)
 * improved recognition of qualified identifiers and notations for query guessing (#165 and #175, by @fakusb)
 * remove snippet that interfered with `match ... with` (#160, by @artagnon)
 * "Display Implicit Arguments" now indeed does display the implicit arguments (@182, by @fakusb)
@@ -49,12 +49,12 @@
 * added option to select location of `_CoqProject` (#179, by @fakusb)
 * proofview no longer gets put to foreground on changed (#195, by @Blaisorblade)
 * fixed wrong assumption on Coq-xml protocol (#191, by @fakusb)
-* clean up makefile (#178, by @artagnon)
+* clean up Makefile (#178, by @artagnon)
 * added build and install instructions from source to README (#145, by @thery)
 * fixed debugger integration for language server (#180, by @fakusb)
-* reduced npm dependencies (#171, by @fakusb)
+* reduced NPM dependencies (#171, by @fakusb)
 * deleted outdated TODO.md (#149, by @Blaisorblade)
-* cleaned up readme file (#196, by @Blaisorblade)
+* cleaned up README file (#196, by @Blaisorblade)
 * collapsed duplicates and modernized license files (#177, by @artagnon)
 * bumped dependencies to avoid vulnerabilities (#148, #152, #174, #189 and #210, by @dependabot)
 
@@ -163,7 +163,7 @@ Note: PR and issue numbers below refer to the previous VS Coq repository
 ## 0.1.3
 * fixed prettify-symbols-mode in proof-view
 * somewhat better error handling around pegjs parser errors
-* redirect console to connection.console (3rd party libs were breaking the jsonrpc protoocl over console)
+* redirect console to connection.console (3rd party libs were breaking the jsonrpc protocol over console)
 
 ## 0.1.2 Lanuch VS Coq server locally (don't rely on Node env path)
 

@@ -50,7 +50,7 @@ States:
   * InProgress:
   * Incomplete: the validity of the sentence cannot be checked due to a prior error
   * Complete:
-  * Error: the sentence has an error error
+  * Error: the sentence has an error
 
 State ID 0 is reserved as 'null' or 'default' state. (The 'query' command suggests that it might also refer to the currently-focused state, but I have not tested this yet). The first command should be added to state ID 0. Queries are typically performed w.r.t. state ID 0.
 
@@ -90,8 +90,8 @@ Adds a toplevel command (e.g. vernacular, definition, tactic) to the given state
 </value>
 ```
 * When closing a focused proof (in the middle of a bunch of interpreted commands),
-the `Qed` will be assigned a prior `stateId` and `nextStateId` will be the id of an already-interpreted
-state that should become the next tip. 
+the `Qed` will be assigned a prior `stateId` and `nextStateId` will be the ID of an already-interpreted
+state that should become the next tip.
 ```html
 <value val="good">
   <pair>
@@ -133,7 +133,7 @@ Move focus to `${stateId}`, such that commands may be added to the new state ID.
 </value>
 ```
 
-* New focus; focusedQedStateId is the closing Qed of the new focus; senteneces between the two should be cleared
+* New focus; focusedQedStateId is the closing QED of the new focus; sentences between the two should be cleared
 ```html
 <value val="good">
   <union val="in_r">
@@ -147,7 +147,7 @@ Move focus to `${stateId}`, such that commands may be added to the new state ID.
   </union>
 </value>
 ```
-* Failure: If `stateId` is in an error-state and cannot be jumped to, `errorFreeStateId` is the parent state of ``stateId` that shopuld be edited instead. 
+* Failure: If `stateId` is in an error-state and cannot be jumped to, `errorFreeStateId` is the parent state of ``stateId` that should be edited instead.
 ```html
 <value val="fail" loc_s="${startOffsetOfError}" loc_e="${endOffsetOfError}">
   <state_id val="${errorFreeStateId}"/>
@@ -253,12 +253,12 @@ Pseudocode for listing all of the goals in order: `rev (flat_map fst background)
 
 
 ### <a name="command-status">**Status(force: bool)**</a>
-CoqIDE typically sets `force` to `false`. 
+CoqIDE typically sets `force` to `false`.
 ```html
 <call val="Status"><bool val="${force}"/></call>
 ```
 #### *Returns*
-*  
+*
 ```html
 <status>
   <string>${path}</string>
@@ -344,7 +344,7 @@ In practice, `stateId` is 0, but the effect is to perform the query on the curre
 
 
 ### <a name="command-search">**Search([(constraintTypeN: string, constraintValueN: string, positiveConstraintN: boolean)])**</a>
-Searches for objects that satisfy a list of constraints. If `${positiveConstraint}` is `false`, then the constraint is inverted. 
+Searches for objects that satisfy a list of constraints. If `${positiveConstraint}` is `false`, then the constraint is inverted.
 ```html
 <call val="Search">
   <list>
@@ -389,7 +389,7 @@ Searches for objects that satisfy a list of constraints. If `${positiveConstrain
 * Type pattern: `${constraintType} = "type_pattern"`; `${constraintValue}` is a pattern (???: an open gallina term) string.
 * SubType pattern: `${constraintType} = "subtype_pattern"`; `${constraintValue}` is a pattern (???: an open gallina term) string.
 * In module: `${constraintType} = "in_module"`; `${constraintValue}` is a list of strings specifying the module/directory structure.
-* Include blacklist: `${constraintType} = "include_blacklist"`; `${constraintValue}` *is ommitted*.
+* Include blacklist: `${constraintType} = "include_blacklist"`; `${constraintValue}` *is omitted*.
 
 -------------------------------
 
@@ -699,7 +699,7 @@ Ex: `status = "Idle"` or `status = "proof: myLemmaName"` or `status = "Dead"`
 </feedback>
 ```
 
-* <a name="feedback-custom">Custom</a>. A feedback message that Coq plugins can use to return structured results. Optionally, `startPos` and `stopPos` define a range of offsets in the document that the message refers to; otherwise, they will be 0. `customTag` is indended as a unique string that identifies what kind of payload is contained in `customXML`.
+* <a name="feedback-custom">Custom</a>. A feedback message that Coq plugins can use to return structured results. Optionally, `startPos` and `stopPos` define a range of offsets in the document that the message refers to; otherwise, they will be 0. `customTag` is intended as a unique string that identifies what kind of payload is contained in `customXML`.
 ```xml
 <feedback object="state" route="0">
   <state_id val="${stateId}"/>
@@ -711,7 +711,7 @@ Ex: `status = "Idle"` or `status = "proof: myLemmaName"` or `status = "Dead"`
 </feedback>
 ```
 
-* <a name="feedback-ltacprof">LtacProf</a>. As of 8.6, the ltac profiler (LtacProf) will generate an additional feedback message in response to "Show Ltac Profile" with the *full*, *structured* profiling results. `<ltacprof_tactic />` forms a tree of tactic invocations and their profiling results. When a tactic has multiple invocations of e.g. tactic "foo",  the profiling results for "foo" under the tactic will be combined together. Each tactic entry in `<ltacprof/>` represents a tactic that was run at the top level, where multiple invocations of the same tactic are combined together. `totalTimeSec` is total time taken by all of the tactics. `tacticName` is the name of the tactic that the entry corresponds to. `totalSec` is the total time taken be a tactic over all invocations made by its parent tactic. `selfSec` is the portion of the time running the tactic itself, as opposed to running subtactics. `num_calls` is the number of invocations of the tactic that have been made by its parent. `max_total` is the maximum time spent in the tactic by a single invocation from its parent.
+* <a name="feedback-ltacprof">LtacProf</a>. As of 8.6, the Ltac profiler (LtacProf) will generate an additional feedback message in response to "Show Ltac Profile" with the *full*, *structured* profiling results. `<ltacprof_tactic />` forms a tree of tactic invocations and their profiling results. When a tactic has multiple invocations of e.g. tactic "foo",  the profiling results for "foo" under the tactic will be combined together. Each tactic entry in `<ltacprof/>` represents a tactic that was run at the top level, where multiple invocations of the same tactic are combined together. `totalTimeSec` is total time taken by all of the tactics. `tacticName` is the name of the tactic that the entry corresponds to. `totalSec` is the total time taken be a tactic over all invocations made by its parent tactic. `selfSec` is the portion of the time running the tactic itself, as opposed to running subtactics. `num_calls` is the number of invocations of the tactic that have been made by its parent. `max_total` is the maximum time spent in the tactic by a single invocation from its parent.
 ```xml
 <feedback object="state" route="0">
   <state_id val="${stateId}"/>
