@@ -87,16 +87,16 @@
 * replace proofview customization logic with themable colors (#54)
 * change keybindings for macOS to avoid beeps (#56)
 * by default, do not indent after opening a proof (#67)
-* fix #14 (VsCoq's parser not coping with some notations)
+* fix #14 (VS Coq's parser not coping with some notations)
 * fix #18 (Debug messages are not displayed)
 * fix #26 (Focus lost on first go to point)
 * fix #33 (Top module name should be set properly)
 * fix #39 (UnhandledPromiseRejectionWarning)
 * fix #59 (Output spaces instead of non-breaking spaces)
 * fix #60 (Clear the goals when not in proof mode)
-* fix #65 (VsCoq does not work with Coq built using Dune)
+* fix #65 (VS Coq does not work with Coq built using Dune)
 
-Note: PR and issue numbers below refer to the previous VsCoq repository
+Note: PR and issue numbers below refer to the previous VS Coq repository
 (https://github.com/siegebell/vscoq).
 
 * fix #130 (AST parsing assumptions fails)
@@ -159,7 +159,7 @@ Note: PR and issue numbers below refer to the previous VsCoq repository
 * somewhat better error handling around pegjs parser errors
 * redirect console to connection.console (3rd party libs were breaking the jsonrpc protoocl over console)
 
-## 0.1.2 Lanuch vscoq server locally (don't rely on Node env path)
+## 0.1.2 Lanuch VS Coq server locally (don't rely on Node env path)
 
 ## 0.1.1 Fixed some hyperlinks
 
