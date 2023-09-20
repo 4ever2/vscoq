@@ -1,3 +1,18 @@
+## 0.4.1
+* fixed typos (#31)
+* rename extension to VS Coq 1 (#30)
+* clean up code base (#17, #28, #29)
+* share definitions between server and client (#27)
+* switch proof diff engine to Coq's diff engine (#24)
+* suggest tactic completions when there is an active goal (#23)
+* bumped and cleaned up dependencies (#10, #12, #21)
+* Coq reference manual look and search commands (#18, #19, #20)
+* hide Coq commands in command palette when not viewing Coq code or in proof view (#16)
+* add "open proof view" button in editor (#6, #15)
+* fix Open proof view command not focusing the right proofview (#14)
+* fix and improve snippet completions (#8, #9, #11, #13)
+* highlight Coq code in VS Coq's output channels (#7)
+* highlight Coq code blocks in markdown files (#5)
 ## 0.4.0
 * release of a separate vscoq1 extension
 ## 0.3.9
