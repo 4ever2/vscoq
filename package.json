@@ -1,14 +1,14 @@
 {
-  "name": "vscoq",
-  "displayName": "VSCoq",
+  "name": "vscoq1",
+  "displayName": "VS Coq 1",
   "description": "An IDE for the Coq Proof Assistant",
   "author": {
     "name": "Christian J. Bell",
     "email": "siegebell@gmail.com",
     "url": "http://people.csail.mit.edu/cj/"
   },
-  "version": "0.3.10",
-  "publisher": "maximedenes",
+  "version": "0.4.0",
+  "publisher": "coq-community",
   "license": "MIT",
   "icon": "images/logo.png",
   "engines": {
@@ -149,7 +149,7 @@
             "removed"
           ],
           "default": "on",
-          "markdownDescription": "Enable/disable VsCoq's Proof View Diff. Only has acceptable performance on small goals."
+          "markdownDescription": "Enable/disable VS Coq's Proof View Diff. Only has acceptable performance on small goals."
         },
         "coq.proofViewDiff.addedTextIsItalic": {
           "type": "boolean",

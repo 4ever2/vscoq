@@ -10,7 +10,7 @@
 			"args": ["--extensionDevelopmentPath=${workspaceRoot}"],
 			"outFiles": ["${workspaceRoot}/client/out/**/*.js"],
 			"sourceMaps": true,
-			"preLaunchTask": "npm: watch" //The new vscode window still needs to be reloaded after changes (Ctrl+Shift+F5 in the debugger)
+			"preLaunchTask": "npm: watch" //The new VS Code window still needs to be reloaded after changes (Ctrl+Shift+F5 in the debugger)
 		},
 		{
 			"type": "node",

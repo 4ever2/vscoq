@@ -89,7 +89,7 @@ export class CoqTop extends IdeSlave8 implements coqtop.CoqTop {
     if (coqtopVersion)
       this.console.log(`Detected coqtop version ${coqtopVersion}`)
     else {
-      const fallbackVersion = "8.10"; //no changed behaviour in vscoq since this version
+      const fallbackVersion = "8.10"; //no changed behaviour in VS Coq since this version
       this.console.warn(`Could not detect coqtop version, defaulting to >= ${fallbackVersion}.`);
       coqtopVersion = fallbackVersion;
     }

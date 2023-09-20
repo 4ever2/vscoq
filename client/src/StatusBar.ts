@@ -1,4 +1,4 @@
-/** Manages the status bar at the bottom of vscode. All Coq documents should go through this module
+/** Manages the status bar at the bottom of VS Code. All Coq documents should go through this module
  *
  */
 import * as vscode from 'vscode';
